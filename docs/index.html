@@ -3,1027 +3,1205 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azure Learning Portal</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+<title>codethebox.dev — Cloud & Tech Learning Platform</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-/* ═══════════════════════════════════════
-   DESIGN TOKENS
-═══════════════════════════════════════ */
+/* ══════════════════════════════════════
+   DESIGN TOKENS — Dark Terminal Aesthetic
+══════════════════════════════════════ */
 :root {
-  --azure:       #0078D4;
-  --azure-dark:  #003A6C;
-  --azure-mid:   #005A9E;
-  --azure-light: #EBF3FB;
-  --azure-glow:  rgba(0,120,212,0.15);
+  --bg0:      #070B14;
+  --bg1:      #0C1220;
+  --bg2:      #111827;
+  --bg3:      #1A2235;
+  --bg4:      #1E2A3E;
+  --border:   rgba(255,255,255,0.08);
+  --border2:  rgba(255,255,255,0.14);
+  --text:     #E8EDF5;
+  --text2:    #94A3B8;
+  --text3:    #64748B;
 
-  --lvl-fund:    #0078D4; /* AZ-900 Fundamentals - blue */
-  --lvl-assoc:   #107C10; /* AZ-104 Associate - green */
-  --lvl-expert:  #8764B8; /* AZ-305 Expert - purple */
-  --lvl-special: #CA5010; /* Specialty - orange */
+  --accent:   #00D4FF;
+  --accent2:  #0099CC;
+  --green:    #10B981;
+  --amber:    #F59E0B;
+  --rose:     #F43F5E;
+  --violet:   #8B5CF6;
 
-  --lab-color:   #038387;
-  --lab-bg:      #E9F5F5;
+  /* Provider colors */
+  --aws:      #FF9900;
+  --gcp:      #4285F4;
+  --azure:    #0078D4;
+  --m365:     #D83B01;
+  --comptia:  #C8202A;
+  --linux:    #FCC624;
+  --k8s:      #326CE5;
 
-  --admin-color: #C50F1F;
-  --instructor-color: #CA5010;
-  --student-color: #107C10;
+  /* Levels */
+  --fund:     #3B82F6;
+  --assoc:    #10B981;
+  --pro:      #8B5CF6;
+  --expert:   #F43F5E;
+  --specialty:#F59E0B;
 
-  --sidebar-w:  290px;
-  --header-h:   58px;
-  --text:       #0F172A;
-  --text-2:     #334155;
-  --muted:      #64748B;
-  --border:     #E2E8F0;
-  --bg:         #F8FAFC;
-  --white:      #FFFFFF;
-  --shadow-sm:  0 1px 2px rgba(0,0,0,0.06);
-  --shadow:     0 2px 8px rgba(0,0,0,0.08);
-  --shadow-md:  0 8px 24px rgba(0,0,0,0.12);
-  --shadow-lg:  0 20px 60px rgba(0,0,0,0.18);
-  --radius:     8px;
-  --radius-lg:  12px;
+  --sidebar-w: 280px;
+  --hdr-h:     60px;
+  --radius:    8px;
+  --radius-lg: 14px;
+  --glow:      0 0 20px rgba(0,212,255,0.15);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
 
 body {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg0);
   color: var(--text);
-  background: var(--bg);
+  font-size: 14px;
   line-height: 1.7;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
-/* ═══════════════════════════════════════
-   TOP HEADER
-═══════════════════════════════════════ */
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.015) 2px, rgba(0,0,0,0.015) 4px);
+  pointer-events: none; z-index: 9999;
+}
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: var(--bg1); }
+::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+/* ══════ HEADER ══════ */
 header {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: var(--header-h);
-  background: linear-gradient(135deg, var(--azure-dark) 0%, #004A8F 100%);
-  display: flex;
-  align-items: center;
-  padding: 0 16px;
-  gap: 12px;
-  z-index: 300;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+  position: fixed; top: 0; left: 0; right: 0;
+  height: var(--hdr-h);
+  background: rgba(7,11,20,0.92);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center;
+  padding: 0 20px; gap: 14px;
+  z-index: 500;
 }
 
-.logo {
+.logo-wrap {
   display: flex; align-items: center; gap: 10px;
-  text-decoration: none; color: #fff;
-  font-weight: 800; font-size: 16px; flex-shrink: 0;
-  letter-spacing: -0.01em;
+  text-decoration: none; flex-shrink: 0; cursor: pointer;
 }
-.logo-icon {
-  width: 34px; height: 34px;
-  background: linear-gradient(135deg, #41A4E8, #0078D4);
-  border-radius: 8px;
+.logo-mark {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--accent), #0055CC);
+  border-radius: 10px;
   display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,120,212,0.4);
+  position: relative; overflow: hidden;
+  box-shadow: 0 0 16px rgba(0,212,255,0.35);
 }
-.logo-icon svg { width: 20px; height: 20px; }
+.logo-mark::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+}
+.logo-mark svg { width: 20px; height: 20px; z-index: 1; }
+.logo-text {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px; font-weight: 600; color: var(--text);
+  letter-spacing: -0.02em;
+}
+.logo-text span { color: var(--accent); }
+.logo-tld { color: var(--text3); font-size: 13px; }
 
-.hd { width: 1px; height: 26px; background: rgba(255,255,255,0.18); flex-shrink: 0; }
+.hdr-divider { width: 1px; height: 22px; background: var(--border); flex-shrink: 0; }
 
-.header-title {
-  color: rgba(255,255,255,0.85);
-  font-size: 13px; font-weight: 500;
+.hdr-nav {
+  display: flex; align-items: center; gap: 4px;
 }
+.hdr-nav-btn {
+  padding: 5px 12px; border-radius: 6px;
+  background: none; border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; font-weight: 500; color: var(--text2);
+  cursor: pointer; transition: all 0.15s;
+}
+.hdr-nav-btn:hover { color: var(--text); background: var(--bg3); }
+.hdr-nav-btn.active { color: var(--accent); background: rgba(0,212,255,0.08); }
 
-/* Role badge */
-.role-badge {
-  display: flex; align-items: center; gap: 5px;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 11.5px; font-weight: 700;
-  letter-spacing: 0.04em; text-transform: uppercase;
-  cursor: pointer; border: none;
-  transition: all 0.2s;
-}
-.role-badge.admin      { background: rgba(197,15,31,0.2); color: #FF8C8C; border: 1px solid rgba(197,15,31,0.4); }
-.role-badge.instructor { background: rgba(202,80,16,0.2); color: #FDB97D; border: 1px solid rgba(202,80,16,0.4); }
-.role-badge.student    { background: rgba(16,124,16,0.2); color: #9FE88D; border: 1px solid rgba(16,124,16,0.4); }
-
-.header-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
-
-.header-btn {
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12.5px; font-weight: 600;
-  cursor: pointer; border: none;
-  transition: all 0.2s;
-}
-.btn-back {
-  background: rgba(255,255,255,0.12);
-  color: rgba(255,255,255,0.85);
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.btn-back:hover { background: rgba(255,255,255,0.22); }
-.btn-manage {
-  background: var(--azure); color: #fff;
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.btn-manage:hover { background: var(--azure-mid); }
+.hdr-right { display: flex; align-items: center; gap: 10px; margin-left: auto; }
 
 /* Search */
-.header-search {
-  display: flex; align-items: center;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.18);
-  border-radius: 6px; padding: 0 10px; gap: 7px;
+.hdr-search {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 0 12px;
+  transition: border-color 0.2s;
 }
-.header-search input {
+.hdr-search:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(0,212,255,0.1); }
+.hdr-search input {
   background: none; border: none; outline: none;
-  color: #fff; font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13px; width: 160px; padding: 5px 0;
+  color: var(--text); font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px; width: 180px; padding: 6px 0;
 }
-.header-search input::placeholder { color: rgba(255,255,255,0.4); }
-.header-search svg { width: 14px; height: 14px; color: rgba(255,255,255,0.45); flex-shrink: 0; }
+.hdr-search input::placeholder { color: var(--text3); }
+.hdr-search svg { width: 14px; height: 14px; color: var(--text3); flex-shrink: 0; }
 
-/* ═══════════════════════════════════════
-   VIEWS
-═══════════════════════════════════════ */
+/* User area */
+.user-chip {
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 12px 5px 6px;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 30px; cursor: pointer;
+  transition: all 0.2s;
+}
+.user-chip:hover { border-color: var(--border2); background: var(--bg3); }
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 800; flex-shrink: 0;
+}
+.ua-guest    { background: var(--bg4); color: var(--text3); border: 1px solid var(--border); }
+.ua-student  { background: linear-gradient(135deg,#10B981,#059669); color: #fff; }
+.ua-instructor { background: linear-gradient(135deg,#F59E0B,#D97706); color: #fff; }
+.ua-admin    { background: linear-gradient(135deg,#F43F5E,#be123c); color: #fff; }
+
+.user-chip .uc-info { display: flex; flex-direction: column; }
+.uc-name { font-size: 12.5px; font-weight: 600; line-height: 1.2; }
+.uc-role { font-size: 10.5px; color: var(--text3); }
+
+.role-dot {
+  width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
+}
+.dot-guest    { background: var(--text3); }
+.dot-student  { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.dot-instructor { background: var(--amber); box-shadow: 0 0 6px var(--amber); }
+.dot-admin    { background: var(--rose); box-shadow: 0 0 6px var(--rose); }
+
+.login-btn {
+  padding: 7px 16px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; color: #000; font-weight: 700;
+  font-family: 'Space Grotesk', sans-serif; font-size: 13px;
+  cursor: pointer; transition: all 0.2s;
+  box-shadow: 0 0 14px rgba(0,212,255,0.3);
+}
+.login-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,212,255,0.4); }
+
+/* ══════ VIEWS ══════ */
 .view { display: none; }
 .view.active { display: block; }
 
-/* ═══════════════════════════════════════
-   CATALOG VIEW
-═══════════════════════════════════════ */
-#catalogView {
-  padding-top: var(--header-h);
-  min-height: 100vh;
+/* ══════════════════════════════════════
+   LANDING / HOME
+══════════════════════════════════════ */
+#homeView {
+  padding-top: var(--hdr-h);
 }
 
-.catalog-hero {
-  background: linear-gradient(135deg, var(--azure-dark) 0%, #005A9E 60%, #0078D4 100%);
-  padding: 60px 48px 56px;
+.hero {
+  min-height: calc(100vh - var(--hdr-h));
+  display: flex; align-items: center;
+  padding: 60px 60px 80px;
   position: relative; overflow: hidden;
 }
-.catalog-hero::before {
-  content: '';
+
+.hero-bg {
+  position: absolute; inset: 0; z-index: 0;
+  background:
+    radial-gradient(ellipse 60% 50% at 70% 50%, rgba(0,120,212,0.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(0,212,255,0.07) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 60% at 80% 10%, rgba(139,92,246,0.08) 0%, transparent 60%);
+}
+.hero-grid {
   position: absolute; inset: 0;
-  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
 }
-.catalog-hero h1 {
-  font-size: 36px; font-weight: 800; color: #fff;
-  letter-spacing: -0.02em; margin-bottom: 10px;
-  position: relative;
+.hero-glow {
+  position: absolute; top: -20%; right: -10%;
+  width: 600px; height: 600px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,212,255,0.08) 0%, transparent 70%);
+  pointer-events: none;
 }
-.catalog-hero p {
-  color: rgba(255,255,255,0.75); font-size: 15px;
-  max-width: 560px; position: relative;
-}
-.catalog-hero .hero-stats {
-  display: flex; gap: 28px; margin-top: 28px; position: relative;
-}
-.hero-stat { text-align: center; }
-.hero-stat .num { font-size: 28px; font-weight: 800; color: #fff; }
-.hero-stat .label { font-size: 12px; color: rgba(255,255,255,0.6); font-weight: 500; }
 
-.catalog-body { padding: 36px 48px; }
+.hero-content { position: relative; z-index: 1; max-width: 680px; }
 
-.level-filter {
-  display: flex; gap: 8px; margin-bottom: 28px; flex-wrap: wrap;
-  align-items: center;
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 5px 14px; border-radius: 20px;
+  border: 1px solid rgba(0,212,255,0.3);
+  background: rgba(0,212,255,0.06);
+  font-size: 12px; font-weight: 600; color: var(--accent);
+  margin-bottom: 28px;
+  font-family: 'JetBrains Mono', monospace;
 }
-.level-filter span { font-size: 12px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 4px; }
-.filter-btn {
-  padding: 6px 14px; border-radius: 20px;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12.5px; font-weight: 600;
-  cursor: pointer; border: 1.5px solid var(--border);
-  background: var(--white); color: var(--muted);
+.hero-badge::before { content:''; width:7px; height:7px; border-radius:50%; background:var(--accent); animation: pulse 2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
+
+.hero h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: clamp(42px, 5vw, 64px);
+  font-weight: 900; line-height: 1.05;
+  letter-spacing: -0.03em; margin-bottom: 20px;
+}
+.hero h1 em {
+  font-style: normal;
+  background: linear-gradient(135deg, var(--accent) 0%, #6EE7FF 50%, var(--violet) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+  font-size: 17px; color: var(--text2); max-width: 540px;
+  line-height: 1.65; margin-bottom: 36px;
+}
+
+.hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+.btn-primary {
+  padding: 12px 28px; border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  border: none; color: #000; font-weight: 700;
+  font-family: 'Outfit', sans-serif; font-size: 15px;
+  cursor: pointer; transition: all 0.25s;
+  box-shadow: 0 0 20px rgba(0,212,255,0.3);
+  display: flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(0,212,255,0.45); }
+.btn-outline {
+  padding: 12px 28px; border-radius: 10px;
+  background: transparent; border: 1px solid var(--border2);
+  color: var(--text); font-weight: 600;
+  font-family: 'Outfit', sans-serif; font-size: 15px;
+  cursor: pointer; transition: all 0.25s;
+}
+.btn-outline:hover { background: var(--bg3); border-color: var(--accent); color: var(--accent); }
+
+.hero-providers {
+  margin-top: 60px;
+  display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+}
+.hero-providers span { font-size: 12px; color: var(--text3); font-weight: 500; }
+.provider-logos { display: flex; gap: 10px; flex-wrap: wrap; }
+.plogo {
+  padding: 6px 14px; border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 12px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg2);
   transition: all 0.2s;
 }
-.filter-btn:hover { border-color: var(--azure); color: var(--azure); }
-.filter-btn.active { background: var(--azure); color: #fff; border-color: var(--azure); }
+.plogo:hover { border-color: var(--border2); transform: translateY(-1px); }
+.plogo.aws { color: var(--aws); }
+.plogo.gcp { color: var(--gcp); }
+.plogo.azure { color: var(--azure); }
+.plogo.m365 { color: var(--m365); }
+.plogo.comptia { color: var(--comptia); }
 
+/* Stats strip */
+.stats-strip {
+  display: grid; grid-template-columns: repeat(4,1fr);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.stat-cell {
+  padding: 28px 32px;
+  border-right: 1px solid var(--border);
+  text-align: center;
+}
+.stat-cell:last-child { border-right: none; }
+.stat-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px; font-weight: 900;
+  background: linear-gradient(135deg, var(--accent), var(--violet));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.stat-label { font-size: 12.5px; color: var(--text3); margin-top: 2px; font-weight: 500; }
+
+/* ══════════════════════════════════════
+   CATALOG
+══════════════════════════════════════ */
+#catalogView { padding-top: var(--hdr-h); min-height: 100vh; }
+
+.catalog-header {
+  padding: 40px 48px 28px;
+  background: linear-gradient(180deg, var(--bg1) 0%, transparent 100%);
+  border-bottom: 1px solid var(--border);
+}
+.catalog-header h1 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px; font-weight: 800; letter-spacing: -0.02em;
+  margin-bottom: 6px;
+}
+.catalog-header p { color: var(--text2); font-size: 14px; }
+
+/* Provider tabs */
+.provider-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
+  padding: 16px 48px; border-bottom: 1px solid var(--border);
+  position: sticky; top: var(--hdr-h); background: rgba(7,11,20,0.95);
+  backdrop-filter: blur(12px); z-index: 50;
+}
+.ptab {
+  display: flex; align-items: center; gap: 7px;
+  padding: 7px 14px; border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg2); cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 12.5px; font-weight: 600; color: var(--text2);
+  transition: all 0.2s;
+}
+.ptab:hover { border-color: var(--border2); color: var(--text); }
+.ptab.active { color: #000 !important; border-color: transparent !important; }
+.ptab.all.active { background: var(--accent); color: #000; }
+.ptab.aws.active  { background: var(--aws); }
+.ptab.gcp.active  { background: var(--gcp); }
+.ptab.azure.active { background: var(--azure); }
+.ptab.m365.active  { background: var(--m365); }
+.ptab.comptia.active { background: var(--comptia); }
+.ptab.more.active  { background: var(--violet); }
+
+.ptab-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* Level filter row */
+.level-row {
+  padding: 12px 48px; border-bottom: 1px solid var(--border);
+  display: flex; gap: 8px; align-items: center;
+}
+.level-row span { font-size: 11.5px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; margin-right: 4px; }
+.lvl-btn {
+  padding: 4px 12px; border-radius: 20px;
+  font-size: 12px; font-weight: 600;
+  border: 1px solid var(--border); background: transparent;
+  color: var(--text2); cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  transition: all 0.15s;
+}
+.lvl-btn:hover { border-color: var(--border2); color: var(--text); }
+.lvl-btn.active { color: #000; border-color: transparent; }
+.lvl-btn.all.active { background: var(--accent); }
+.lvl-btn.Fundamentals.active { background: var(--fund); }
+.lvl-btn.Associate.active    { background: var(--assoc); }
+.lvl-btn.Professional.active { background: var(--pro); }
+.lvl-btn.Expert.active       { background: var(--expert); }
+.lvl-btn.Specialty.active    { background: var(--specialty); }
+
+/* Cards grid */
 .courses-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+  gap: 18px;
+  padding: 28px 48px 60px;
 }
 
 .course-card {
-  background: var(--white);
+  background: var(--bg1);
+  border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  border: 1.5px solid var(--border);
-  overflow: hidden;
-  transition: all 0.25s;
-  cursor: pointer;
-  position: relative;
+  overflow: hidden; cursor: pointer;
+  transition: all 0.25s; position: relative;
 }
-.course-card:hover {
-  border-color: var(--azure);
-  box-shadow: 0 0 0 4px var(--azure-glow), var(--shadow-md);
-  transform: translateY(-2px);
+.course-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  transition: opacity 0.2s;
 }
+.course-card:hover { transform: translateY(-3px); border-color: var(--border2); box-shadow: 0 8px 32px rgba(0,0,0,0.3); }
+.course-card:hover::before { opacity: 1; }
 
-.course-card-top {
-  padding: 22px 22px 18px;
-  position: relative;
-}
-.course-id-badge {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-family: 'Fira Code', monospace;
-  font-size: 13px; font-weight: 500;
+.card-top { padding: 22px 22px 16px; }
+.card-provider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.provider-badge {
+  display: flex; align-items: center; gap: 6px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; font-weight: 600;
   padding: 4px 10px; border-radius: 5px;
-  margin-bottom: 14px;
+  border: 1px solid currentColor; opacity: 0.85;
 }
-.course-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 6px; line-height: 1.3; }
-.course-card p { font-size: 13px; color: var(--muted); line-height: 1.6; }
+.level-badge {
+  font-size: 10.5px; font-weight: 700; padding: 3px 9px;
+  border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em;
+  margin-left: auto;
+}
+.lbg-Fundamentals { background: rgba(59,130,246,0.15); color: var(--fund); }
+.lbg-Associate    { background: rgba(16,185,129,0.15); color: var(--assoc); }
+.lbg-Professional { background: rgba(139,92,246,0.15); color: var(--pro); }
+.lbg-Expert       { background: rgba(244,63,94,0.15); color: var(--expert); }
+.lbg-Specialty    { background: rgba(245,158,11,0.15); color: var(--specialty); }
 
-.course-card-meta {
-  padding: 14px 22px;
-  border-top: 1px solid var(--border);
-  display: flex; align-items: center; gap: 12px;
-  flex-wrap: wrap;
-}
-.meta-item {
-  display: flex; align-items: center; gap: 5px;
-  font-size: 12px; color: var(--muted); font-weight: 500;
-}
-.meta-item svg { width: 13px; height: 13px; }
+.course-card h3 { font-family:'Outfit',sans-serif; font-size:16px; font-weight:700; margin-bottom:6px; line-height:1.3; }
+.course-card p  { font-size:13px; color:var(--text2); line-height:1.6; }
 
-.course-progress { margin-left: auto; }
-.prog-bar {
-  width: 80px; height: 5px;
-  background: var(--border); border-radius: 3px;
-  overflow: hidden;
+.card-meta {
+  padding: 12px 22px; border-top: 1px solid var(--border);
+  display: flex; align-items: center; gap: 14px;
 }
-.prog-fill { height: 100%; border-radius: 3px; background: var(--azure); transition: width 0.5s; }
+.cm { display:flex; align-items:center; gap:5px; font-size:12px; color:var(--text3); font-weight:500; }
+.cm svg { width:12px; height:12px; }
 
-.course-card-footer {
-  padding: 14px 22px;
-  background: var(--bg);
+.card-progress { margin-left:auto; text-align:right; }
+.prog-bar { width:70px; height:4px; background:var(--bg4); border-radius:2px; overflow:hidden; }
+.prog-fill { height:100%; border-radius:2px; transition:width 0.6s; }
+
+.card-footer {
+  padding: 12px 22px; background: var(--bg2);
   border-top: 1px solid var(--border);
   display: flex; align-items: center; justify-content: space-between;
 }
-.open-course-btn {
-  display: flex; align-items: center; gap: 6px;
-  color: var(--azure); font-weight: 700; font-size: 13px;
-  background: none; border: none; cursor: pointer;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  padding: 0; transition: gap 0.2s;
+.open-btn {
+  display:flex; align-items:center; gap:6px;
+  color: var(--accent); font-weight:700; font-size:13px;
+  background:none; border:none; cursor:pointer;
+  font-family:'Space Grotesk',sans-serif;
+  transition: gap 0.2s;
 }
-.open-course-btn:hover { gap: 9px; }
-.open-course-btn svg { width: 14px; height: 14px; }
+.open-btn:hover { gap:9px; }
+.open-btn svg { width:14px; height:14px; }
 
-.level-chip {
-  font-size: 11px; font-weight: 700; padding: 3px 9px;
-  border-radius: 4px; text-transform: uppercase; letter-spacing: 0.06em;
+.cert-id {
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px; color:var(--text3); font-weight:500;
 }
 
-/* ═══════════════════════════════════════
-   COURSE VIEW (3-column)
-═══════════════════════════════════════ */
+/* ══════════════════════════════════════
+   COURSE VIEW
+══════════════════════════════════════ */
 #courseView {
   display: none;
-  padding-top: var(--header-h);
+  padding-top: var(--hdr-h);
 }
 #courseView.active { display: flex; }
 
-/* Left sidebar - module tree */
-.course-sidebar {
-  width: var(--sidebar-w);
-  flex-shrink: 0;
-  background: var(--white);
-  border-right: 1.5px solid var(--border);
-  height: calc(100vh - var(--header-h));
-  position: fixed;
-  top: var(--header-h); left: 0;
-  overflow-y: auto;
-  z-index: 100;
+/* Left sidebar */
+.c-sidebar {
+  width: var(--sidebar-w); flex-shrink: 0;
+  background: var(--bg1); border-right: 1px solid var(--border);
+  position: fixed; top: var(--hdr-h); left: 0; bottom: 0;
+  overflow-y: auto; z-index: 100;
 }
-.course-sidebar::-webkit-scrollbar { width: 4px; }
-.course-sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 
-.course-sidebar-header {
-  padding: 18px 18px 14px;
+.c-sidebar-hdr {
+  padding: 18px 16px 14px;
   border-bottom: 1px solid var(--border);
-  position: sticky; top: 0;
-  background: var(--white); z-index: 5;
+  position: sticky; top: 0; background: var(--bg1); z-index: 5;
 }
-.course-badge-full {
-  font-family: 'Fira Code', monospace;
-  font-size: 13px; font-weight: 500;
-  padding: 5px 12px; border-radius: 6px;
+.csb-id {
+  font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600;
+  padding: 4px 10px; border-radius: 5px;
   display: inline-block; margin-bottom: 8px;
+  border: 1px solid currentColor; opacity: 0.8;
 }
-.course-sidebar-header h2 {
-  font-size: 14px; font-weight: 700;
-  color: var(--text); line-height: 1.4;
-}
-.sidebar-prog {
-  margin-top: 10px;
-  display: flex; align-items: center; gap: 8px;
-}
-.sidebar-prog .prog-bar { flex: 1; height: 6px; }
-.sidebar-prog span { font-size: 11px; font-weight: 700; color: var(--azure); }
+.csb-title { font-size:14px; font-weight:700; line-height:1.35; }
+.csb-prog { display:flex; align-items:center; gap:8px; margin-top:10px; }
+.csb-prog .prog-bar { flex:1; height:5px; }
+.csb-prog span { font-size:11px; font-weight:700; color:var(--accent); font-family:'JetBrains Mono',monospace; }
 
 /* Module list */
-.module-list { padding: 10px 0 20px; }
+.module-list { padding: 8px 0 20px; }
 
-.module-item { border-bottom: 1px solid var(--border); }
+.mod-item { border-bottom: 1px solid var(--border); }
+.mod-hdr {
+  display:flex; align-items:center; gap:8px;
+  padding: 10px 14px;
+  cursor: pointer; user-select:none; transition:background 0.15s;
+}
+.mod-hdr:hover { background: var(--bg2); }
+.mod-hdr.exp { background: var(--bg2); }
+.mod-num {
+  width:22px; height:22px; border-radius:5px;
+  font-size:10.5px; font-weight:800;
+  display:flex; align-items:center; justify-content:center;
+  color:#fff; flex-shrink:0; font-family:'JetBrains Mono',monospace;
+}
+.mod-title { font-size:12.5px; font-weight:600; flex:1; color:var(--text2); line-height:1.3; }
+.mod-hdr.exp .mod-title { color: var(--text); }
+.mod-chev { width:14px; height:14px; color:var(--text3); transition:transform 0.25s; flex-shrink:0; }
+.mod-hdr.exp .mod-chev { transform:rotate(90deg); }
+.mod-cnt { font-size:10px; font-weight:700; color:var(--text3); background:var(--bg3); padding:2px 6px; border-radius:8px; flex-shrink:0; }
 
-.module-header {
-  display: flex; align-items: center; gap: 8px;
-  padding: 11px 16px;
-  cursor: pointer;
-  transition: background 0.15s;
-  user-select: none;
-}
-.module-header:hover { background: #F0F7FF; }
-.module-header.expanded { background: #F0F7FF; }
-
-.module-num {
-  width: 24px; height: 24px; border-radius: 6px;
-  font-size: 11px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0; color: #fff;
-}
-.module-title { font-size: 13px; font-weight: 600; flex: 1; color: var(--text-2); line-height: 1.3; }
-.module-chevron {
-  width: 16px; height: 16px; color: var(--muted);
-  transition: transform 0.25s; flex-shrink: 0;
-}
-.module-header.expanded .module-chevron { transform: rotate(90deg); }
-
-.module-count {
-  font-size: 10px; font-weight: 700;
-  color: var(--muted); background: var(--bg);
-  padding: 2px 6px; border-radius: 10px;
-  flex-shrink: 0;
-}
-
-/* Sub-items (pages + labs) */
-.module-subitems {
-  display: none; padding-bottom: 4px;
-}
-.module-subitems.open { display: block; }
+.mod-subitems { display:none; }
+.mod-subitems.open { display:block; }
 
 .sub-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 7px 16px 7px 46px;
-  cursor: pointer;
-  border-left: 3px solid transparent;
-  transition: all 0.15s; font-size: 12.5px;
-  color: var(--muted);
+  display:flex; align-items:center; gap:7px;
+  padding: 7px 14px 7px 42px;
+  cursor:pointer; border-left:2px solid transparent;
+  transition:all 0.15s; font-size:12.5px; color:var(--text3);
 }
-.sub-item:hover { background: #F5FAFF; color: var(--text); }
-.sub-item.active { background: #EBF3FB; color: var(--azure); border-left-color: var(--azure); font-weight: 600; }
+.sub-item:hover { background:rgba(255,255,255,0.03); color:var(--text2); }
+.sub-item.active { background:rgba(0,212,255,0.07); color:var(--accent); border-left-color:var(--accent); font-weight:600; }
 
-.sub-item .si-icon { width: 13px; height: 13px; flex-shrink: 0; }
-.sub-item .si-type {
-  font-size: 9.5px; font-weight: 700; text-transform: uppercase;
-  letter-spacing: 0.06em; margin-left: auto; flex-shrink: 0;
-  padding: 1px 5px; border-radius: 3px;
+.sub-item .si-ico { width:12px; height:12px; flex-shrink:0; }
+.si-type {
+  font-size:9px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em;
+  padding:1px 5px; border-radius:3px; margin-left:auto; flex-shrink:0;
+  font-family:'JetBrains Mono',monospace;
 }
-.si-type.doc  { background: var(--azure-light); color: var(--azure); }
-.si-type.lab  { background: var(--lab-bg); color: var(--lab-color); }
-.si-type.video { background: #FFF0F5; color: #D6136E; }
+.si-doc   { background:rgba(0,212,255,0.12); color:var(--accent); }
+.si-lab   { background:rgba(16,185,129,0.12); color:var(--green); }
+.si-video { background:rgba(244,63,94,0.12); color:var(--rose); }
 
-.sub-item .check { width: 14px; height: 14px; flex-shrink: 0; }
-.check-done { color: #22c55e; }
-.check-empty { color: var(--border); }
+.sub-done { color: var(--green); }
+.sub-todo { color: var(--bg4); }
 
-/* ── Course main content ── */
-.course-main {
-  margin-left: var(--sidebar-w);
-  flex: 1;
-  min-height: calc(100vh - var(--header-h));
-  display: flex; flex-direction: column;
+.add-page-in-module {
+  display:none; padding: 6px 14px 10px 42px;
 }
-
-/* ── Right TOC ── */
-.course-toc {
-  width: 200px; flex-shrink: 0;
-  position: fixed; top: var(--header-h); right: 0; bottom: 0;
-  overflow-y: auto; padding: 20px 12px;
-  border-left: 1px solid var(--border);
-  background: var(--bg);
+body.edit-mode .add-page-in-module { display:block; }
+.add-pg-btn {
+  width:100%; padding:6px; border:1px dashed var(--border2);
+  border-radius:5px; background:transparent; color:var(--text3);
+  font-size:11.5px; cursor:pointer; font-family:'Space Grotesk',sans-serif;
+  transition:all 0.15s; font-weight:600;
 }
-.toc-label { font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; padding-left: 8px; }
-.toc-link {
-  display: block; padding: 4px 8px;
-  font-size: 12px; color: var(--muted);
-  text-decoration: none; border-left: 2px solid transparent;
-  transition: all 0.15s; line-height: 1.5;
-}
-.toc-link:hover { color: var(--azure); }
-.toc-link.active { color: var(--azure); border-left-color: var(--azure); font-weight: 600; }
+.add-pg-btn:hover { border-color:var(--accent); color:var(--accent); }
 
-/* ── Page content area ── */
+/* Content area */
+.c-main { margin-left:var(--sidebar-w); flex:1; display:flex; }
+
 .content-area {
-  flex: 1;
-  margin-right: 200px;
-  padding: 40px 52px;
-  background: var(--white);
+  flex:1; padding:40px 52px;
+  background:var(--bg0); min-height:calc(100vh - var(--hdr-h));
+  margin-right:210px;
 }
 
-/* Content breadcrumb */
-.c-breadcrumb {
-  display: flex; align-items: center; gap: 6px;
-  font-size: 12px; color: var(--muted); margin-bottom: 24px;
+.c-toc {
+  width:210px; flex-shrink:0;
+  position:fixed; top:var(--hdr-h); right:0; bottom:0;
+  overflow-y:auto; padding:20px 14px;
+  border-left:1px solid var(--border);
+  background: var(--bg1);
 }
-.c-breadcrumb a { color: var(--azure); text-decoration: none; cursor: pointer; }
-.c-breadcrumb a:hover { text-decoration: underline; }
+.toc-lbl { font-size:10px; font-weight:700; letter-spacing:0.14em; text-transform:uppercase; color:var(--text3); margin-bottom:10px; padding-left:8px; }
+.toc-a { display:block; padding:4px 8px; font-size:12px; color:var(--text3); text-decoration:none; border-left:2px solid transparent; transition:all 0.15s; line-height:1.5; }
+.toc-a:hover { color:var(--text2); }
+.toc-a.active { color:var(--accent); border-left-color:var(--accent); font-weight:600; }
 
-/* Page/Lab header */
-.content-header { margin-bottom: 32px; }
-.content-type-bar {
-  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
-}
-.ct-badge {
-  display: flex; align-items: center; gap: 5px;
-  padding: 4px 12px; border-radius: 20px;
-  font-size: 11.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
-}
-.ct-badge.doc   { background: var(--azure-light); color: var(--azure); }
-.ct-badge.lab   { background: var(--lab-bg); color: var(--lab-color); }
-.ct-badge.video { background: #FFF0F5; color: #D6136E; }
-.ct-badge svg { width: 12px; height: 12px; }
+/* breadcrumb */
+.bcrumb { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--text3); margin-bottom:22px; }
+.bcrumb a { color:var(--accent); text-decoration:none; cursor:pointer; }
+.bcrumb a:hover { text-decoration:underline; }
 
-.content-title {
-  font-size: 28px; font-weight: 800;
-  color: var(--azure-dark); letter-spacing: -0.02em;
-  line-height: 1.25; margin-bottom: 10px;
-  outline: none;
+.content-type-chip {
+  display:inline-flex; align-items:center; gap:6px;
+  padding:4px 12px; border-radius:20px; font-size:11.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:12px;
 }
-.content-title[contenteditable="true"] { border-bottom: 2px dashed var(--azure); }
+.ctc-doc   { background:rgba(0,212,255,0.1); color:var(--accent); border:1px solid rgba(0,212,255,0.2); }
+.ctc-lab   { background:rgba(16,185,129,0.1); color:var(--green); border:1px solid rgba(16,185,129,0.2); }
+.ctc-video { background:rgba(244,63,94,0.1); color:var(--rose); border:1px solid rgba(244,63,94,0.2); }
+.ctc-doc svg,.ctc-lab svg,.ctc-video svg { width:12px; height:12px; }
 
-.content-meta {
-  display: flex; align-items: center; gap: 12px;
-  flex-wrap: wrap;
+.page-title-h {
+  font-family:'Outfit',sans-serif; font-size:28px; font-weight:800;
+  letter-spacing:-0.02em; line-height:1.2; margin-bottom:24px;
+  outline:none; color:var(--text);
 }
-.cm-item { display: flex; align-items: center; gap: 5px; font-size: 12.5px; color: var(--muted); }
-.cm-item svg { width: 13px; height: 13px; }
+.page-title-h[contenteditable="true"] { border-bottom:2px dashed var(--accent); }
 
-/* ── Content blocks ── */
-.blocks-container { max-width: 740px; }
+/* Blocks */
+.blocks-container { max-width:720px; }
 
-.block {
-  position: relative;
-  margin-bottom: 6px;
-  border-radius: 6px;
-  transition: outline 0.15s;
-}
-body.edit-mode .block:hover { outline: 2px dashed #93C5FD; }
-body.edit-mode .block:hover .block-toolbar { opacity: 1; pointer-events: all; }
+.block { position:relative; margin-bottom:6px; border-radius:6px; transition:outline 0.15s; }
+body.edit-mode .block:hover { outline:1px dashed rgba(0,212,255,0.4); }
+body.edit-mode .block:hover .btb-wrap { opacity:1; pointer-events:all; }
 
-.block-toolbar {
-  position: absolute; top: -14px; right: 0;
-  display: flex; gap: 4px; z-index: 10;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.15s;
-}
+.btb-wrap { position:absolute; top:-12px; right:0; display:flex; gap:3px; opacity:0; pointer-events:none; transition:opacity 0.15s; z-index:10; }
 .btb {
-  width: 24px; height: 24px; border-radius: 4px;
-  border: 1px solid var(--border); background: var(--white);
-  cursor: pointer; font-size: 11px;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: var(--shadow); color: var(--muted); transition: all 0.15s;
+  width:22px; height:22px; border-radius:4px;
+  border:1px solid var(--border2); background:var(--bg2);
+  cursor:pointer; font-size:10.5px;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:var(--shadow-sm); color:var(--text3); transition:all 0.15s;
 }
-.btb.del:hover { background: #FEE2E2; color: #DC2626; border-color: #FECACA; }
-.btb.mov:hover { background: var(--azure-light); color: var(--azure); border-color: #93C5FD; }
+.btb.del:hover { background:#3B0A12; color:var(--rose); border-color:var(--rose); }
+.btb.mov:hover { background:rgba(0,212,255,0.1); color:var(--accent); border-color:var(--accent); }
 
-/* Text */
-.b-text p { margin-bottom: 14px; color: var(--text-2); font-size: 14.5px; }
-.b-text p[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--azure); min-height: 24px; }
+/* Text block */
+.b-text p { margin-bottom:14px; color:var(--text2); font-size:14.5px; line-height:1.75; }
+.b-text p[contenteditable="true"] { outline:none; border-bottom:1px dashed var(--accent); min-height:24px; background:rgba(0,212,255,0.03); padding:4px; border-radius:4px 4px 0 0; }
 
-/* Heading */
-h2.b-heading {
-  font-size: 20px; font-weight: 700; color: var(--azure-dark);
-  padding-bottom: 8px; border-bottom: 1.5px solid var(--border);
-  margin-top: 8px; margin-bottom: 16px;
-}
-h2.b-heading[contenteditable="true"] { outline: none; border-bottom: 2px dashed var(--azure); }
+h2.b-h { font-family:'Outfit',sans-serif; font-size:20px; font-weight:700; color:var(--text); margin-top:8px; margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+h2.b-h[contenteditable="true"] { outline:none; border-bottom:2px dashed var(--accent); }
 
-/* Callouts */
-.callout { padding: 14px 18px; border-radius: 8px; margin: 6px 0; display: flex; gap: 12px; font-size: 13.5px; }
-.callout.note    { background: var(--azure-light); border-left: 4px solid var(--azure); }
-.callout.tip     { background: #F0FDF4; border-left: 4px solid #22C55E; }
-.callout.warning { background: #FFFBEB; border-left: 4px solid #F59E0B; }
-.callout.danger  { background: #FFF1F2; border-left: 4px solid #F43F5E; }
-.callout .ci { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.callout .cb { flex: 1; }
-.callout .cb[contenteditable="true"] { outline: none; }
+.callout { padding:14px 18px; border-radius:8px; margin:4px 0; display:flex; gap:12px; font-size:13.5px; }
+.callout.note    { background:rgba(0,212,255,0.06); border-left:3px solid var(--accent); }
+.callout.tip     { background:rgba(16,185,129,0.06); border-left:3px solid var(--green); }
+.callout.warning { background:rgba(245,158,11,0.06); border-left:3px solid var(--amber); }
+.callout.danger  { background:rgba(244,63,94,0.06); border-left:3px solid var(--rose); }
+.c-ico { font-size:17px; flex-shrink:0; margin-top:1px; }
+.c-body { flex:1; color:var(--text2); }
+.c-body[contenteditable="true"] { outline:none; }
 
-/* Code */
 pre.b-code {
-  background: #0D1117; border-radius: 8px;
-  padding: 18px 22px; overflow-x: auto;
-  margin: 6px 0; border-left: 3px solid var(--azure);
-  font-family: 'Fira Code', monospace;
-  font-size: 13px; color: #C9D1D9; line-height: 1.6;
+  background:var(--bg2); border:1px solid var(--border); border-radius:8px;
+  padding:18px 20px; overflow-x:auto; margin:4px 0;
+  border-left:3px solid var(--accent);
+  font-family:'JetBrains Mono',monospace; font-size:13px; color:#94D4FF; line-height:1.6;
 }
-pre.b-code[contenteditable="true"] { outline: 1px dashed rgba(255,255,255,0.3); }
+pre.b-code[contenteditable="true"] { outline:1px dashed rgba(0,212,255,0.3); }
 
-/* Video embed */
-.b-video { margin: 6px 0; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border); }
-.video-wrapper {
-  position: relative; width: 100%; padding-bottom: 56.25%;
-  background: #0D1117;
+.b-video { margin:4px 0; border-radius:10px; overflow:hidden; border:1px solid var(--border); background:var(--bg2); }
+.video-wrapper { position:relative; width:100%; padding-bottom:56.25%; background:var(--bg2); }
+.video-wrapper iframe { position:absolute; inset:0; width:100%; height:100%; border:none; }
+.video-ph { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:12px; color:var(--text3); }
+.video-ph svg { width:48px; height:48px; }
+.v-cap { padding:10px 16px; font-size:12.5px; color:var(--text3); background:var(--bg2); border-top:1px solid var(--border); }
+.v-cap[contenteditable="true"] { outline:none; }
+
+.b-image { margin:4px 0; border-radius:10px; overflow:hidden; border:1px solid var(--border); }
+.img-ph { background:var(--bg2); height:180px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:10px; color:var(--text3); cursor:pointer; transition:background 0.15s; }
+.img-ph:hover { background:var(--bg3); }
+.img-ph svg { width:32px; height:32px; }
+.img-actual { width:100%; display:block; }
+.i-cap { padding:10px 16px; font-size:12.5px; color:var(--text3); background:var(--bg2); border-top:1px solid var(--border); }
+
+.b-link-card {
+  display:flex; align-items:center; gap:14px;
+  padding:14px 18px; border:1px solid var(--border); border-radius:8px;
+  text-decoration:none; background:var(--bg1); margin:4px 0;
+  transition:all 0.2s; cursor:pointer;
 }
-.video-wrapper iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: none; }
-.video-placeholder {
-  position: absolute; inset: 0;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 12px; color: rgba(255,255,255,0.6);
-}
-.video-placeholder svg { width: 48px; height: 48px; }
-.video-placeholder span { font-size: 13px; }
-.video-caption { padding: 10px 16px; font-size: 12.5px; color: var(--muted); background: var(--bg); border-top: 1px solid var(--border); }
-.video-caption[contenteditable="true"] { outline: none; }
+.b-link-card:hover { border-color:var(--accent); background:rgba(0,212,255,0.04); }
+.b-link-icon { width:36px; height:36px; border-radius:8px; background:rgba(0,212,255,0.1); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.b-link-icon svg { width:18px; height:18px; color:var(--accent); }
+.blk-lt { font-size:14px; font-weight:700; color:var(--text); }
+.blk-ld { font-size:12px; color:var(--text3); }
+.blk-arr { margin-left:auto; color:var(--text3); }
+.blk-arr svg { width:16px; height:16px; }
 
-/* Image block */
-.b-image { margin: 6px 0; border-radius: 10px; overflow: hidden; border: 1.5px solid var(--border); }
-.img-placeholder {
-  background: var(--bg);
-  height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 10px; color: var(--muted); cursor: pointer;
-}
-.img-placeholder svg { width: 36px; height: 36px; }
-.img-placeholder span { font-size: 13px; }
-.img-actual { width: 100%; display: block; }
-.img-caption { padding: 10px 16px; font-size: 12.5px; color: var(--muted); background: var(--bg); border-top: 1px solid var(--border); }
-.img-caption[contenteditable="true"] { outline: none; }
+.b-card { border:1px solid var(--border); border-radius:10px; padding:18px 20px; background:var(--bg2); margin:4px 0; }
+.b-card h4 { font-size:14.5px; font-weight:700; margin-bottom:6px; color:var(--text); }
+.b-card h4[contenteditable="true"] { outline:none; border-bottom:1px dashed var(--accent); }
+.b-card p  { font-size:13.5px; color:var(--text2); }
+.b-card p[contenteditable="true"] { outline:none; }
 
-/* Link card */
-.b-link {
-  display: flex; align-items: center; gap: 14px;
-  padding: 14px 18px;
-  border: 1.5px solid var(--border); border-radius: 8px;
-  text-decoration: none; background: var(--white);
-  transition: all 0.2s; margin: 6px 0;
-}
-.b-link:hover { border-color: var(--azure); box-shadow: 0 0 0 3px var(--azure-glow); }
-.b-link-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--azure-light); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-.b-link-icon svg { width: 18px; height: 18px; color: var(--azure); }
-.b-link-text .lt { font-size: 14px; font-weight: 700; color: var(--azure-dark); }
-.b-link-text .ld { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
-.b-link-arrow { margin-left: auto; color: var(--muted); }
-.b-link-arrow svg { width: 16px; height: 16px; }
-
-/* Info card */
-.b-card {
-  border: 1.5px solid var(--border); border-radius: 10px;
-  padding: 18px 20px; background: var(--bg); margin: 6px 0;
-}
-.b-card h4 { font-size: 14.5px; font-weight: 700; margin-bottom: 6px; color: var(--azure-dark); }
-.b-card h4[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--azure); }
-.b-card p { font-size: 13.5px; color: var(--text-2); }
-.b-card p[contenteditable="true"] { outline: none; }
-
-/* Table */
-.b-table { overflow-x: auto; margin: 6px 0; }
-.b-table table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
-.b-table th { background: var(--azure-dark); color: #fff; padding: 10px 14px; text-align: left; font-weight: 600; font-size: 12px; }
-.b-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); }
-.b-table tr:nth-child(even) td { background: var(--bg); }
-
-/* ── LAB SPECIAL UI ── */
+/* Lab UI */
 .lab-header-bar {
-  background: linear-gradient(135deg, var(--lab-color), #02b0b5);
-  padding: 20px 24px;
-  border-radius: 10px; margin-bottom: 24px;
-  color: #fff;
-  display: flex; align-items: center; gap: 16px;
+  background:linear-gradient(135deg,rgba(16,185,129,0.15),rgba(16,185,129,0.05));
+  border:1px solid rgba(16,185,129,0.25); border-radius:12px;
+  padding:20px 24px; margin-bottom:24px;
+  display:flex; align-items:center; gap:16px;
 }
-.lab-icon-wrap {
-  width: 48px; height: 48px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-}
-.lab-icon-wrap svg { width: 26px; height: 26px; }
-.lab-meta-grid {
-  display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
-  margin-bottom: 24px;
-}
-.lab-meta-card {
-  background: var(--bg); border: 1.5px solid var(--border);
-  border-radius: 8px; padding: 14px 16px;
-  text-align: center;
-}
-.lab-meta-card .lmc-val { font-size: 20px; font-weight: 800; color: var(--lab-color); }
-.lab-meta-card .lmc-key { font-size: 11.5px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+.lab-ico-wrap { width:48px; height:48px; border-radius:12px; background:rgba(16,185,129,0.2); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.lab-ico-wrap svg { width:26px; height:26px; color:var(--green); }
+.lab-hdr-text h3 { font-family:'Outfit',sans-serif; font-size:17px; font-weight:800; color:var(--green); }
+.lab-hdr-text p { font-size:13px; color:var(--text3); }
 
-.step-block {
-  border: 1.5px solid var(--border); border-radius: 10px;
-  margin: 10px 0; overflow: hidden;
-}
-.step-header {
-  display: flex; align-items: center; gap: 10px;
-  padding: 14px 18px; background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  cursor: pointer;
-}
-.step-num-badge {
-  width: 26px; height: 26px; border-radius: 50%;
-  background: var(--lab-color); color: #fff;
-  font-size: 12px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.step-header h4 { font-size: 14px; font-weight: 700; flex: 1; }
-.step-complete-btn {
-  padding: 4px 12px; border-radius: 20px;
-  font-size: 11.5px; font-weight: 700;
-  border: none; cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif;
-  transition: all 0.2s;
-}
-.step-complete-btn.done { background: #dcfce7; color: #15803d; }
-.step-complete-btn.undone { background: var(--border); color: var(--muted); }
+.lab-meta-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:24px; }
+.lab-mc { background:var(--bg2); border:1px solid var(--border); border-radius:8px; padding:14px; text-align:center; }
+.lab-mc .lmv { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700; color:var(--green); }
+.lab-mc .lmk { font-size:11px; color:var(--text3); margin-top:2px; font-weight:600; }
 
-.step-body { padding: 18px 20px; display: block; }
+.step-block { border:1px solid var(--border); border-radius:10px; margin:8px 0; overflow:hidden; background:var(--bg1); }
+.step-hdr { display:flex; align-items:center; gap:10px; padding:13px 18px; background:var(--bg2); border-bottom:1px solid var(--border); cursor:pointer; }
+.step-num-b { width:26px; height:26px; border-radius:50%; background:var(--green); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'JetBrains Mono',monospace; }
+.step-hdr h4 { font-size:14px; font-weight:700; flex:1; }
+.step-done-btn { padding:4px 12px; border-radius:20px; font-size:11.5px; font-weight:700; border:none; cursor:pointer; font-family:'Space Grotesk',sans-serif; transition:all 0.2s; }
+.s-done   { background:rgba(16,185,129,0.15); color:var(--green); border:1px solid rgba(16,185,129,0.3); }
+.s-undone { background:var(--bg3); color:var(--text3); border:1px solid var(--border); }
+.step-body { padding:18px 20px; font-size:13.5px; color:var(--text2); line-height:1.7; }
 
-/* ── Add block bar ── */
-.add-block-bar {
-  display: none; flex-wrap: wrap; gap: 6px;
-  margin: 20px 0; align-items: center;
-}
-body.edit-mode .add-block-bar { display: flex; }
-.add-block-bar > span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; width: 100%; margin-bottom: 2px; }
+/* Add block bar */
+.add-block-bar { display:none; flex-wrap:wrap; gap:6px; margin:18px 0; align-items:center; }
+body.edit-mode .add-block-bar { display:flex; }
+.add-block-bar .abl { font-size:11px; font-weight:700; color:var(--text3); text-transform:uppercase; letter-spacing:0.08em; width:100%; margin-bottom:2px; }
 .abb {
-  display: flex; align-items: center; gap: 5px;
-  padding: 5px 11px; border-radius: 6px;
-  border: 1.5px dashed var(--border); background: var(--bg);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px; color: var(--muted); cursor: pointer; transition: all 0.15s;
+  display:flex; align-items:center; gap:5px; padding:5px 10px;
+  border-radius:6px; border:1px dashed var(--border2); background:transparent;
+  font-family:'Space Grotesk',sans-serif; font-size:12px; color:var(--text3);
+  cursor:pointer; transition:all 0.15s;
 }
-.abb:hover { border-color: var(--azure); color: var(--azure); background: var(--azure-light); }
+.abb:hover { border-color:var(--accent); color:var(--accent); background:rgba(0,212,255,0.05); }
 
-/* ── Prev/Next ── */
-.page-nav {
-  display: flex; justify-content: space-between;
-  margin-top: 52px; padding-top: 24px;
-  border-top: 1.5px solid var(--border);
-  gap: 16px;
-}
-.page-nav-btn {
-  display: flex; flex-direction: column;
-  text-decoration: none; color: var(--text);
-  padding: 14px 18px; border: 1.5px solid var(--border);
-  border-radius: 8px; flex: 1; max-width: 46%;
-  transition: all 0.2s; background: var(--white);
-  cursor: pointer; font-family: 'Plus Jakarta Sans', sans-serif; text-align: left;
-}
-.page-nav-btn:hover { border-color: var(--azure); box-shadow: 0 0 0 3px var(--azure-glow); }
-.pn-dir { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 3px; }
-.pn-title { font-size: 14px; font-weight: 700; color: var(--azure); }
-.page-nav-btn.right { text-align: right; margin-left: auto; }
+/* Prev/next */
+.page-nav { display:flex; justify-content:space-between; margin-top:48px; padding-top:24px; border-top:1px solid var(--border); gap:14px; }
+.pn-btn { display:flex; flex-direction:column; text-decoration:none; color:var(--text); padding:14px 18px; border:1px solid var(--border); border-radius:8px; flex:1; max-width:46%; transition:all 0.2s; background:var(--bg1); cursor:pointer; font-family:'Space Grotesk',sans-serif; text-align:left; }
+.pn-btn:hover { border-color:var(--accent); background:rgba(0,212,255,0.04); }
+.pn-dir { font-size:10.5px; font-weight:700; text-transform:uppercase; letter-spacing:0.1em; color:var(--text3); margin-bottom:3px; }
+.pn-title { font-size:14px; font-weight:700; color:var(--accent); }
+.pn-btn.right { text-align:right; margin-left:auto; }
 
-/* ═══════════════════════════════════════
-   COURSE MANAGER PANEL
-═══════════════════════════════════════ */
-#managerView {
-  padding-top: var(--header-h);
-  min-height: 100vh;
-  padding-bottom: 40px;
+/* ══════════════════════════════════════
+   MANAGER VIEW
+══════════════════════════════════════ */
+#managerView { padding-top:var(--hdr-h); min-height:100vh; }
+.mgr-hdr {
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  padding:32px 48px;
+  border-bottom:1px solid var(--border);
 }
-.manager-header {
-  background: linear-gradient(135deg, #1E1B4B, #312E81);
-  padding: 32px 48px;
-  color: #fff;
-}
-.manager-header h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.01em; }
-.manager-header p { color: rgba(255,255,255,0.65); font-size: 13.5px; margin-top: 4px; }
-.manager-tabs {
-  display: flex; gap: 0; margin-top: 20px;
-}
-.m-tab {
-  padding: 8px 20px; font-size: 13px; font-weight: 600;
-  cursor: pointer; border: none; border-radius: 6px 6px 0 0;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  transition: all 0.15s; color: rgba(255,255,255,0.6); background: transparent;
-}
-.m-tab.active { background: var(--white); color: var(--text); }
-.m-tab:hover:not(.active) { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.9); }
+.mgr-hdr h1 { font-family:'Outfit',sans-serif; font-size:24px; font-weight:800; letter-spacing:-0.01em; }
+.mgr-hdr p { color:var(--text2); font-size:13.5px; margin-top:4px; }
+.mgr-tabs { display:flex; gap:0; margin-top:20px; border-bottom:1px solid var(--border); }
+.m-tab { padding:8px 20px; font-size:13px; font-weight:600; cursor:pointer; border:none; background:transparent; font-family:'Space Grotesk',sans-serif; transition:all 0.15s; color:var(--text3); border-bottom:2px solid transparent; margin-bottom:-1px; }
+.m-tab:hover { color:var(--text2); }
+.m-tab.active { color:var(--accent); border-bottom-color:var(--accent); }
+.mgr-body { padding:32px 48px; }
 
-.manager-body { padding: 32px 48px; }
+.perm-table { width:100%; border-collapse:collapse; }
+.perm-table th { background:var(--bg2); color:var(--text3); padding:10px 16px; font-size:11px; font-weight:700; text-align:left; text-transform:uppercase; letter-spacing:0.08em; border-bottom:1px solid var(--border); }
+.perm-table td { padding:12px 16px; border-bottom:1px solid var(--border); font-size:13.5px; vertical-align:middle; }
+.perm-table tr:hover td { background:var(--bg2); }
 
-/* Permissions table */
-.perm-table { width: 100%; border-collapse: collapse; background: var(--white); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); }
-.perm-table th { background: var(--azure-dark); color: #fff; padding: 12px 16px; font-size: 12px; font-weight: 600; text-align: left; }
-.perm-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 13.5px; vertical-align: middle; }
-.perm-table tr:last-child td { border-bottom: none; }
-.perm-table tr:hover td { background: var(--bg); }
+.u-av { width:32px; height:32px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; color:#fff; flex-shrink:0; }
+.av-a { background:linear-gradient(135deg,var(--rose),#be123c); }
+.av-i { background:linear-gradient(135deg,var(--amber),#d97706); }
+.av-s { background:linear-gradient(135deg,var(--green),#059669); }
 
-.user-avatar {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 800; color: #fff; flex-shrink: 0;
-}
-.avatar-admin { background: linear-gradient(135deg, #C50F1F, #FF4D4D); }
-.avatar-instructor { background: linear-gradient(135deg, #CA5010, #FF8C42); }
-.avatar-student { background: linear-gradient(135deg, #107C10, #22C55E); }
+.perm-sel { padding:5px 10px; border:1px solid var(--border); border-radius:6px; font-family:'Space Grotesk',sans-serif; font-size:13px; background:var(--bg2); cursor:pointer; outline:none; color:var(--text); }
 
-.perm-select {
-  padding: 5px 10px; border: 1.5px solid var(--border); border-radius: 6px;
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13px;
-  background: var(--white); cursor: pointer; outline: none;
-}
+.mgr-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+.mgr-card { background:var(--bg1); border:1px solid var(--border); border-radius:var(--radius-lg); padding:18px; transition:all 0.2s; }
+.mgr-card:hover { border-color:var(--border2); }
+.mgr-card h4 { font-size:14.5px; font-weight:700; margin-bottom:3px; }
+.mgr-card p { font-size:12px; color:var(--text3); }
+.mgr-actions { display:flex; gap:8px; margin-top:14px; }
+.mc-btn { flex:1; padding:7px; border-radius:6px; font-size:12px; font-weight:600; font-family:'Space Grotesk',sans-serif; cursor:pointer; transition:all 0.15s; border:1px solid var(--border); background:var(--bg2); color:var(--text2); }
+.mc-btn:hover { border-color:var(--border2); color:var(--text); }
+.mc-btn.primary { background:var(--accent); color:#000; border-color:var(--accent); }
+.mc-btn.primary:hover { background:#00c4ee; }
+.mc-btn.danger { background:rgba(244,63,94,0.1); color:var(--rose); border-color:rgba(244,63,94,0.3); }
 
-/* Course manager cards */
-.mgr-courses-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 16px; }
-.mgr-course-card {
-  background: var(--white); border-radius: var(--radius-lg);
-  border: 1.5px solid var(--border); padding: 20px;
-  transition: all 0.2s;
+/* Instructor requests table */
+.req-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; }
+.req-pending  { background:rgba(245,158,11,0.12); color:var(--amber); }
+.req-approved { background:rgba(16,185,129,0.12); color:var(--green); }
+.req-rejected { background:rgba(244,63,94,0.12); color:var(--rose); }
+
+/* ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ */
+.modal-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+  z-index:800; align-items:center; justify-content:center;
 }
-.mgr-course-card:hover { border-color: var(--azure); box-shadow: var(--shadow); }
-.mgr-course-card h4 { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
-.mgr-course-card p { font-size: 12.5px; color: var(--muted); }
-.mgr-actions { display: flex; gap: 8px; margin-top: 14px; }
-.mgr-btn {
-  flex: 1; padding: 7px 10px; border-radius: 6px;
-  font-size: 12px; font-weight: 600;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  cursor: pointer; border: 1.5px solid var(--border);
-  background: var(--bg); color: var(--text);
-  transition: all 0.15s;
+.modal-overlay.open { display:flex; }
+.modal {
+  background:var(--bg1); border:1px solid var(--border2);
+  border-radius:var(--radius-lg); padding:28px 32px;
+  min-width:400px; max-width:520px; width:90%;
+  box-shadow:0 24px 80px rgba(0,0,0,0.5);
+  animation:mIn 0.22s cubic-bezier(.34,1.3,.64,1);
 }
-.mgr-btn.primary { background: var(--azure); color: #fff; border-color: var(--azure); }
-.mgr-btn:hover { border-color: var(--azure); }
-.mgr-btn.primary:hover { background: var(--azure-mid); }
+@keyframes mIn { from{opacity:0;transform:scale(0.93) translateY(-14px)} to{opacity:1;transform:none} }
+.modal h3 { font-family:'Outfit',sans-serif; font-size:20px; font-weight:800; margin-bottom:20px; color:var(--text); }
+.modal label { font-size:11px; font-weight:700; color:var(--text3); display:block; margin-bottom:5px; margin-top:14px; text-transform:uppercase; letter-spacing:0.08em; }
+.modal input, .modal select, .modal textarea {
+  width:100%; padding:9px 12px;
+  border:1px solid var(--border2); border-radius:6px;
+  font-family:'Space Grotesk',sans-serif; font-size:13.5px;
+  color:var(--text); background:var(--bg2); outline:none;
+  transition:border-color 0.15s;
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(0,212,255,0.1); }
+.modal textarea { resize:vertical; min-height:80px; }
+.modal input[type="password"] { font-family:'JetBrains Mono',monospace; letter-spacing:0.1em; }
+.modal-actions { display:flex; gap:10px; margin-top:24px; justify-content:flex-end; }
+.mbtn-p { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#000; border:none; padding:9px 22px; border-radius:7px; font-family:'Space Grotesk',sans-serif; font-size:13.5px; font-weight:700; cursor:pointer; transition:all 0.2s; }
+.mbtn-p:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(0,212,255,0.3); }
+.mbtn-s { background:transparent; color:var(--text2); border:1px solid var(--border2); padding:9px 22px; border-radius:7px; font-family:'Space Grotesk',sans-serif; font-size:13.5px; cursor:pointer; transition:all 0.15s; }
+.mbtn-s:hover { border-color:var(--border2); color:var(--text); }
+
+/* Login modal special */
+.login-modal-logo { text-align:center; margin-bottom:20px; }
+.login-modal-logo .lmb { display:inline-flex; align-items:center; gap:10px; }
+.login-modal-logo .lm-icon { width:44px; height:44px; background:linear-gradient(135deg,var(--accent),var(--accent2)); border-radius:12px; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(0,212,255,0.3); }
+.login-modal-logo .lm-icon svg { width:24px; height:24px; }
+.login-modal-logo .lm-text { font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:600; color:var(--text); }
+.login-modal-logo .lm-text span { color:var(--accent); }
+.login-desc { font-size:13px; color:var(--text3); text-align:center; margin-bottom:4px; }
+
+.error-msg { background:rgba(244,63,94,0.1); border:1px solid rgba(244,63,94,0.3); color:var(--rose); font-size:12.5px; padding:8px 12px; border-radius:6px; margin-top:10px; display:none; }
+.error-msg.show { display:block; }
+
+/* Instructor apply modal */
+.inst-benefit { display:flex; gap:8px; padding:10px 14px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.2); border-radius:8px; margin-bottom:14px; font-size:13px; color:var(--text2); }
+.inst-benefit .ib-ico { font-size:18px; flex-shrink:0; }
+
+/* Success screen */
+.success-screen { text-align:center; padding:10px 0; }
+.success-icon { font-size:52px; margin-bottom:16px; }
+.success-screen h3 { font-family:'Outfit',sans-serif; font-size:20px; font-weight:800; margin-bottom:8px; }
+.success-screen p { font-size:13.5px; color:var(--text2); max-width:360px; margin:0 auto; }
+
+/* User dropdown */
+.user-menu {
+  position:fixed; z-index:600;
+  background:var(--bg1); border:1px solid var(--border2);
+  border-radius:10px; min-width:220px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.4);
+  display:none;
+}
+.user-menu.open { display:block; animation:mIn 0.18s ease; }
+.um-header { padding:14px 16px; border-bottom:1px solid var(--border); }
+.um-name { font-size:14px; font-weight:700; }
+.um-email { font-size:12px; color:var(--text3); margin-top:1px; }
+.um-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 16px; cursor:pointer;
+  font-size:13.5px; color:var(--text2); transition:all 0.15s;
+}
+.um-item:hover { background:var(--bg2); color:var(--text); }
+.um-item svg { width:14px; height:14px; flex-shrink:0; }
+.um-item.danger { color:var(--rose); }
+.um-item.danger:hover { background:rgba(244,63,94,0.08); }
+.um-sep { height:1px; background:var(--border); }
+
+/* Toast */
+.toast { position:fixed; bottom:22px; right:22px; background:var(--bg2); border:1px solid var(--border2); color:var(--text); font-size:13px; font-weight:600; padding:10px 18px; border-radius:8px; box-shadow:0 8px 28px rgba(0,0,0,0.4); display:flex; align-items:center; gap:8px; opacity:0; transform:translateY(10px); transition:all 0.3s; z-index:900; pointer-events:none; }
+.toast.show { opacity:1; transform:translateY(0); }
+.toast.green { border-left:3px solid var(--green); }
+.toast.cyan  { border-left:3px solid var(--accent); }
+.toast.amber { border-left:3px solid var(--amber); }
+.toast.red   { border-left:3px solid var(--rose); }
+
+/* Edit fab */
+.edit-fab { position:fixed; bottom:22px; left:calc(var(--sidebar-w) + 22px); display:none; align-items:center; gap:10px; background:var(--bg2); border:1px solid var(--accent); color:var(--accent); padding:9px 16px; border-radius:30px; box-shadow:0 0 20px rgba(0,212,255,0.2); z-index:200; font-size:12.5px; font-weight:700; font-family:'JetBrains Mono',monospace; }
+body.edit-mode .edit-fab { display:flex; }
+.edit-fab button { background:rgba(0,212,255,0.1); border:1px solid rgba(0,212,255,0.3); color:var(--accent); padding:3px 10px; border-radius:20px; cursor:pointer; font-family:'Space Grotesk',sans-serif; font-size:12px; font-weight:600; }
+
+/* Become instructor banner */
+.become-instructor-banner {
+  background:linear-gradient(135deg,rgba(245,158,11,0.08),rgba(245,158,11,0.03));
+  border:1px solid rgba(245,158,11,0.2); border-radius:10px;
+  padding:18px 22px; margin-bottom:24px;
+  display:flex; align-items:center; gap:16px;
+}
+.bib-ico { font-size:32px; flex-shrink:0; }
+.bib-text h4 { font-size:15px; font-weight:700; color:var(--amber); }
+.bib-text p { font-size:13px; color:var(--text3); margin-top:2px; }
+.bib-btn { margin-left:auto; flex-shrink:0; padding:8px 18px; border-radius:7px; background:linear-gradient(135deg,var(--amber),#d97706); border:none; color:#000; font-weight:700; font-size:13px; font-family:'Space Grotesk',sans-serif; cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.bib-btn:hover { transform:translateY(-1px); box-shadow:0 4px 14px rgba(245,158,11,0.35); }
 
 /* Section label */
-.section-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
+.sec-lbl { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.12em; color:var(--text3); margin-bottom:14px; padding-bottom:8px; border-bottom:1px solid var(--border); }
 
-/* ═══════════════════════════════════════
-   MODALS
-═══════════════════════════════════════ */
-.modal-overlay {
-  display: none; position: fixed; inset: 0;
-  background: rgba(0,0,0,0.5); z-index: 500;
-  align-items: center; justify-content: center;
-}
-.modal-overlay.open { display: flex; }
-.modal {
-  background: var(--white); border-radius: var(--radius-lg);
-  padding: 28px 32px; min-width: 400px; max-width: 540px; width: 90%;
-  box-shadow: var(--shadow-lg);
-  animation: mIn 0.2s ease;
-}
-@keyframes mIn { from { opacity:0; transform: scale(0.94) translateY(-12px); } to { opacity:1; transform: none; } }
-.modal h3 { font-size: 18px; font-weight: 800; color: var(--azure-dark); margin-bottom: 18px; }
-.modal label { font-size: 11.5px; font-weight: 700; color: var(--muted); display: block; margin-bottom: 5px; margin-top: 14px; text-transform: uppercase; letter-spacing: 0.06em; }
-.modal input, .modal select, .modal textarea {
-  width: 100%; padding: 9px 12px;
-  border: 1.5px solid var(--border); border-radius: 6px;
-  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px;
-  color: var(--text); background: var(--white); outline: none;
-  transition: border-color 0.15s;
-}
-.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--azure); }
-.modal textarea { resize: vertical; min-height: 70px; }
-.modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
-.btn-p { background: var(--azure); color: #fff; border: none; padding: 9px 22px; border-radius: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; font-weight: 700; cursor: pointer; }
-.btn-p:hover { background: var(--azure-mid); }
-.btn-s { background: var(--white); color: var(--text); border: 1.5px solid var(--border); padding: 9px 22px; border-radius: 6px; font-family: 'Plus Jakarta Sans', sans-serif; font-size: 13.5px; cursor: pointer; }
-.btn-s:hover { border-color: #94A3B8; }
+/* Glow colors for providers */
+.glow-aws   { box-shadow:0 0 0 1px rgba(255,153,0,0.2); }
+.glow-gcp   { box-shadow:0 0 0 1px rgba(66,133,244,0.2); }
+.glow-azure { box-shadow:0 0 0 1px rgba(0,120,212,0.2); }
+.glow-m365  { box-shadow:0 0 0 1px rgba(216,59,1,0.2); }
+.glow-comptia { box-shadow:0 0 0 1px rgba(200,32,42,0.2); }
+.glow-other { box-shadow:0 0 0 1px rgba(139,92,246,0.2); }
 
-/* ── Role picker ── */
-.role-opts { display: flex; gap: 10px; margin-top: 8px; }
-.role-opt {
-  flex: 1; padding: 12px 8px; border-radius: 8px;
-  border: 1.5px solid var(--border); text-align: center;
-  cursor: pointer; font-size: 13px; font-weight: 700;
-  transition: all 0.15s;
-}
-.role-opt.sel-admin { background: #FFF1F2; color: var(--admin-color); border-color: var(--admin-color); }
-.role-opt.sel-instructor { background: #FFF7ED; color: var(--instructor-color); border-color: var(--instructor-color); }
-.role-opt.sel-student { background: #F0FDF4; color: var(--student-color); border-color: var(--student-color); }
-
-/* ── Save toast ── */
-.toast {
-  position: fixed; bottom: 22px; right: 22px;
-  background: #111827; color: #fff;
-  font-size: 13px; font-weight: 600;
-  padding: 10px 18px; border-radius: 8px;
-  box-shadow: var(--shadow-md);
-  display: flex; align-items: center; gap: 8px;
-  opacity: 0; transform: translateY(10px);
-  transition: all 0.3s; z-index: 600; pointer-events: none;
-}
-.toast.show { opacity: 1; transform: translateY(0); }
-.toast.green { border-left: 3px solid #22C55E; }
-.toast.blue  { border-left: 3px solid var(--azure); }
-
-/* Edit mode toolbar floating */
-.edit-fab {
-  position: fixed; bottom: 22px; left: calc(var(--sidebar-w) + 22px);
-  display: none; align-items: center; gap: 8px;
-  background: var(--azure-dark); color: #fff;
-  padding: 10px 16px; border-radius: 30px;
-  box-shadow: var(--shadow-md); z-index: 200;
-  font-size: 13px; font-weight: 600;
-}
-body.edit-mode .edit-fab { display: flex; }
-
-/* ══════════ UTILITIES ══════════ */
-.flex { display: flex; }
-.gap-2 { gap: 8px; }
-.mt-4 { margin-top: 16px; }
-.mt-6 { margin-top: 24px; }
-.mb-4 { margin-bottom: 16px; }
-
-.lv-fund  { background: rgba(0,120,212,0.1); color: var(--lvl-fund); border-color: rgba(0,120,212,0.3); }
-.lv-assoc { background: rgba(16,124,16,0.1); color: var(--lvl-assoc); border-color: rgba(16,124,16,0.3); }
-.lv-expert { background: rgba(135,100,184,0.1); color: var(--lvl-expert); border-color: rgba(135,100,184,0.3); }
-.lv-special { background: rgba(202,80,16,0.1); color: var(--lvl-special); border-color: rgba(202,80,16,0.3); }
-
-.ms { font-size: 11.5px; }
+.course-card:hover.glow-aws   { box-shadow:0 8px 32px rgba(255,153,0,0.1),0 0 0 1px rgba(255,153,0,0.3); }
+.course-card:hover.glow-gcp   { box-shadow:0 8px 32px rgba(66,133,244,0.1),0 0 0 1px rgba(66,133,244,0.3); }
+.course-card:hover.glow-azure { box-shadow:0 8px 32px rgba(0,120,212,0.1),0 0 0 1px rgba(0,120,212,0.3); }
+.course-card:hover.glow-m365  { box-shadow:0 8px 32px rgba(216,59,1,0.1),0 0 0 1px rgba(216,59,1,0.3); }
+.course-card:hover.glow-comptia { box-shadow:0 8px 32px rgba(200,32,42,0.1),0 0 0 1px rgba(200,32,42,0.3); }
+.course-card:hover.glow-other { box-shadow:0 8px 32px rgba(139,92,246,0.1),0 0 0 1px rgba(139,92,246,0.3); }
 </style>
 </head>
 <body>
 
-<!-- ═══ HEADER ═══ -->
+<!-- ══════ HEADER ══════ -->
 <header>
-  <a class="logo" href="#" onclick="showView('catalog')">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-        <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+  <div class="logo-wrap" onclick="showView('home')">
+    <div class="logo-mark">
+      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <polyline points="16 18 22 12 16 6"/>
+        <polyline points="8 6 2 12 8 18"/>
       </svg>
     </div>
-    Azure Learning Portal
-  </a>
-  <div class="hd"></div>
-  <span class="header-title" id="headerTitle">Course Catalog</span>
+    <span class="logo-text">codethebox<span>.dev</span></span>
+  </div>
+  <div class="hdr-divider"></div>
+  <nav class="hdr-nav">
+    <button class="hdr-nav-btn" id="navCatalog" onclick="showView('catalog')">Catalog</button>
+    <button class="hdr-nav-btn" id="navCourse" style="display:none" onclick="showView('course')">Course</button>
+  </nav>
 
-  <div class="header-right">
-    <div class="header-search">
+  <div class="hdr-right">
+    <div class="hdr-search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-      <input type="text" placeholder="Search courses...">
+      <input type="text" placeholder="Search courses, labs...">
     </div>
-    <button class="header-btn btn-back" id="backBtn" style="display:none" onclick="showView('catalog')">← Catalog</button>
-    <button class="header-btn btn-manage" id="manageBtn" onclick="showView('manager')">⚙ Manage</button>
-    <button class="role-badge admin" id="roleDisplay" onclick="openModal('switchRoleModal')">👑 Admin</button>
+
+    <div id="userChipWrap">
+      <!-- populated by JS -->
+    </div>
   </div>
 </header>
 
-<!-- ═══ CATALOG VIEW ═══ -->
-<div id="catalogView" class="view active">
-  <div class="catalog-hero">
-    <h1>Azure Certification Courses</h1>
-    <p>Structured learning paths aligned with official Microsoft certification exams — from Fundamentals to Expert level.</p>
-    <div class="hero-stats">
-      <div class="hero-stat"><div class="num" id="statCourses">6</div><div class="label">Courses</div></div>
-      <div class="hero-stat"><div class="num" id="statModules">24</div><div class="label">Modules</div></div>
-      <div class="hero-stat"><div class="num" id="statLabs">18</div><div class="label">Labs</div></div>
-    </div>
+<!-- User dropdown -->
+<div class="user-menu" id="userMenu">
+  <div class="um-header">
+    <div class="um-name" id="umName">Guest</div>
+    <div class="um-email" id="umEmail">Not signed in</div>
   </div>
-  <div class="catalog-body">
-    <div class="level-filter">
-      <span>Filter:</span>
-      <button class="filter-btn active" data-filter="all" onclick="filterCourses('all',this)">All</button>
-      <button class="filter-btn" data-filter="Fundamentals" onclick="filterCourses('Fundamentals',this)">🔵 Fundamentals</button>
-      <button class="filter-btn" data-filter="Associate" onclick="filterCourses('Associate',this)">🟢 Associate</button>
-      <button class="filter-btn" data-filter="Expert" onclick="filterCourses('Expert',this)">🟣 Expert</button>
-      <button class="filter-btn" data-filter="Specialty" onclick="filterCourses('Specialty',this)">🟠 Specialty</button>
-    </div>
-    <div class="courses-grid" id="coursesGrid"></div>
+  <div class="um-item" onclick="openModal('loginModal')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 012 2v14a2 2 0 01-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+    Sign In / Admin Login
+  </div>
+  <div class="um-item" id="umInstructorItem" onclick="openModal('instructorApplyModal')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Become an Instructor
+  </div>
+  <div class="um-sep"></div>
+  <div class="um-item" id="umManageItem" style="display:none" onclick="showView('manager')">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    Manage Portal
+  </div>
+  <div class="um-item danger" id="umLogoutItem" style="display:none" onclick="logout()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+    Sign Out
   </div>
 </div>
 
-<!-- ═══ COURSE VIEW ═══ -->
+<!-- ══════════════════ VIEWS ══════════════════ -->
+
+<!-- HOME -->
+<div id="homeView" class="view active">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-glow"></div>
+    <div class="hero-content">
+      <div class="hero-badge">✦ Multi-Cloud Certification Platform</div>
+      <h1>Code your path to<br><em>cloud mastery</em></h1>
+      <p>Structured learning paths, hands-on labs, and expert-curated content for AWS, Google Cloud, Azure, Microsoft 365, CompTIA, and more.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="showView('catalog')">
+          Explore Courses
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+        <button class="btn-outline" onclick="openModal('loginModal')">Sign In</button>
+      </div>
+      <div class="hero-providers">
+        <span>Covering:</span>
+        <div class="provider-logos">
+          <span class="plogo aws">AWS</span>
+          <span class="plogo gcp">GCP</span>
+          <span class="plogo azure">Azure</span>
+          <span class="plogo m365">M365</span>
+          <span class="plogo comptia">CompTIA</span>
+          <span class="plogo" style="color:var(--text3)">+ more</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="stats-strip">
+    <div class="stat-cell"><div class="stat-num" id="hStat1">20+</div><div class="stat-label">Courses</div></div>
+    <div class="stat-cell"><div class="stat-num">100+</div><div class="stat-label">Modules</div></div>
+    <div class="stat-cell"><div class="stat-num">80+</div><div class="stat-label">Hands-on Labs</div></div>
+    <div class="stat-cell"><div class="stat-num">5</div><div class="stat-label">Cloud Providers</div></div>
+  </div>
+</div>
+
+<!-- CATALOG -->
+<div id="catalogView" class="view">
+  <div class="catalog-header">
+    <h1>Course Catalog</h1>
+    <p>Browse certifications across major cloud providers and technology platforms</p>
+  </div>
+  <div class="provider-tabs" id="providerTabs">
+    <button class="ptab all active" data-p="all" onclick="filterProvider('all',this)"><span class="ptab-dot" style="background:var(--accent)"></span>All</button>
+    <button class="ptab aws" data-p="AWS" onclick="filterProvider('AWS',this)"><span class="ptab-dot" style="background:var(--aws)"></span>Amazon AWS</button>
+    <button class="ptab gcp" data-p="GCP" onclick="filterProvider('GCP',this)"><span class="ptab-dot" style="background:var(--gcp)"></span>Google Cloud</button>
+    <button class="ptab azure" data-p="Azure" onclick="filterProvider('Azure',this)"><span class="ptab-dot" style="background:var(--azure)"></span>Microsoft Azure</button>
+    <button class="ptab m365" data-p="M365" onclick="filterProvider('M365',this)"><span class="ptab-dot" style="background:var(--m365)"></span>Microsoft 365</button>
+    <button class="ptab comptia" data-p="CompTIA" onclick="filterProvider('CompTIA',this)"><span class="ptab-dot" style="background:var(--comptia)"></span>CompTIA</button>
+    <button class="ptab more" data-p="Other" onclick="filterProvider('Other',this)"><span class="ptab-dot" style="background:var(--violet)"></span>More</button>
+  </div>
+  <div class="level-row">
+    <span>Level:</span>
+    <button class="lvl-btn all active" onclick="filterLevel('all',this)">All</button>
+    <button class="lvl-btn Fundamentals" onclick="filterLevel('Fundamentals',this)">Fundamentals</button>
+    <button class="lvl-btn Associate" onclick="filterLevel('Associate',this)">Associate</button>
+    <button class="lvl-btn Professional" onclick="filterLevel('Professional',this)">Professional</button>
+    <button class="lvl-btn Expert" onclick="filterLevel('Expert',this)">Expert</button>
+    <button class="lvl-btn Specialty" onclick="filterLevel('Specialty',this)">Specialty</button>
+  </div>
+  <div class="courses-grid" id="coursesGrid"></div>
+</div>
+
+<!-- COURSE -->
 <div id="courseView" class="view">
-  <!-- Sidebar -->
-  <div class="course-sidebar">
-    <div class="course-sidebar-header">
-      <span class="course-badge-full" id="sbCourseBadge">AZ-900</span>
-      <h2 id="sbCourseTitle">Azure Fundamentals</h2>
-      <div class="sidebar-prog">
-        <div class="prog-bar"><div class="prog-fill" id="sbProgFill" style="width:0%"></div></div>
-        <span id="sbProgPct">0%</span>
+  <div class="c-sidebar">
+    <div class="c-sidebar-hdr">
+      <span class="csb-id" id="sbId">AZ-900</span>
+      <div class="csb-title" id="sbTitle">Course Title</div>
+      <div class="csb-prog">
+        <div class="prog-bar"><div class="prog-fill" id="sbProg" style="width:0%"></div></div>
+        <span id="sbPct">0%</span>
       </div>
     </div>
     <div class="module-list" id="moduleList"></div>
   </div>
-
-  <!-- Main -->
-  <div class="course-main">
-    <div class="content-area" id="contentArea">
-      <!-- dynamic -->
-    </div>
-    <div class="course-toc">
-      <div class="toc-label">On this page</div>
+  <div class="c-main">
+    <div class="content-area" id="contentArea"></div>
+    <div class="c-toc">
+      <div class="toc-lbl">On this page</div>
       <nav id="pageTOC"></nav>
     </div>
   </div>
 </div>
 
-<!-- ═══ MANAGER VIEW ═══ -->
+<!-- MANAGER -->
 <div id="managerView" class="view">
-  <div class="manager-header">
-    <h1>⚙ Course Management</h1>
-    <p>Manage courses, modules, users, and permissions.</p>
-    <div class="manager-tabs">
+  <div class="mgr-hdr">
+    <h1>⚙ Portal Management</h1>
+    <p>Manage courses, users, and instructor requests — <span style="color:var(--accent);font-family:'JetBrains Mono',monospace;font-size:12px">savi.toy@codethebox.dev</span></p>
+    <div class="mgr-tabs">
       <button class="m-tab active" onclick="switchMgrTab('courses',this)">Courses</button>
-      <button class="m-tab" onclick="switchMgrTab('users',this)">Users & Permissions</button>
-      <button class="m-tab" onclick="switchMgrTab('settings',this)">Settings</button>
+      <button class="m-tab" onclick="switchMgrTab('users',this)">Users</button>
+      <button class="m-tab" onclick="switchMgrTab('requests',this)">Instructor Requests</button>
     </div>
   </div>
-  <div class="manager-body">
-    <div id="mgrTabCourses">
-      <div class="flex gap-2 mb-4">
-        <button class="btn-p" onclick="openModal('addCourseModal')">+ New Course</button>
+  <div class="mgr-body">
+    <div id="mgrCourses">
+      <div style="display:flex;gap:10px;margin-bottom:18px">
+        <button class="mbtn-p" onclick="openModal('addCourseModal')">+ New Course</button>
       </div>
-      <div class="mgr-courses-grid" id="mgrCoursesGrid"></div>
+      <div class="mgr-grid" id="mgrCoursesGrid"></div>
     </div>
-    <div id="mgrTabUsers" style="display:none">
-      <div class="flex gap-2 mb-4">
-        <button class="btn-p" onclick="openModal('addUserModal')">+ Add User</button>
+    <div id="mgrUsers" style="display:none">
+      <div style="display:flex;gap:10px;margin-bottom:18px">
+        <button class="mbtn-p" onclick="openModal('addUserModal')">+ Add User</button>
       </div>
       <table class="perm-table" id="permTable"></table>
     </div>
-    <div id="mgrTabSettings" style="display:none">
-      <div style="max-width:500px">
-        <div class="section-label">Portal Settings</div>
-        <div class="mgr-course-card">
-          <h4>Portal Name</h4>
-          <input type="text" value="Azure Learning Portal" style="margin-top:8px;width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;">
-          <div class="mgr-actions mt-4"><button class="mgr-btn primary">Save Changes</button></div>
-        </div>
-        <div class="mgr-course-card mt-4">
-          <h4>Default Skill Level</h4>
-          <select style="margin-top:8px;width:100%;padding:8px 12px;border:1.5px solid var(--border);border-radius:6px;font-family:'Plus Jakarta Sans',sans-serif;">
-            <option>All Levels</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option>
-          </select>
-          <div class="mgr-actions mt-4"><button class="mgr-btn primary">Save Changes</button></div>
-        </div>
-      </div>
+    <div id="mgrRequests" style="display:none">
+      <div class="sec-lbl">Instructor Applications</div>
+      <table class="perm-table" id="requestsTable"></table>
     </div>
   </div>
 </div>
 
-<!-- Edit FAB -->
+<!-- FAB -->
 <div class="edit-fab">
-  <span>✏ Edit Mode Active</span>
-  <button onclick="document.getElementById('editToggleHidden').click()" style="background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);color:#fff;padding:4px 10px;border-radius:20px;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;">Exit</button>
+  <span>✏ EDIT MODE</span>
+  <button onclick="toggleEdit(false)">Exit</button>
 </div>
-<input type="checkbox" id="editToggleHidden" style="display:none" onchange="toggleEdit(this.checked)">
 
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- ═══ MODALS ═══ -->
-<!-- Switch Role -->
-<div class="modal-overlay" id="switchRoleModal">
-  <div class="modal" style="max-width:420px">
-    <h3>Switch User Role</h3>
-    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Choose a role to simulate different permission levels.</p>
-    <div class="role-opts">
-      <div class="role-opt" onclick="setRole('admin')" style="border-color:#C50F1F;background:#FFF1F2;color:#C50F1F">👑<br><br>Admin</div>
-      <div class="role-opt" onclick="setRole('instructor')" style="border-color:#CA5010;background:#FFF7ED;color:#CA5010">🎓<br><br>Instructor</div>
-      <div class="role-opt" onclick="setRole('student')" style="border-color:#107C10;background:#F0FDF4;color:#107C10">📖<br><br>Student</div>
+<!-- ══════════════════════════════════════
+   MODALS
+══════════════════════════════════════ -->
+
+<!-- LOGIN / ADMIN -->
+<div class="modal-overlay" id="loginModal">
+  <div class="modal" style="max-width:400px">
+    <div class="login-modal-logo">
+      <div class="lmb">
+        <div class="lm-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        <span class="lm-text">codethebox<span>.dev</span></span>
+      </div>
     </div>
-    <div class="modal-actions"><button class="btn-s" onclick="closeModal('switchRoleModal')">Cancel</button></div>
+    <div class="login-desc">Sign in to access your courses and progress</div>
+    <div class="login-desc" style="color:var(--accent);font-size:11.5px;margin-top:4px;font-family:'JetBrains Mono',monospace">Admin: savi.toy@codethebox.dev</div>
+    <label>Email</label>
+    <input type="email" id="loginEmail" placeholder="your@email.com">
+    <label>Password</label>
+    <input type="password" id="loginPass" placeholder="••••••••">
+    <div class="error-msg" id="loginError">Invalid email or password. Try again.</div>
+    <div style="font-size:12px;color:var(--text3);margin-top:12px;text-align:center">
+      New here? You're automatically a <strong style="color:var(--green)">Student</strong> when you sign in.<br>
+      <span style="cursor:pointer;color:var(--amber)" onclick="closeModal('loginModal');openModal('instructorApplyModal')">Want to become an Instructor?</span>
+    </div>
+    <div class="modal-actions">
+      <button class="mbtn-s" onclick="closeModal('loginModal')">Cancel</button>
+      <button class="mbtn-p" onclick="doLogin()">Sign In</button>
+    </div>
   </div>
 </div>
 
-<!-- Add Course -->
+<!-- ADMIN CONFIRM (extra security) -->
+<div class="modal-overlay" id="adminConfirmModal">
+  <div class="modal" style="max-width:380px">
+    <div style="text-align:center;margin-bottom:16px;font-size:32px">👑</div>
+    <h3 style="text-align:center">Admin Access</h3>
+    <div style="font-size:13px;color:var(--text3);text-align:center;margin-bottom:4px">Enter admin password to unlock full portal management</div>
+    <label>Admin Password</label>
+    <input type="password" id="adminPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminConfirm()">
+    <div class="error-msg" id="adminError">Incorrect admin password.</div>
+    <div class="modal-actions">
+      <button class="mbtn-s" onclick="closeModal('adminConfirmModal')">Cancel</button>
+      <button class="mbtn-p" onclick="doAdminConfirm()">Unlock Admin</button>
+    </div>
+  </div>
+</div>
+
+<!-- BECOME INSTRUCTOR -->
+<div class="modal-overlay" id="instructorApplyModal">
+  <div class="modal">
+    <h3>🎓 Become an Instructor</h3>
+    <div class="inst-benefit">
+      <span class="ib-ico">✨</span>
+      <div>Your application will be reviewed and a confirmation sent to <strong style="color:var(--amber)">savi.toy@codethebox.dev</strong>. Approved instructors can create and manage course content.</div>
+    </div>
+    <label>Full Name</label><input type="text" id="appName" placeholder="Your full name">
+    <label>Email Address</label><input type="email" id="appEmail" placeholder="your@email.com">
+    <label>LinkedIn / Portfolio URL</label><input type="text" id="appLinkedin" placeholder="https://linkedin.com/in/...">
+    <label>Expertise / Certifications</label>
+    <input type="text" id="appCerts" placeholder="e.g. AWS SAA, GCP ACE, Azure AZ-104">
+    <label>Why do you want to teach? (briefly)</label>
+    <textarea id="appWhy" placeholder="Share your motivation and teaching experience..."></textarea>
+    <div id="appSuccess" style="display:none">
+      <div class="success-screen">
+        <div class="success-icon">📧</div>
+        <h3>Application Submitted!</h3>
+        <p>Your request has been sent to <strong style="color:var(--amber)">savi.toy@codethebox.dev</strong>. You'll hear back within 2–3 business days.</p>
+      </div>
+    </div>
+    <div class="modal-actions" id="appActions">
+      <button class="mbtn-s" onclick="closeModal('instructorApplyModal')">Cancel</button>
+      <button class="mbtn-p" onclick="submitInstructorApp()">Submit Application</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD COURSE -->
 <div class="modal-overlay" id="addCourseModal">
   <div class="modal">
     <h3>New Course</h3>
-    <label>Course ID</label><input type="text" id="nc-id" placeholder="e.g. AZ-700">
-    <label>Course Name</label><input type="text" id="nc-name" placeholder="e.g. Azure Network Engineer">
-    <label>Description</label><textarea id="nc-desc" placeholder="Brief description of the course..."></textarea>
+    <label>Certification ID / Code</label><input type="text" id="nc-id" placeholder="e.g. SAA-C03, AZ-104, N+">
+    <label>Course Name</label><input type="text" id="nc-name" placeholder="e.g. AWS Solutions Architect Associate">
+    <label>Provider</label>
+    <select id="nc-provider">
+      <option value="AWS">Amazon AWS</option>
+      <option value="GCP">Google Cloud</option>
+      <option value="Azure">Microsoft Azure</option>
+      <option value="M365">Microsoft 365</option>
+      <option value="CompTIA">CompTIA</option>
+      <option value="Other">Other</option>
+    </select>
     <label>Level</label>
     <select id="nc-level">
-      <option>Fundamentals</option><option>Associate</option><option>Expert</option><option>Specialty</option>
+      <option>Fundamentals</option><option>Associate</option><option>Professional</option><option>Expert</option><option>Specialty</option>
     </select>
-    <label>Duration</label><input type="text" id="nc-dur" placeholder="e.g. 40 hours">
+    <label>Description</label><textarea id="nc-desc" placeholder="Course description..."></textarea>
+    <label>Est. Duration</label><input type="text" id="nc-dur" placeholder="e.g. 40 hours">
     <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addCourseModal')">Cancel</button>
-      <button class="btn-p" onclick="addCourse()">Create Course</button>
+      <button class="mbtn-s" onclick="closeModal('addCourseModal')">Cancel</button>
+      <button class="mbtn-p" onclick="addCourse()">Create Course</button>
     </div>
   </div>
 </div>
 
-<!-- Add Module -->
+<!-- ADD MODULE -->
 <div class="modal-overlay" id="addModuleModal">
   <div class="modal">
     <h3>New Module</h3>
-    <label>Module Title</label><input type="text" id="nm-title" placeholder="e.g. Azure Virtual Networks">
+    <label>Module Title</label><input type="text" id="nm-title" placeholder="e.g. EC2 and Compute Services">
     <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addModuleModal')">Cancel</button>
-      <button class="btn-p" onclick="addModule()">Add Module</button>
+      <button class="mbtn-s" onclick="closeModal('addModuleModal')">Cancel</button>
+      <button class="mbtn-p" onclick="addModule()">Add Module</button>
     </div>
   </div>
 </div>
 
-<!-- Add Page/Lab -->
+<!-- ADD PAGE -->
 <div class="modal-overlay" id="addPageModal">
   <div class="modal">
-    <h3>New Content</h3>
-    <label>Title</label><input type="text" id="ap-title" placeholder="e.g. Introduction to VNets">
+    <h3>Add Content</h3>
+    <label>Title</label><input type="text" id="ap-title" placeholder="e.g. Introduction to S3">
     <label>Type</label>
     <select id="ap-type">
       <option value="doc">📄 Documentation Page</option>
@@ -1032,30 +1210,41 @@ body.edit-mode .edit-fab { display: flex; }
     </select>
     <label>Video / Resource URL (optional)</label>
     <input type="text" id="ap-url" placeholder="https://youtube.com/watch?v=...">
-    <label>Duration</label><input type="text" id="ap-dur" placeholder="e.g. 15 min">
+    <label>Duration</label><input type="text" id="ap-dur" placeholder="e.g. 20 min">
     <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addPageModal')">Cancel</button>
-      <button class="btn-p" onclick="addPage()">Create</button>
+      <button class="mbtn-s" onclick="closeModal('addPageModal')">Cancel</button>
+      <button class="mbtn-p" onclick="addPage()">Create</button>
     </div>
   </div>
 </div>
 
-<!-- Add Video Block -->
+<!-- VIDEO EMBED -->
 <div class="modal-overlay" id="addVideoModal">
   <div class="modal">
     <h3>Embed Video</h3>
-    <label>YouTube / Video URL</label>
-    <input type="text" id="vb-url" placeholder="https://www.youtube.com/watch?v=...">
-    <label>Caption</label>
-    <input type="text" id="vb-cap" placeholder="Optional caption for this video">
+    <label>YouTube URL</label><input type="text" id="vb-url" placeholder="https://www.youtube.com/watch?v=...">
+    <label>Caption</label><input type="text" id="vb-cap" placeholder="Optional caption">
     <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addVideoModal')">Cancel</button>
-      <button class="btn-p" onclick="commitVideo()">Embed</button>
+      <button class="mbtn-s" onclick="closeModal('addVideoModal')">Cancel</button>
+      <button class="mbtn-p" onclick="commitVideo()">Embed</button>
     </div>
   </div>
 </div>
 
-<!-- Add Link Block -->
+<!-- IMAGE -->
+<div class="modal-overlay" id="addImageModal">
+  <div class="modal">
+    <h3>Add Image</h3>
+    <label>Image URL</label><input type="text" id="ib-url" placeholder="https://...">
+    <label>Caption</label><input type="text" id="ib-cap" placeholder="Optional caption">
+    <div class="modal-actions">
+      <button class="mbtn-s" onclick="closeModal('addImageModal')">Cancel</button>
+      <button class="mbtn-p" onclick="commitImage()">Add Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- LINK -->
 <div class="modal-overlay" id="addLinkModal">
   <div class="modal">
     <h3>Add Link Card</h3>
@@ -1063,30 +1252,17 @@ body.edit-mode .edit-fab { display: flex; }
     <label>Title</label><input type="text" id="lb-title" placeholder="Link title">
     <label>Description</label><input type="text" id="lb-desc" placeholder="Brief description">
     <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addLinkModal')">Cancel</button>
-      <button class="btn-p" onclick="commitLink()">Add Link</button>
+      <button class="mbtn-s" onclick="closeModal('addLinkModal')">Cancel</button>
+      <button class="mbtn-p" onclick="commitLink()">Add Link</button>
     </div>
   </div>
 </div>
 
-<!-- Add Image Block -->
-<div class="modal-overlay" id="addImageModal">
-  <div class="modal">
-    <h3>Add Image</h3>
-    <label>Image URL</label><input type="text" id="ib-url" placeholder="https://...image.png">
-    <label>Caption</label><input type="text" id="ib-cap" placeholder="Optional caption">
-    <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addImageModal')">Cancel</button>
-      <button class="btn-p" onclick="commitImage()">Add Image</button>
-    </div>
-  </div>
-</div>
-
-<!-- Add User -->
+<!-- ADD USER -->
 <div class="modal-overlay" id="addUserModal">
   <div class="modal">
     <h3>Add User</h3>
-    <label>Name</label><input type="text" id="au-name" placeholder="Full name">
+    <label>Full Name</label><input type="text" id="au-name" placeholder="Full name">
     <label>Email</label><input type="text" id="au-email" placeholder="user@example.com">
     <label>Role</label>
     <select id="au-role">
@@ -1095,440 +1271,595 @@ body.edit-mode .edit-fab { display: flex; }
       <option value="admin">Admin</option>
     </select>
     <div class="modal-actions">
-      <button class="btn-s" onclick="closeModal('addUserModal')">Cancel</button>
-      <button class="btn-p" onclick="addUser()">Add User</button>
+      <button class="mbtn-s" onclick="closeModal('addUserModal')">Cancel</button>
+      <button class="mbtn-p" onclick="addUser()">Add User</button>
     </div>
   </div>
 </div>
 
 <script>
 // ═══════════════════════════════════════════════════
-//  STATE
+//   STATE
 // ═══════════════════════════════════════════════════
+const ADMIN_EMAIL    = 'savi.toy@codethebox.dev';
+const ADMIN_PASSWORD = 'codethebox@admin2024';
+const STUDENT_PASS   = 'student123'; // demo password for any student
+
 let S = {
-  role: 'admin',
+  user: null, // null = guest
+  role: 'guest', // guest | student | instructor | admin
   editMode: false,
-  currentCourseId: null,
-  currentPageKey: null, // "modIdx-pageIdx"
-  addingToModule: null,
-  currentView: 'catalog',
+  curCourseId: null,
+  curPageKey: null,
+  addingToMod: null,
+  filterProvider: 'all',
+  filterLevel: 'all',
   completedSteps: {},
 
-  courses: [
-    {
-      id: 'AZ-900', name: 'Azure Fundamentals', level: 'Fundamentals',
-      desc: 'Foundation-level knowledge of cloud services and Microsoft Azure. Perfect for non-technical roles.',
-      duration: '8 hours', modules: 6, labs: 3, progress: 35,
-      modules: [
-        {
-          title: 'Cloud Concepts', color: '#0078D4',
-          pages: [
-            { title: 'What is Cloud Computing?', type: 'doc', duration: '10 min', url: '', blocks: [
-              { t:'heading', c:'What is Cloud Computing?' },
-              { t:'text', c:'Cloud computing is the delivery of computing services—including servers, storage, databases, networking, software, analytics, and intelligence—over the internet ("the cloud") to offer faster innovation, flexible resources, and economies of scale.' },
-              { t:'note', c:'Microsoft Azure is one of the three major cloud providers, alongside AWS and Google Cloud Platform.' },
-              { t:'heading', c:'Key Cloud Models' },
-              { t:'text', c:'There are three main deployment models: <strong>Public Cloud</strong> (services delivered over the internet, owned by a third-party provider), <strong>Private Cloud</strong> (computing resources used exclusively by one organization), and <strong>Hybrid Cloud</strong> (combines public and private clouds).' },
-              { t:'card', h:'Why Cloud?', c:'Cloud computing replaces traditional on-premises data centers, reducing capital expenditure and enabling rapid scaling of resources on demand.' },
-            ]},
-            { title: 'Shared Responsibility Model', type: 'doc', duration: '12 min', url: '', blocks: [
-              { t:'heading', c:'Shared Responsibility' },
-              { t:'text', c:'In cloud computing, security responsibilities are shared between the cloud provider (Microsoft) and the customer. Understanding this boundary is critical for every Azure architect.' },
-              { t:'warning', c:'Customer is ALWAYS responsible for: data, access management, and client endpoints — regardless of service type.' },
-            ]},
-            { title: 'Intro to Azure Services', type: 'video', duration: '18 min', url: 'https://www.youtube.com/embed/NKEFWyIE3MU', blocks: [
-              { t:'heading', c:'Overview of Azure Services' },
-              { t:'video', url: 'https://www.youtube.com/embed/NKEFWyIE3MU', cap:'Microsoft Learn: Introduction to Azure Core Services' },
-              { t:'text', c:'Azure offers 200+ products and services across categories including compute, networking, storage, databases, AI, and DevOps. This video walks through the key service families you need to know for AZ-900.' },
-            ]},
-            { title: 'Lab: Explore Azure Portal', type: 'lab', duration: '30 min', url: '', blocks: [
-              { t:'lab-meta', duration:'30 min', difficulty:'Beginner', points:50 },
-              { t:'heading', c:'Objectives' },
-              { t:'text', c:'In this lab you will navigate the Azure Portal, create a Resource Group, and explore the Cost Management dashboard.' },
-              { t:'step', n:1, title:'Sign in to Azure Portal', c:'Navigate to <strong>portal.azure.com</strong> and sign in with your Microsoft account. If you don\'t have one, create a free account to get $200 credit.' },
-              { t:'step', n:2, title:'Create a Resource Group', c:'Click <strong>Resource Groups</strong> in the left menu → <strong>+ Create</strong> → name it <code>rg-az900-lab01</code> → select <strong>East US</strong> → click <strong>Review + Create</strong>.' },
-              { t:'step', n:3, title:'Explore Cost Management', c:'From the top search bar, type <strong>Cost Management</strong> → open the blade → explore the <strong>Cost Analysis</strong> and <strong>Budgets</strong> tabs.' },
-              { t:'tip', c:'✅ You can filter cost analysis by resource group, service, and date range — very useful for exam scenarios.' },
-            ]},
-          ]
-        },
-        {
-          title: 'Azure Architecture', color: '#0078D4',
-          pages: [
-            { title: 'Regions and Availability Zones', type: 'doc', duration: '14 min', url: '', blocks: [
-              { t:'heading', c:'Global Infrastructure' },
-              { t:'text', c:'Azure operates in <strong>60+ regions</strong> across 140+ countries. Each region contains one or more data centers with low-latency network connections.' },
-              { t:'image', url: 'https://learn.microsoft.com/en-us/azure/reliability/media/regions-availability-zones.png', cap:'Azure Regions and Availability Zones' },
-              { t:'text', c:'<strong>Availability Zones</strong> are physically separate datacenters within a region. Each zone has independent power, cooling, and networking. Use them for 99.99% SLA on VMs.' },
-            ]},
-            { title: 'Lab: Create a VM', type: 'lab', duration: '45 min', url: '', blocks: [
-              { t:'lab-meta', duration:'45 min', difficulty:'Beginner', points:75 },
-              { t:'heading', c:'Objectives' },
-              { t:'text', c:'Deploy a Windows Server 2022 virtual machine, connect via RDP, and observe the VM metrics dashboard.' },
-              { t:'step', n:1, title:'Navigate to Virtual Machines', c:'In the Azure Portal search bar, type <strong>Virtual Machines</strong> and open the service.' },
-              { t:'step', n:2, title:'Create a new VM', c:'Click <strong>+ Create</strong> → <strong>Azure Virtual Machine</strong>. Set Resource Group to <code>rg-az900-lab01</code>, VM name <code>vm-lab01</code>, image <strong>Windows Server 2022</strong>, size <strong>Standard_B2s</strong>.' },
-              { t:'step', n:3, title:'Set admin credentials', c:'Under Administrator Account, set username <code>azureadmin</code> and a strong password. Check the RDP port (3389) inbound rule.' },
-              { t:'step', n:4, title:'Review and deploy', c:'Click <strong>Review + Create</strong> → validate → <strong>Create</strong>. Deployment takes ~3 minutes.' },
-            ]},
-          ]
-        },
-      ]
-    },
-    {
-      id: 'AZ-104', name: 'Azure Administrator', level: 'Associate',
-      desc: 'Implement, manage and monitor Azure infrastructure including identity, storage, compute and virtual networks.',
-      duration: '40 hours', labs: 8, progress: 12,
-      modules: [
-        {
-          title: 'Identity & Access Management', color: '#107C10',
-          pages: [
-            { title: 'Azure Entra ID Overview', type: 'doc', duration: '20 min', url: '', blocks: [
-              { t:'heading', c:'Microsoft Entra ID (formerly Azure AD)' },
-              { t:'text', c:'Entra ID is Microsoft\'s cloud-based identity and access management service. It provides authentication and authorization for Azure resources, Microsoft 365, and thousands of SaaS applications.' },
-              { t:'text', c:'Key concepts: <strong>Tenants</strong> (organization instance), <strong>Users & Groups</strong>, <strong>App Registrations</strong>, <strong>Managed Identities</strong>, <strong>Conditional Access</strong>.' },
-              { t:'warning', c:'AZ-104 exam heavily tests Entra ID concepts. Know the difference between Entra ID P1 and P2 licensing.' },
-            ]},
-            { title: 'RBAC Deep Dive', type: 'doc', duration: '25 min', url: '', blocks: [
-              { t:'heading', c:'Role-Based Access Control' },
-              { t:'text', c:'RBAC in Azure lets you control who has access to Azure resources, what they can do with those resources, and what areas they have access to. RBAC uses role assignments that combine a security principal, a role definition, and a scope.' },
-              { t:'code', c:'# Assign Contributor role to a user at subscription scope\naz role assignment create \\\n  --assignee "user@contoso.com" \\\n  --role "Contributor" \\\n  --scope "/subscriptions/{subscription-id}"' },
-            ]},
-            { title: 'Lab: Configure RBAC', type: 'lab', duration: '60 min', url: '', blocks: [
-              { t:'lab-meta', duration:'60 min', difficulty:'Intermediate', points:100 },
-              { t:'heading', c:'Lab Objectives' },
-              { t:'text', c:'Create custom RBAC roles, assign roles to users and service principals, verify access with the "Check Access" feature.' },
-              { t:'step', n:1, title:'Create a Custom Role', c:'Navigate to Subscriptions → IAM → Roles → <strong>+ Add</strong> → <strong>Add custom role</strong>. Start from JSON and define your permissions.' },
-              { t:'step', n:2, title:'Assign the Role', c:'Go to the target Resource Group → IAM → <strong>+ Add role assignment</strong> → select your custom role → select the user/service principal.' },
-              { t:'step', n:3, title:'Verify Access', c:'Use <strong>Check Access</strong> in the IAM blade to verify the assignment and test what actions the user can perform.' },
-            ]},
-          ]
-        },
-        {
-          title: 'Virtual Networking', color: '#107C10',
-          pages: [
-            { title: 'VNet Architecture', type: 'doc', duration: '22 min', url: '', blocks: [
-              { t:'heading', c:'Azure Virtual Networks' },
-              { t:'text', c:'A Virtual Network (VNet) is the fundamental building block for your private network in Azure. VNets enable communication between Azure resources, the internet, and on-premises networks.' },
-              { t:'text', c:'Plan address spaces carefully using CIDR notation. Avoid overlapping ranges if you plan VNet peering.' },
-              { t:'code', c:'# Create a VNet via CLI\naz network vnet create \\\n  --name vnet-prod-eastus \\\n  --resource-group rg-networking \\\n  --address-prefix 10.0.0.0/16 \\\n  --subnet-name snet-default \\\n  --subnet-prefix 10.0.1.0/24' },
-            ]},
-          ]
-        },
-      ]
-    },
-    {
-      id: 'AZ-305', name: 'Azure Solutions Architect', level: 'Expert',
-      desc: 'Design and implement cloud and hybrid solutions running on Microsoft Azure, including compute, network, storage, monitoring, and security.',
-      duration: '56 hours', labs: 10, progress: 0,
-      modules: [
-        {
-          title: 'Architecture Fundamentals', color: '#8764B8',
-          pages: [
-            { title: 'Well-Architected Framework', type: 'doc', duration: '30 min', url: '', blocks: [
-              { t:'heading', c:'Azure Well-Architected Framework' },
-              { t:'text', c:'The WAF is a set of guiding tenets that can be used to improve the quality of a workload. The five pillars are: <strong>Reliability</strong>, <strong>Security</strong>, <strong>Cost Optimization</strong>, <strong>Operational Excellence</strong>, and <strong>Performance Efficiency</strong>.' },
-              { t:'card', h:'Design Principle', c:'Every architecture decision should be evaluated against all five pillars. Trade-offs are acceptable but must be conscious and documented.' },
-            ]},
-          ]
-        },
-      ]
-    },
-    {
-      id: 'AZ-204', name: 'Azure Developer Associate', level: 'Associate',
-      desc: 'Develop, test, and maintain cloud applications using Microsoft Azure. Covers compute, storage, authentication, and monitoring.',
-      duration: '45 hours', labs: 12, progress: 68,
-      modules: [
-        {
-          title: 'Azure App Service', color: '#107C10',
-          pages: [
-            { title: 'Deploying Web Apps', type: 'doc', duration: '20 min', url: '', blocks: [
-              { t:'heading', c:'Azure App Service Deployment' },
-              { t:'text', c:'Azure App Service is an HTTP-based service for hosting web applications, REST APIs, and mobile back ends. Deploy from GitHub Actions, Azure DevOps, or directly via CLI.' },
-              { t:'code', c:'# Deploy from local Git\naz webapp up \\\n  --name mywebapp-prod \\\n  --resource-group rg-dev \\\n  --runtime "NODE:18-lts" \\\n  --sku F1' },
-            ]},
-          ]
-        },
-      ]
-    },
-    {
-      id: 'AZ-500', name: 'Azure Security Engineer', level: 'Associate',
-      desc: 'Implement security controls and threat protection, manage identity and access, and protect data, applications, and networks.',
-      duration: '48 hours', labs: 9, progress: 0,
-      modules: [
-        {
-          title: 'Security Posture Management', color: '#107C10',
-          pages: [
-            { title: 'Microsoft Defender for Cloud', type: 'doc', duration: '25 min', url: '', blocks: [
-              { t:'heading', c:'Defender for Cloud' },
-              { t:'text', c:'Defender for Cloud is a Cloud Security Posture Management (CSPM) and Cloud Workload Protection Platform (CWPP). It provides security score, recommendations, and threat protection.' },
-              { t:'danger', c:'Enable Defender plans per workload type. Standard tier is required for threat protection features — Free tier only provides posture assessment.' },
-            ]},
-          ]
-        },
-      ]
-    },
-    {
-      id: 'DP-900', name: 'Azure Data Fundamentals', level: 'Fundamentals',
-      desc: 'Foundational knowledge of core data concepts and how they are implemented using Microsoft Azure data services.',
-      duration: '10 hours', labs: 2, progress: 100,
-      modules: [
-        {
-          title: 'Core Data Concepts', color: '#0078D4',
-          pages: [
-            { title: 'Relational vs Non-Relational', type: 'doc', duration: '15 min', url: '', blocks: [
-              { t:'heading', c:'Data Models' },
-              { t:'text', c:'Relational databases store data in structured tables with defined schemas. Non-relational (NoSQL) databases offer flexible schemas optimized for specific data patterns: document, key-value, graph, or column-family.' },
-            ]},
-          ]
-        },
-      ]
-    },
+  instructorRequests: [
+    { id:1, name:'Kamonwan Phetcharat', email:'kamonwan@example.com', linkedin:'linkedin.com/in/kamonwan', certs:'AWS SAA, Azure AZ-104', why:'5 years cloud architect experience, want to give back to community.', status:'pending', date:'2026-02-20' },
+    { id:2, name:'Nuttapong Srisuk', email:'nutt@example.com', linkedin:'linkedin.com/in/nutt', certs:'CompTIA A+, Network+, Security+', why:'IT trainer with 3 years classroom experience.', status:'approved', date:'2026-02-15' },
   ],
 
   users: [
-    { name:'Samet Wiriyakiat', email:'samet@contoso.com', role:'admin', courses:['AZ-900','AZ-104','AZ-305','AZ-204','AZ-500','DP-900'] },
-    { name:'Kamonwan Phetcharat', email:'kamonwan@contoso.com', role:'instructor', courses:['AZ-900','AZ-104'] },
-    { name:'Nuttapong Srisuk', email:'nuttapong@contoso.com', role:'student', courses:['AZ-900'] },
-    { name:'Pimchanok Ruangkul', email:'pimchanok@contoso.com', role:'student', courses:['AZ-104','AZ-204'] },
+    { id:1, name:'Samet (Admin)', email:ADMIN_EMAIL, role:'admin', joined:'2025-01-01' },
+    { id:2, name:'Kamonwan P.', email:'kamonwan@example.com', role:'instructor', joined:'2026-02-15' },
+    { id:3, name:'Nuttapong S.', email:'nutt@example.com', role:'student', joined:'2026-01-10' },
+    { id:4, name:'Pimchanok R.', email:'pim@example.com', role:'student', joined:'2026-02-01' },
+  ],
+
+  courses: [
+    // AWS
+    { id:'SAA-C03', name:'AWS Solutions Architect Associate', provider:'AWS', level:'Associate', desc:'Design and deploy scalable, highly available, and fault-tolerant systems on AWS. Covers EC2, S3, RDS, VPC, IAM, and core architecture patterns.', duration:'45 hours', progress:65, modules:[
+      { title:'AWS Core Services', col:'#FF9900', pages:[
+        { title:'EC2 & Compute', type:'doc', dur:'20 min', url:'', blocks:[
+          {t:'heading',c:'Amazon EC2 – Elastic Compute Cloud'},
+          {t:'text',c:'EC2 provides resizable compute capacity in the cloud. Choose from 500+ instance types optimized for different use cases: compute, memory, storage, and GPU workloads.'},
+          {t:'note',c:'For the SAA-C03 exam, know the difference between On-Demand, Reserved, Spot, and Dedicated instance pricing models.'},
+          {t:'code',c:'# Launch an EC2 instance via AWS CLI\naws ec2 run-instances \\\n  --image-id ami-0abcdef1234567890 \\\n  --instance-type t3.micro \\\n  --key-name MyKeyPair \\\n  --security-group-ids sg-12345678 \\\n  --subnet-id subnet-12345678'},
+        ]},
+        { title:'S3 & Object Storage', type:'doc', dur:'18 min', url:'', blocks:[
+          {t:'heading',c:'Amazon S3 – Simple Storage Service'},
+          {t:'text',c:'S3 provides object storage with 99.999999999% (11 9s) durability. Objects are stored in buckets and can range from 0 bytes to 5TB per object.'},
+          {t:'warning',c:'S3 bucket names must be globally unique across all AWS accounts. Plan your naming convention carefully.'},
+        ]},
+        { title:'Lab: Build 3-Tier Architecture', type:'lab', dur:'90 min', url:'', blocks:[
+          {t:'lab-meta',duration:'90 min',difficulty:'Intermediate',points:150},
+          {t:'heading',c:'Objectives'},
+          {t:'text',c:'Deploy a highly available 3-tier web application using EC2 (web/app), RDS (database), and S3 (static assets) with an Application Load Balancer.'},
+          {t:'step',n:1,title:'Create VPC and Subnets',c:'Create a VPC with CIDR 10.0.0.0/16. Add 2 public subnets (web tier) and 2 private subnets (app/db tier) across 2 AZs.'},
+          {t:'step',n:2,title:'Launch EC2 Instances',c:'Deploy 2 EC2 t3.micro instances (Amazon Linux 2023) in public subnets with Apache/Nginx installed via User Data script.'},
+          {t:'step',n:3,title:'Configure Application Load Balancer',c:'Create an ALB in public subnets, add a target group with your EC2 instances, and configure listener on port 80.'},
+          {t:'step',n:4,title:'Set Up RDS',c:'Deploy an RDS MySQL 8.0 db.t3.micro instance in the private subnet group. Enable Multi-AZ for high availability.'},
+        ]},
+      ]},
+      { title:'Networking & Security', col:'#FF9900', pages:[
+        { title:'VPC Deep Dive', type:'doc', dur:'25 min', url:'', blocks:[
+          {t:'heading',c:'Amazon VPC Architecture'},
+          {t:'text',c:'A Virtual Private Cloud (VPC) is a logically isolated section of the AWS Cloud. Each VPC spans all AZs in a region and can be subdivided into subnets per AZ.'},
+          {t:'code',c:'# Create VPC\naws ec2 create-vpc --cidr-block 10.0.0.0/16\n\n# Create Internet Gateway\naws ec2 create-internet-gateway\n\n# Attach to VPC\naws ec2 attach-internet-gateway \\\n  --internet-gateway-id igw-xxx \\\n  --vpc-id vpc-xxx'},
+        ]},
+      ]},
+    ]},
+    { id:'CLF-C02', name:'AWS Cloud Practitioner', provider:'AWS', level:'Fundamentals', desc:'Entry-level certification covering fundamental AWS Cloud concepts, services, and terminology.', duration:'12 hours', progress:0, modules:[
+      { title:'Cloud Fundamentals', col:'#FF9900', pages:[
+        { title:'What is AWS?', type:'doc', dur:'15 min', url:'', blocks:[{t:'heading',c:'Amazon Web Services Overview'},{t:'text',c:'AWS is the world\'s most comprehensive and broadly adopted cloud platform, offering 200+ fully featured services from data centers globally.'}]},
+        { title:'AWS Global Infrastructure', type:'video', dur:'12 min', url:'https://www.youtube.com/embed/a9__D53WsUs', blocks:[{t:'heading',c:'AWS Global Infrastructure'},{t:'video',url:'https://www.youtube.com/embed/a9__D53WsUs',cap:'AWS Global Infrastructure Overview'},{t:'text',c:'AWS operates 31 regions, 99 Availability Zones, and 400+ Points of Presence worldwide.'}]},
+      ]},
+    ]},
+
+    // GCP
+    { id:'ACE', name:'Google Cloud Associate Engineer', provider:'GCP', level:'Associate', desc:'Deploy applications, monitor operations, and manage enterprise solutions on Google Cloud Platform.', duration:'40 hours', progress:20, modules:[
+      { title:'GCP Core Infrastructure', col:'#4285F4', pages:[
+        { title:'Compute Engine & GKE', type:'doc', dur:'22 min', url:'', blocks:[
+          {t:'heading',c:'Google Compute Engine'},
+          {t:'text',c:'Compute Engine delivers configurable virtual machines running in Google\'s data centers. GKE (Google Kubernetes Engine) provides managed Kubernetes for containerized workloads.'},
+          {t:'tip',c:'For ACE exam, know when to use Compute Engine vs App Engine vs Cloud Run vs GKE — this is heavily tested.'},
+        ]},
+        { title:'Lab: Deploy on GKE', type:'lab', dur:'60 min', url:'', blocks:[
+          {t:'lab-meta',duration:'60 min',difficulty:'Intermediate',points:100},
+          {t:'heading',c:'Deploy a containerized app to GKE'},
+          {t:'step',n:1,title:'Create GKE Cluster',c:'Run: gcloud container clusters create my-cluster --zone us-central1-a --num-nodes=3'},
+          {t:'step',n:2,title:'Deploy Application',c:'Create a deployment: kubectl create deployment hello-app --image=gcr.io/google-samples/hello-app:1.0'},
+          {t:'step',n:3,title:'Expose Service',c:'Run: kubectl expose deployment hello-app --type=LoadBalancer --port 80 --target-port 8080'},
+        ]},
+      ]},
+    ]},
+    { id:'PCA', name:'Google Cloud Professional Architect', provider:'GCP', level:'Professional', desc:'Design, develop, and manage robust, secure, scalable, highly available, and dynamic solutions on GCP.', duration:'60 hours', progress:0, modules:[
+      { title:'Solution Design', col:'#4285F4', pages:[
+        { title:'Architecture Patterns', type:'doc', dur:'30 min', url:'', blocks:[{t:'heading',c:'GCP Architecture Patterns'},{t:'text',c:'Google Cloud Well-Architected Framework covers operational excellence, security, reliability, performance efficiency, and cost optimization.'}]},
+      ]},
+    ]},
+
+    // Azure
+    { id:'AZ-900', name:'Azure Fundamentals', provider:'Azure', level:'Fundamentals', desc:'Foundation-level knowledge of cloud services and Microsoft Azure. Perfect for non-technical roles and career changers.', duration:'8 hours', progress:35, modules:[
+      { title:'Cloud Concepts', col:'#0078D4', pages:[
+        { title:'What is Cloud Computing?', type:'doc', dur:'10 min', url:'', blocks:[
+          {t:'heading',c:'Cloud Computing Fundamentals'},
+          {t:'text',c:'Cloud computing delivers computing services over the internet—servers, storage, databases, networking, software, analytics—enabling faster innovation and flexible resources.'},
+          {t:'note',c:'AZ-900 covers the three cloud models: Public, Private, and Hybrid — and three service models: IaaS, PaaS, and SaaS.'},
+        ]},
+        { title:'Azure Portal Tour', type:'video', dur:'15 min', url:'https://www.youtube.com/embed/NKEFWyIE3MU', blocks:[
+          {t:'heading',c:'Navigating the Azure Portal'},
+          {t:'video',url:'https://www.youtube.com/embed/NKEFWyIE3MU',cap:'Microsoft Learn: Azure Portal Overview'},
+          {t:'text',c:'The Azure Portal is a web-based console for managing Azure resources. Learn the key navigation elements before your exam.'},
+        ]},
+        { title:'Lab: Create Your First VM', type:'lab', dur:'30 min', url:'', blocks:[
+          {t:'lab-meta',duration:'30 min',difficulty:'Beginner',points:50},
+          {t:'heading',c:'Deploy an Azure Virtual Machine'},
+          {t:'step',n:1,title:'Sign in to Azure Portal',c:'Navigate to portal.azure.com and sign in with your Microsoft account.'},
+          {t:'step',n:2,title:'Create Resource Group',c:'Click Resource Groups → + Create → name it rg-az900-lab → select East US region.'},
+          {t:'step',n:3,title:'Deploy VM',c:'Search Virtual Machines → + Create → select Windows Server 2022 → Standard_B2s → deploy.'},
+        ]},
+      ]},
+    ]},
+    { id:'AZ-104', name:'Azure Administrator', provider:'Azure', level:'Associate', desc:'Implement, manage, and monitor Azure infrastructure — identity, storage, compute, and virtual networks.', duration:'40 hours', progress:12, modules:[
+      { title:'Identity & Access', col:'#0078D4', pages:[
+        { title:'Entra ID Overview', type:'doc', dur:'20 min', url:'', blocks:[
+          {t:'heading',c:'Microsoft Entra ID'},
+          {t:'text',c:'Entra ID (formerly Azure AD) is Microsoft\'s cloud-based identity and access management service. Central to AZ-104 exam.'},
+          {t:'warning',c:'Know the difference between Entra ID P1 (Conditional Access) and P2 (PIM, Identity Protection) licensing.'},
+        ]},
+      ]},
+    ]},
+    { id:'AZ-305', name:'Azure Solutions Architect Expert', provider:'Azure', level:'Expert', desc:'Design and implement cloud and hybrid solutions running on Azure — compute, network, storage, security.', duration:'56 hours', progress:0, modules:[
+      { title:'Architecture Design', col:'#0078D4', pages:[
+        { title:'Well-Architected Framework', type:'doc', dur:'28 min', url:'', blocks:[{t:'heading',c:'Azure WAF'},{t:'text',c:'Five pillars: Reliability, Security, Cost Optimization, Operational Excellence, Performance Efficiency. Every design decision must balance these pillars.'}]},
+      ]},
+    ]},
+
+    // M365
+    { id:'MS-900', name:'Microsoft 365 Fundamentals', provider:'M365', level:'Fundamentals', desc:'Demonstrate foundational-level knowledge of cloud services and Microsoft 365 productivity platform.', duration:'10 hours', progress:80, modules:[
+      { title:'M365 Core Services', col:'#D83B01', pages:[
+        { title:'Microsoft 365 Overview', type:'doc', dur:'15 min', url:'', blocks:[
+          {t:'heading',c:'Microsoft 365 Platform'},
+          {t:'text',c:'Microsoft 365 combines Office apps (Word, Excel, PowerPoint), Teams, SharePoint, Exchange, and cloud security in a unified subscription platform.'},
+          {t:'card',h:'Key Licenses',c:'M365 Business Basic, Business Standard, Business Premium, E3, E5 — know the differences for MS-900.'},
+        ]},
+      ]},
+    ]},
+    { id:'MS-700', name:'Managing Microsoft Teams', provider:'M365', level:'Associate', desc:'Configure and manage Microsoft Teams for collaboration, meetings, calling, and Teams apps.', duration:'35 hours', progress:0, modules:[
+      { title:'Teams Administration', col:'#D83B01', pages:[
+        { title:'Teams Architecture', type:'doc', dur:'18 min', url:'', blocks:[{t:'heading',c:'Microsoft Teams Architecture'},{t:'text',c:'Teams is built on Microsoft 365 Groups, SharePoint Online, Exchange Online, and Azure AD. Understanding the underlying services is key for MS-700.'}]},
+      ]},
+    ]},
+
+    // CompTIA
+    { id:'CompTIA-A+', name:'CompTIA A+ Core 1 & 2', provider:'CompTIA', level:'Fundamentals', desc:'The industry-standard certification for IT technicians covering hardware, networking, troubleshooting, and operating systems.', duration:'25 hours', progress:0, modules:[
+      { title:'Hardware & Networking', col:'#C8202A', pages:[
+        { title:'PC Components', type:'doc', dur:'20 min', url:'', blocks:[
+          {t:'heading',c:'Core Hardware Components'},
+          {t:'text',c:'A+ covers CPUs, RAM (DDR4/DDR5), storage (NVMe SSD, SATA, HDD), motherboards, PSUs, and expansion cards. Know the physical connectors and form factors.'},
+          {t:'note',c:'CompTIA A+ 220-1101 and 220-1102 are both required to earn the certification.'},
+        ]},
+      ]},
+    ]},
+    { id:'CompTIA-Sec+', name:'CompTIA Security+', provider:'CompTIA', level:'Associate', desc:'Globally trusted, vendor-neutral certification that validates core security skills and knowledge.', duration:'30 hours', progress:45, modules:[
+      { title:'Threats & Vulnerabilities', col:'#C8202A', pages:[
+        { title:'Malware Types', type:'doc', dur:'18 min', url:'', blocks:[
+          {t:'heading',c:'Common Malware Types'},
+          {t:'text',c:'Know the difference: Ransomware encrypts data for payment. Trojans disguise as legitimate software. Rootkits hide malicious activity. Spyware monitors user activity covertly.'},
+          {t:'danger',c:'Zero-day exploits target unknown vulnerabilities — no patch exists yet. Mitigation relies on anomaly detection and behavior analysis.'},
+        ]},
+        { title:'Lab: Network Scanning', type:'lab', dur:'45 min', url:'', blocks:[
+          {t:'lab-meta',duration:'45 min',difficulty:'Intermediate',points:75},
+          {t:'heading',c:'Network Reconnaissance Lab'},
+          {t:'step',n:1,title:'Install Nmap',c:'sudo apt install nmap (Linux) or download from nmap.org (Windows)'},
+          {t:'step',n:2,title:'Basic Scan',c:'Run: nmap -sV 192.168.1.0/24 to discover hosts and services on your local network.'},
+          {t:'step',n:3,title:'Analyze Results',c:'Identify open ports, services, and OS fingerprinting results. Document any unexpected open services.'},
+        ]},
+      ]},
+    ]},
+    { id:'CompTIA-Net+', name:'CompTIA Network+', provider:'CompTIA', level:'Associate', desc:'Vendor-neutral networking certification covering infrastructure, operations, and network security.', duration:'28 hours', progress:0, modules:[
+      { title:'Network Fundamentals', col:'#C8202A', pages:[
+        { title:'OSI & TCP/IP Models', type:'doc', dur:'22 min', url:'', blocks:[{t:'heading',c:'OSI and TCP/IP Reference Models'},{t:'text',c:'OSI 7-layer model: Physical, Data Link, Network, Transport, Session, Presentation, Application. TCP/IP collapses to 4 layers. Network+ heavily tests port numbers and protocols at each layer.'}]},
+      ]},
+    ]},
+
+    // Other
+    { id:'CKA', name:'Certified Kubernetes Administrator', provider:'Other', level:'Professional', desc:'Demonstrate competency in Kubernetes administration including installation, configuration, networking, storage, and security.', duration:'50 hours', progress:10, modules:[
+      { title:'Kubernetes Core', col:'#326CE5', pages:[
+        { title:'Pods & Workloads', type:'doc', dur:'25 min', url:'', blocks:[
+          {t:'heading',c:'Kubernetes Workloads'},
+          {t:'text',c:'Pods are the smallest deployable unit. Deployments manage stateless workloads, StatefulSets for stateful apps, DaemonSets for node-level agents, and Jobs/CronJobs for batch tasks.'},
+          {t:'code',c:'# Create a deployment\nkubectl create deployment nginx --image=nginx --replicas=3\n\n# Expose via service\nkubectl expose deployment nginx --port=80 --type=LoadBalancer\n\n# Check status\nkubectl get pods,svc'},
+        ]},
+      ]},
+    ]},
   ],
 };
 
 // ═══════════════════════════════════════════════════
-//  VIEW ROUTING
+//   PROVIDER CONFIG
+// ═══════════════════════════════════════════════════
+const PROVIDER = {
+  AWS:     { color:'#FF9900', bg:'rgba(255,153,0,0.12)', glow:'glow-aws' },
+  GCP:     { color:'#4285F4', bg:'rgba(66,133,244,0.12)', glow:'glow-gcp' },
+  Azure:   { color:'#0078D4', bg:'rgba(0,120,212,0.12)', glow:'glow-azure' },
+  M365:    { color:'#D83B01', bg:'rgba(216,59,1,0.12)', glow:'glow-m365' },
+  CompTIA: { color:'#C8202A', bg:'rgba(200,32,42,0.12)', glow:'glow-comptia' },
+  Other:   { color:'#8B5CF6', bg:'rgba(139,92,246,0.12)', glow:'glow-other' },
+};
+
+// ═══════════════════════════════════════════════════
+//   AUTH
+// ═══════════════════════════════════════════════════
+function doLogin() {
+  const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+  const pass  = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+
+  if (email === ADMIN_EMAIL.toLowerCase()) {
+    // Admin flow — ask for admin password
+    closeModal('loginModal');
+    document.getElementById('adminPass').value = '';
+    document.getElementById('adminError').classList.remove('show');
+    // store pending email
+    S._pendingAdminEmail = email;
+    openModal('adminConfirmModal');
+    return;
+  }
+
+  // Demo: any email + 'student123' = student login
+  if (pass === 'student123' && email.includes('@')) {
+    S.user = { name: email.split('@')[0], email, role:'student' };
+    S.role = 'student';
+    closeModal('loginModal');
+    errEl.classList.remove('show');
+    updateUserUI();
+    showToast('Welcome back! Signed in as Student 📖', 'green');
+    return;
+  }
+
+  errEl.classList.add('show');
+}
+
+function doAdminConfirm() {
+  const pass = document.getElementById('adminPass').value;
+  const errEl = document.getElementById('adminError');
+
+  if (pass === ADMIN_PASSWORD) {
+    S.user = { name:'Samet (Admin)', email:ADMIN_EMAIL, role:'admin' };
+    S.role = 'admin';
+    S.editMode = true;
+    document.body.classList.add('edit-mode');
+    closeModal('adminConfirmModal');
+    errEl.classList.remove('show');
+    updateUserUI();
+    showToast('👑 Admin access granted — full control enabled', 'amber');
+  } else {
+    errEl.classList.add('show');
+  }
+}
+
+function logout() {
+  S.user = null;
+  S.role = 'guest';
+  S.editMode = false;
+  document.body.classList.remove('edit-mode');
+  updateUserUI();
+  closeUserMenu();
+  showToast('Signed out successfully', 'cyan');
+  if (S.currentView === 'manager') showView('catalog');
+}
+
+function updateUserUI() {
+  const wrap = document.getElementById('userChipWrap');
+  const menuBtn = document.getElementById('umManageItem');
+  const logoutBtn = document.getElementById('umLogoutItem');
+  const instItem = document.getElementById('umInstructorItem');
+
+  if (!S.user) {
+    // Guest
+    wrap.innerHTML = `<button class="login-btn" onclick="openModal('loginModal')">Sign In</button>`;
+    menuBtn.style.display = 'none';
+    logoutBtn.style.display = 'none';
+    instItem.style.display = '';
+    document.getElementById('umName').textContent = 'Guest';
+    document.getElementById('umEmail').textContent = 'Not signed in';
+  } else {
+    const roleIcon = { admin:'👑', instructor:'🎓', student:'📖' }[S.role];
+    const initials = S.user.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
+    wrap.innerHTML = `<div class="user-chip" onclick="toggleUserMenu(event)">
+      <div class="user-avatar ua-${S.role}">${initials}</div>
+      <div class="uc-info">
+        <span class="uc-name">${S.user.name.split(' ')[0]}</span>
+        <span class="uc-role">${roleIcon} ${S.role.charAt(0).toUpperCase()+S.role.slice(1)}</span>
+      </div>
+      <div class="role-dot dot-${S.role}"></div>
+    </div>`;
+    document.getElementById('umName').textContent = S.user.name;
+    document.getElementById('umEmail').textContent = S.user.email;
+    menuBtn.style.display = S.role === 'admin' ? '' : 'none';
+    logoutBtn.style.display = '';
+    instItem.style.display = (S.role === 'student') ? '' : 'none';
+  }
+}
+
+function toggleUserMenu(e) {
+  e.stopPropagation();
+  const chip = e.currentTarget.getBoundingClientRect();
+  const menu = document.getElementById('userMenu');
+  menu.style.top = (chip.bottom + 8) + 'px';
+  menu.style.right = (window.innerWidth - chip.right) + 'px';
+  menu.classList.toggle('open');
+}
+
+function closeUserMenu() { document.getElementById('userMenu').classList.remove('open'); }
+document.addEventListener('click', closeUserMenu);
+
+// ═══════════════════════════════════════════════════
+//   INSTRUCTOR APPLICATION
+// ═══════════════════════════════════════════════════
+function submitInstructorApp() {
+  const name   = document.getElementById('appName').value.trim();
+  const email  = document.getElementById('appEmail').value.trim();
+  const certs  = document.getElementById('appCerts').value.trim();
+  const why    = document.getElementById('appWhy').value.trim();
+  const linkedin = document.getElementById('appLinkedin').value.trim();
+  if (!name || !email) { showToast('Please fill in name and email', 'amber'); return; }
+
+  S.instructorRequests.push({
+    id: Date.now(), name, email, linkedin, certs, why,
+    status:'pending', date: new Date().toISOString().split('T')[0]
+  });
+
+  document.getElementById('appActions').style.display = 'none';
+  document.getElementById('appSuccess').style.display = 'block';
+  showToast('Application sent to savi.toy@codethebox.dev 📧', 'green');
+
+  setTimeout(() => {
+    closeModal('instructorApplyModal');
+    document.getElementById('appActions').style.display = 'flex';
+    document.getElementById('appSuccess').style.display = 'none';
+  }, 3500);
+}
+
+// ═══════════════════════════════════════════════════
+//   VIEW ROUTING
 // ═══════════════════════════════════════════════════
 function showView(v) {
   S.currentView = v;
-  document.querySelectorAll('.view').forEach(el => el.classList.remove('active'));
+  ['homeView','catalogView','courseView','managerView'].forEach(id => {
+    document.getElementById(id).style.display = 'none';
+    document.getElementById(id).classList.remove('active');
+  });
 
-  if (v === 'catalog') {
-    document.getElementById('catalogView').classList.add('active');
+  document.querySelectorAll('.hdr-nav-btn').forEach(b => b.classList.remove('active'));
+
+  if (v === 'home') {
+    document.getElementById('homeView').style.display = 'block';
+    document.getElementById('homeView').classList.add('active');
+    document.getElementById('navCatalog').style.display = '';
+    document.getElementById('navCourse').style.display = 'none';
+  } else if (v === 'catalog') {
     document.getElementById('catalogView').style.display = 'block';
-    document.getElementById('courseView').style.display = 'none';
-    document.getElementById('managerView').style.display = 'none';
-    document.getElementById('headerTitle').textContent = 'Course Catalog';
-    document.getElementById('backBtn').style.display = 'none';
-    document.getElementById('manageBtn').style.display = S.role === 'admin' ? '' : 'none';
+    document.getElementById('catalogView').classList.add('active');
+    document.getElementById('navCatalog').classList.add('active');
+    document.getElementById('navCourse').style.display = 'none';
     renderCatalog();
   } else if (v === 'course') {
-    document.getElementById('catalogView').style.display = 'none';
     document.getElementById('courseView').style.display = 'flex';
-    document.getElementById('managerView').style.display = 'none';
-    document.getElementById('backBtn').style.display = '';
+    document.getElementById('courseView').classList.add('active');
+    document.getElementById('navCourse').style.display = '';
+    document.getElementById('navCourse').classList.add('active');
     renderCourseView();
   } else if (v === 'manager') {
-    document.getElementById('catalogView').style.display = 'none';
-    document.getElementById('courseView').style.display = 'none';
+    if (S.role !== 'admin') { showToast('Admin access required', 'amber'); return; }
     document.getElementById('managerView').style.display = 'block';
-    document.getElementById('headerTitle').textContent = 'Course Manager';
-    document.getElementById('backBtn').style.display = '';
-    document.getElementById('backBtn').onclick = () => showView('catalog');
+    document.getElementById('managerView').classList.add('active');
     renderManager();
   }
 }
 
 // ═══════════════════════════════════════════════════
-//  CATALOG
+//   CATALOG
 // ═══════════════════════════════════════════════════
+let _pFilter = 'all', _lFilter = 'all';
+
 function renderCatalog() {
   const grid = document.getElementById('coursesGrid');
-  const levelColors = { Fundamentals:'lv-fund', Associate:'lv-assoc', Expert:'lv-expert', Specialty:'lv-special' };
-  const levelIcons = { Fundamentals:'🔵', Associate:'🟢', Expert:'🟣', Specialty:'🟠' };
+  const filtered = S.courses.filter(c => {
+    const pm = _pFilter === 'all' || c.provider === _pFilter;
+    const lm = _lFilter === 'all' || c.level === _lFilter;
+    return pm && lm;
+  });
 
-  grid.innerHTML = S.courses.map(c => {
-    const lc = levelColors[c.level] || 'lv-fund';
-    const totalMods = c.modules ? c.modules.length : 0;
-    const totalLabs = c.modules ? c.modules.reduce((s,m) => s + m.pages.filter(p=>p.type==='lab').length,0) : 0;
-    return `
-    <div class="course-card" data-level="${c.level}" onclick="openCourse('${c.id}')">
-      <div class="course-card-top">
-        <div class="course-id-badge ${lc}" style="border:1.5px solid currentColor">${c.id}</div>
+  grid.innerHTML = filtered.map(c => {
+    const p = PROVIDER[c.provider] || PROVIDER.Other;
+    const totalLabs = c.modules.reduce((s,m)=>s+m.pages.filter(pg=>pg.type==='lab').length,0);
+    const totalMods = c.modules.length;
+    return `<div class="course-card ${p.glow}" data-provider="${c.provider}" data-level="${c.level}" onclick="openCourse('${c.id}')">
+      <div class="course-card::before" style="background:linear-gradient(90deg,${p.color},transparent)"></div>
+      <div class="card-top">
+        <div class="card-provider-row">
+          <div class="provider-badge" style="color:${p.color};border-color:${p.color};background:${p.bg}">
+            <span style="width:7px;height:7px;border-radius:50%;background:${p.color};display:inline-block"></span>
+            ${c.provider === 'Other' ? (c.id.includes('CK')?'CNCF':'Other') : c.provider} · ${c.id}
+          </div>
+          <span class="level-badge lbg-${c.level}">${c.level}</span>
+        </div>
         <h3>${c.name}</h3>
         <p>${c.desc}</p>
       </div>
-      <div class="course-card-meta">
-        <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>${totalMods} modules</span>
-        <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>${totalLabs} labs</span>
-        <span class="meta-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${c.duration}</span>
-        <div class="course-progress">
-          <div class="prog-bar"><div class="prog-fill" style="width:${c.progress}%"></div></div>
+      <div class="card-meta">
+        <span class="cm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>${totalMods} modules</span>
+        <span class="cm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>${totalLabs} labs</span>
+        <span class="cm"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${c.duration}</span>
+        <div class="card-progress">
+          <div class="prog-bar"><div class="prog-fill" style="width:${c.progress}%;background:${p.color}"></div></div>
         </div>
       </div>
-      <div class="course-card-footer">
-        <button class="open-course-btn">
-          ${c.progress > 0 ? 'Continue' : 'Start'} Course
+      <div class="card-footer">
+        <button class="open-btn" style="color:${p.color}">
+          ${c.progress>0?'Continue':'Start'}
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
-        <span class="level-chip ${lc}" style="border:1.5px solid currentColor">${levelIcons[c.level]} ${c.level}</span>
+        <span class="cert-id">${c.id}</span>
       </div>
     </div>`;
   }).join('');
-
-  // stats
-  const allLabs = S.courses.reduce((s,c) => s + (c.modules ? c.modules.reduce((s2,m) => s2 + m.pages.filter(p=>p.type==='lab').length,0) : 0),0);
-  const allMods = S.courses.reduce((s,c) => s + (c.modules ? c.modules.length : 0),0);
-  document.getElementById('statCourses').textContent = S.courses.length;
-  document.getElementById('statModules').textContent = allMods;
-  document.getElementById('statLabs').textContent = allLabs;
 }
 
-function filterCourses(level, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+function filterProvider(p, btn) {
+  _pFilter = p;
+  document.querySelectorAll('.ptab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
-  document.querySelectorAll('.course-card').forEach(card => {
-    card.style.display = (level === 'all' || card.dataset.level === level) ? '' : 'none';
-  });
+  renderCatalog();
+}
+
+function filterLevel(l, btn) {
+  _lFilter = l;
+  document.querySelectorAll('.lvl-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderCatalog();
 }
 
 function openCourse(id) {
-  S.currentCourseId = id;
-  const course = S.courses.find(c => c.id === id);
-  // default to first page
-  if (course && course.modules && course.modules[0] && course.modules[0].pages[0]) {
-    S.currentPageKey = '0-0';
-  }
+  S.curCourseId = id;
+  const c = S.courses.find(x=>x.id===id);
+  if (c && c.modules[0] && c.modules[0].pages[0]) S.curPageKey = '0-0';
   showView('course');
 }
 
 // ═══════════════════════════════════════════════════
-//  COURSE VIEW
+//   COURSE VIEW
 // ═══════════════════════════════════════════════════
 function renderCourseView() {
-  const course = S.courses.find(c => c.id === S.currentCourseId);
-  if (!course) return;
+  const c = S.courses.find(x=>x.id===S.curCourseId);
+  if (!c) return;
+  const p = PROVIDER[c.provider] || PROVIDER.Other;
 
-  document.getElementById('headerTitle').textContent = `${course.id}: ${course.name}`;
+  const sid = document.getElementById('sbId');
+  sid.textContent = c.id;
+  sid.style.color = p.color;
+  sid.style.borderColor = p.color;
+  sid.style.background = p.bg;
+  document.getElementById('sbTitle').textContent = c.name;
+  document.getElementById('sbProg').style.width = c.progress + '%';
+  document.getElementById('sbProg').style.background = p.color;
+  document.getElementById('sbPct').textContent = c.progress + '%';
 
-  // sidebar badge
-  const lvlColors = { Fundamentals:'#0078D4', Associate:'#107C10', Expert:'#8764B8', Specialty:'#CA5010' };
-  const badge = document.getElementById('sbCourseBadge');
-  badge.textContent = course.id;
-  badge.style.background = `${lvlColors[course.level]}20`;
-  badge.style.color = lvlColors[course.level];
-  badge.style.border = `1.5px solid ${lvlColors[course.level]}50`;
-
-  document.getElementById('sbCourseTitle').textContent = course.name;
-  document.getElementById('sbProgFill').style.width = course.progress + '%';
-  document.getElementById('sbProgPct').textContent = course.progress + '%';
-
-  renderModuleList(course);
+  renderModuleList(c);
   renderPageContent();
 }
 
-function renderModuleList(course) {
-  const container = document.getElementById('moduleList');
-  const [selMod, selPage] = (S.currentPageKey || '0-0').split('-').map(Number);
+function renderModuleList(c) {
+  const [selMi, selPi] = (S.curPageKey||'0-0').split('-').map(Number);
+  const p = PROVIDER[c.provider] || PROVIDER.Other;
+  const canEdit = S.role === 'admin' || S.role === 'instructor';
 
-  const typeIcon = (type) => {
-    if (type === 'lab') return `<svg class="si-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`;
-    if (type === 'video') return `<svg class="si-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
-    return `<svg class="si-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`;
+  const typeIco = t => {
+    if (t==='lab') return `<svg class="si-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`;
+    if (t==='video') return `<svg class="si-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`;
+    return `<svg class="si-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`;
   };
 
-  container.innerHTML = course.modules.map((mod, mi) => {
-    const isExpanded = mi === selMod;
-    const subItems = mod.pages.map((p, pi) => {
+  const list = document.getElementById('moduleList');
+  list.innerHTML = c.modules.map((mod, mi) => {
+    const isExp = mi === selMi;
+    const subs = mod.pages.map((pg, pi) => {
       const key = `${mi}-${pi}`;
-      const isActive = key === S.currentPageKey;
-      const ck = `comp_${S.currentCourseId}_${key}`;
+      const isActive = key === S.curPageKey;
+      const ck = `done_${S.curCourseId}_${key}`;
       const done = !!S.completedSteps[ck];
-      return `<div class="sub-item ${isActive ? 'active' : ''}" onclick="loadPage('${mi}-${pi}')">
-        <svg class="check ${done ? 'check-done' : 'check-empty'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        ${typeIcon(p.type)}
-        <span style="flex:1">${p.title}</span>
-        <span class="si-type ${p.type}">${p.type}</span>
+      return `<div class="sub-item ${isActive?'active':''}" onclick="loadPage('${key}')">
+        <svg class="si-ico ${done?'sub-done':'sub-todo'}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        ${typeIco(pg.type)}
+        <span style="flex:1">${pg.title}</span>
+        <span class="si-type si-${pg.type}">${pg.type}</span>
       </div>`;
     }).join('');
 
-    const addBtn = (S.role === 'admin' || S.role === 'instructor') ?
-      `<button class="btb" style="opacity:1;pointer-events:all;position:static;box-shadow:none;background:var(--azure-light);color:var(--azure);border-color:var(--azure-light)" onclick="event.stopPropagation();openAddPageModal(${mi})" title="Add page">+</button>` : '';
+    const addBtn = canEdit ? `<div class="add-page-in-module"><button class="add-pg-btn" onclick="event.stopPropagation();openAddPage(${mi})">+ Add Content</button></div>` : '';
 
-    return `<div class="module-item">
-      <div class="module-header ${isExpanded ? 'expanded' : ''}" onclick="toggleModule(${mi})">
-        <div class="module-num" style="background:${mod.color}">${mi+1}</div>
-        <div class="module-title">${mod.title}</div>
-        <div class="module-count">${mod.pages.length}</div>
-        ${addBtn}
-        <svg class="module-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+    return `<div class="mod-item">
+      <div class="mod-hdr ${isExp?'exp':''}" onclick="toggleMod(${mi})">
+        <div class="mod-num" style="background:${mod.col}">${mi+1}</div>
+        <div class="mod-title">${mod.title}</div>
+        <div class="mod-cnt">${mod.pages.length}</div>
+        <svg class="mod-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
       </div>
-      <div class="module-subitems ${isExpanded ? 'open' : ''}" id="mod-${mi}">${subItems}</div>
+      <div class="mod-subitems ${isExp?'open':''}" id="ms-${mi}">${subs}${addBtn}</div>
     </div>`;
   }).join('');
 
-  // Add module btn for admin
-  if (S.role === 'admin' || S.role === 'instructor') {
-    container.innerHTML += `<div style="padding:12px 16px">
-      <button onclick="openModal('addModuleModal')" style="width:100%;padding:8px;border:1.5px dashed var(--border);border-radius:6px;background:var(--bg);color:var(--muted);cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif;font-size:12px;font-weight:600;">+ Add Module</button>
-    </div>`;
+  if (canEdit) {
+    list.innerHTML += `<div style="padding:10px 14px"><button onclick="openModal('addModuleModal')" style="width:100%;padding:8px;border:1px dashed rgba(255,255,255,0.12);border-radius:6px;background:transparent;color:var(--text3);cursor:pointer;font-family:'Space Grotesk',sans-serif;font-size:12px;font-weight:600;transition:all 0.15s" onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'" onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='var(--text3)'">+ Add Module</button></div>`;
   }
 }
 
-function toggleModule(mi) {
-  const sub = document.getElementById(`mod-${mi}`);
-  const hdr = sub.previousElementSibling;
-  sub.classList.toggle('open');
-  hdr.classList.toggle('expanded');
+function toggleMod(mi) {
+  document.getElementById(`ms-${mi}`).classList.toggle('open');
+  document.querySelectorAll('.mod-hdr')[mi].classList.toggle('exp');
 }
 
 function loadPage(key) {
-  S.currentPageKey = key;
-  renderModuleList(S.courses.find(c => c.id === S.currentCourseId));
+  S.curPageKey = key;
+  const c = S.courses.find(x=>x.id===S.curCourseId);
+  renderModuleList(c);
   renderPageContent();
 }
 
-function renderPageContent() {
-  const course = S.courses.find(c => c.id === S.currentCourseId);
-  if (!course || !S.currentPageKey) return;
-  const [mi, pi] = S.currentPageKey.split('-').map(Number);
-  const mod = course.modules[mi];
-  const page = mod && mod.pages[pi];
-  if (!page) return;
+function getPage() {
+  const c = S.courses.find(x=>x.id===S.curCourseId);
+  if (!c||!S.curPageKey) return null;
+  const [mi,pi] = S.curPageKey.split('-').map(Number);
+  return c.modules[mi]?.pages[pi];
+}
 
-  const typeColors = { doc:'var(--azure)', lab:'var(--lab-color)', video:'#D6136E' };
-  const typeLabels = { doc:'Documentation', lab:'Hands-on Lab', video:'Video Lesson' };
-  const typeIcons = {
-    doc: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`,
-    lab: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`,
+function renderPageContent() {
+  const c = S.courses.find(x=>x.id===S.curCourseId);
+  if (!c||!S.curPageKey) return;
+  const [mi,pi] = S.curPageKey.split('-').map(Number);
+  const mod = c.modules[mi]; const page = mod?.pages[pi];
+  if (!page) return;
+  const p = PROVIDER[c.provider]||PROVIDER.Other;
+
+  const canEdit = S.role==='admin'||S.role==='instructor';
+  const typeLabel = {doc:'Documentation',lab:'Hands-on Lab',video:'Video Lesson'};
+  const typeIco = {
+    doc:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>`,
+    lab:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>`,
     video:`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>`,
   };
 
-  // Find prev/next
-  let allPages = [];
-  course.modules.forEach((m,mi2) => m.pages.forEach((p,pi2) => allPages.push({key:`${mi2}-${pi2}`,title:p.title})));
-  const curIdx = allPages.findIndex(x => x.key === S.currentPageKey);
-  const prev = allPages[curIdx-1];
-  const next = allPages[curIdx+1];
+  let allPgs=[]; c.modules.forEach((m,mi2)=>m.pages.forEach((pg,pi2)=>allPgs.push({key:`${mi2}-${pi2}`,title:pg.title})));
+  const curIdx=allPgs.findIndex(x=>x.key===S.curPageKey);
+  const prev=allPgs[curIdx-1]; const next=allPgs[curIdx+1];
 
-  // Render edit toggle
-  const canEdit = S.role === 'admin' || S.role === 'instructor';
-  const editToggle = canEdit ? `<label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-left:auto">
-    <span style="font-size:12px;font-weight:600;color:var(--muted)">✏ Edit</span>
-    <input type="checkbox" id="editToggleHidden" onchange="toggleEdit(this.checked)" ${S.editMode?'checked':''} style="display:none">
-    <div onclick="document.getElementById('editToggleHidden').click()" style="width:36px;height:20px;background:${S.editMode?'#22c55e':'var(--border)'};border-radius:10px;position:relative;transition:background 0.2s;cursor:pointer">
-      <div style="position:absolute;top:3px;left:${S.editMode?'19':'3'}px;width:14px;height:14px;background:#fff;border-radius:50%;transition:left 0.2s"></div>
-    </div>
-  </label>` : '';
+  const editToggle = canEdit ? `
+    <label style="display:flex;align-items:center;gap:7px;cursor:pointer;margin-left:auto;user-select:none">
+      <span style="font-size:11.5px;font-weight:700;color:${S.editMode?'var(--accent)':'var(--text3)'};font-family:'JetBrains Mono',monospace">✏ EDIT</span>
+      <div onclick="toggleEdit(!S.editMode)" style="width:36px;height:20px;background:${S.editMode?'var(--accent)':'var(--bg4)'};border-radius:10px;position:relative;cursor:pointer;transition:background 0.2s;border:1px solid ${S.editMode?'var(--accent)':'var(--border2)'}">
+        <div style="position:absolute;top:2px;left:${S.editMode?'17':'3'}px;width:14px;height:14px;background:${S.editMode?'#000':'var(--text3)'};border-radius:50%;transition:left 0.2s"></div>
+      </div>
+    </label>` : '';
+
+  const becomeBanner = S.role==='student' ? `
+    <div class="become-instructor-banner">
+      <span class="bib-ico">🎓</span>
+      <div class="bib-text">
+        <h4>Become a codethebox Instructor</h4>
+        <p>Share your expertise — apply to create and manage course content</p>
+      </div>
+      <button class="bib-btn" onclick="openModal('instructorApplyModal')">Apply Now</button>
+    </div>` : '';
 
   const area = document.getElementById('contentArea');
   area.innerHTML = `
-    <div class="c-breadcrumb">
-      <a onclick="showView('catalog')">Catalog</a> <span>›</span>
-      <a onclick="">${course.id}</a> <span>›</span>
-      <span>${mod.title}</span> <span>›</span>
-      <span>${page.title}</span>
+    <div class="bcrumb">
+      <a onclick="showView('catalog')">Catalog</a><span>›</span>
+      <a onclick="showView('catalog')" style="color:${p.color}">${c.id}</a><span>›</span>
+      <span>${mod.title}</span><span>›</span><span>${page.title}</span>
       ${editToggle}
     </div>
-    <div class="content-header">
-      <div class="content-type-bar">
-        <div class="ct-badge ${page.type}">${typeIcons[page.type]} ${typeLabels[page.type]}</div>
-        ${page.duration ? `<span class="cm-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>${page.duration}</span>` : ''}
-      </div>
-      <h1 class="content-title" id="contentTitle" ${S.editMode?'contenteditable="true"':''}>${page.title}</h1>
-    </div>
-    <div class="blocks-container" id="blocksContainer">
-      ${renderBlocks(page.blocks, S.currentPageKey)}
-    </div>
+    ${becomeBanner}
+    <div class="content-type-chip ctc-${page.type}">${typeIco[page.type]} ${typeLabel[page.type]}${page.dur?` · ${page.dur}`:''}</div>
+    <h1 class="page-title-h" id="pgTitle" ${S.editMode?'contenteditable="true"':''}>${page.title}</h1>
+    <div class="blocks-container" id="blocksContainer">${page.blocks.map((b,i)=>renderBlock(b,i)).join('')}</div>
     <div class="add-block-bar">
-      <span>Add block:</span>
+      <span class="abl">Add block:</span>
       <button class="abb" onclick="addBlock('text')">📝 Text</button>
       <button class="abb" onclick="addBlock('heading')">📌 Heading</button>
       <button class="abb" onclick="addBlock('note')">ℹ Note</button>
@@ -1537,427 +1868,228 @@ function renderPageContent() {
       <button class="abb" onclick="addBlock('danger')">🚫 Danger</button>
       <button class="abb" onclick="addBlock('code')">💻 Code</button>
       <button class="abb" onclick="addBlock('card')">🃏 Card</button>
-      <button class="abb" onclick="openAddVideoModal()">▶ Video</button>
-      <button class="abb" onclick="openAddImageModal()">🖼 Image</button>
-      <button class="abb" onclick="openAddLinkModal()">🔗 Link</button>
+      <button class="abb" onclick="openModal('addVideoModal')">▶ Video</button>
+      <button class="abb" onclick="openModal('addImageModal')">🖼 Image</button>
+      <button class="abb" onclick="openModal('addLinkModal')">🔗 Link</button>
     </div>
     <div class="page-nav">
-      ${prev ? `<button class="page-nav-btn" onclick="loadPage('${prev.key}')"><span class="pn-dir">← Previous</span><span class="pn-title">${prev.title}</span></button>` : '<div></div>'}
-      ${next ? `<button class="page-nav-btn right" onclick="loadPage('${next.key}')"><span class="pn-dir">Next →</span><span class="pn-title">${next.title}</span></button>` : '<div></div>'}
+      ${prev?`<button class="pn-btn" onclick="loadPage('${prev.key}')"><span class="pn-dir">← Previous</span><span class="pn-title">${prev.title}</span></button>`:'<div></div>'}
+      ${next?`<button class="pn-btn right" onclick="loadPage('${next.key}')"><span class="pn-dir">Next →</span><span class="pn-title">${next.title}</span></button>`:'<div></div>'}
     </div>`;
 
-  // Title edit
+  // Title editable
   if (S.editMode) {
-    const titleEl = document.getElementById('contentTitle');
-    if (titleEl) titleEl.oninput = () => { page.title = titleEl.textContent; renderModuleList(course); };
+    const te = document.getElementById('pgTitle');
+    if (te) te.oninput = ()=>{ page.title=te.textContent; renderModuleList(c); };
   }
 
-  attachBlockInteractivity(page);
+  attachEditable(page);
   renderTOC(page);
 }
 
-function renderBlocks(blocks, pageKey) {
-  return blocks.map((b, bi) => renderBlock(b, bi, pageKey)).join('');
+function renderBlock(b, bi) {
+  const tb = `<div class="btb-wrap"><button class="btb mov" onclick="moveBlock(${bi},-1)">↑</button><button class="btb mov" onclick="moveBlock(${bi},1)">↓</button><button class="btb del" onclick="deleteBlock(${bi})">✕</button></div>`;
+
+  if (b.t==='lab-meta') return `<div class="block" data-bi="${bi}">${tb}<div class="lab-header-bar"><div class="lab-ico-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div><div class="lab-hdr-text"><h3>Hands-on Lab</h3><p>Complete all steps to earn ${b.points||50} points</p></div></div><div class="lab-meta-grid"><div class="lab-mc"><div class="lmv">${b.duration||'30 min'}</div><div class="lmk">Duration</div></div><div class="lab-mc"><div class="lmv">${b.difficulty||'Beginner'}</div><div class="lmk">Difficulty</div></div><div class="lab-mc"><div class="lmv">${b.points||50}</div><div class="lmk">Points</div></div></div></div>`;
+
+  if (b.t==='step') {
+    const ck=`done_${S.curCourseId}_${S.curPageKey}_s${b.n}`;
+    const done=!!S.completedSteps[ck];
+    return `<div class="block" data-bi="${bi}">${tb}<div class="step-block"><div class="step-hdr"><div class="step-num-b">${b.n}</div><h4>${b.title}</h4><button class="step-done-btn ${done?'s-done':'s-undone'}" onclick="toggleStep('${ck}',this)">${done?'✓ Completed':'Mark done'}</button></div><div class="step-body">${b.c}</div></div></div>`;
+  }
+
+  if (b.t==='video') {
+    const em=ytEmbed(b.url);
+    return `<div class="block" data-bi="${bi}">${tb}<div class="b-video"><div class="video-wrapper">${em?`<iframe src="${em}" allowfullscreen></iframe>`:`<div class="video-ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg><span style="font-size:13px">Set a YouTube URL in edit mode</span></div>`}</div><div class="v-cap" id="vc-${bi}">${b.cap||''}</div></div></div>`;
+  }
+
+  if (b.t==='image') return `<div class="block" data-bi="${bi}">${tb}<div class="b-image">${b.url?`<img class="img-actual" src="${b.url}" alt="${b.cap||''}">`:`<div class="img-ph" onclick="openImgModal(${bi})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Click to set image URL</span></div>`}<div class="i-cap">${b.cap||''}</div></div></div>`;
+
+  if (b.t==='link') return `<div class="block" data-bi="${bi}">${tb}<a class="b-link-card" href="${b.url}" target="_blank"><div class="b-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div><div><div class="blk-lt">${b.lt||b.url}</div><div class="blk-ld">${b.ld||''}</div></div><div class="blk-arr"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div></a></div>`;
+
+  let inner='';
+  if (b.t==='heading') inner=`<h2 class="b-h" id="bh-${bi}">${b.c}</h2>`;
+  else if (b.t==='text') inner=`<div class="b-text"><p>${b.c}</p></div>`;
+  else if (b.t==='note') inner=`<div class="callout note"><span class="c-ico">ℹ</span><div class="c-body">${b.c}</div></div>`;
+  else if (b.t==='tip') inner=`<div class="callout tip"><span class="c-ico">✓</span><div class="c-body">${b.c}</div></div>`;
+  else if (b.t==='warning') inner=`<div class="callout warning"><span class="c-ico">⚠</span><div class="c-body">${b.c}</div></div>`;
+  else if (b.t==='danger') inner=`<div class="callout danger"><span class="c-ico">🚫</span><div class="c-body">${b.c}</div></div>`;
+  else if (b.t==='code') inner=`<pre class="b-code">${esc(b.c)}</pre>`;
+  else if (b.t==='card') inner=`<div class="b-card"><h4>${b.h||'Card'}</h4><p>${b.c}</p></div>`;
+
+  return `<div class="block" data-bi="${bi}">${tb}${inner}</div>`;
 }
 
-function renderBlock(b, bi, pageKey) {
-  const toolbar = `<div class="block-toolbar">
-    <button class="btb mov" onclick="moveBlock(${bi},-1)">↑</button>
-    <button class="btb mov" onclick="moveBlock(${bi},1)">↓</button>
-    <button class="btb del" onclick="deleteBlock(${bi})">✕</button>
-  </div>`;
-
-  if (b.t === 'lab-meta') {
-    return `<div class="block" data-bi="${bi}">
-      <div class="lab-header-bar">
-        <div class="lab-icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg></div>
-        <div><div style="font-size:18px;font-weight:800">Hands-on Lab</div><div style="opacity:.8;font-size:13px">Complete all steps to earn points</div></div>
-      </div>
-      <div class="lab-meta-grid">
-        <div class="lab-meta-card"><div class="lmc-val">${b.duration}</div><div class="lmc-key">Duration</div></div>
-        <div class="lab-meta-card"><div class="lmc-val">${b.difficulty}</div><div class="lmc-key">Difficulty</div></div>
-        <div class="lab-meta-card"><div class="lmc-val">${b.points}</div><div class="lmc-key">Points</div></div>
-      </div>
-      ${toolbar}</div>`;
-  }
-
-  if (b.t === 'step') {
-    const ck = `comp_${S.currentCourseId}_${pageKey}_step_${b.n}`;
-    const done = !!S.completedSteps[ck];
-    return `<div class="block" data-bi="${bi}">
-      <div class="step-block">
-        <div class="step-header">
-          <div class="step-num-badge">${b.n}</div>
-          <h4>${b.title}</h4>
-          <button class="step-complete-btn ${done?'done':'undone'}" onclick="toggleStep('${ck}',this)">${done?'✓ Done':'Mark done'}</button>
-        </div>
-        <div class="step-body">${b.c}</div>
-      </div>
-      ${toolbar}</div>`;
-  }
-
-  if (b.t === 'video') {
-    const embedUrl = youtubeEmbed(b.url);
-    return `<div class="block" data-bi="${bi}">
-      <div class="b-video">
-        <div class="video-wrapper">${embedUrl ? `<iframe src="${embedUrl}" allowfullscreen></iframe>` : `<div class="video-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="5 3 19 12 5 21 5 3"/></svg><span>Video URL not set or invalid</span></div>`}</div>
-        <div class="video-caption" id="vcap-${bi}">${b.cap || ''}</div>
-      </div>
-      ${toolbar}</div>`;
-  }
-
-  if (b.t === 'image') {
-    return `<div class="block" data-bi="${bi}">
-      <div class="b-image">
-        ${b.url ? `<img class="img-actual" src="${b.url}" alt="${b.cap||''}">` : `<div class="img-placeholder" onclick="openAddImageModal(${bi})"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>Click to set image URL</span></div>`}
-        <div class="img-caption">${b.cap || ''}</div>
-      </div>
-      ${toolbar}</div>`;
-  }
-
-  if (b.t === 'link') {
-    return `<div class="block" data-bi="${bi}">
-      <a class="b-link" href="${b.url}" target="_blank" rel="noopener">
-        <div class="b-link-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg></div>
-        <div class="b-link-text"><div class="lt">${b.linkTitle || b.url}</div><div class="ld">${b.desc || ''}</div></div>
-        <div class="b-link-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg></div>
-      </a>
-      ${toolbar}</div>`;
-  }
-
-  let inner = '';
-  if (b.t === 'heading') inner = `<h2 class="b-heading" id="h-${bi}">${b.c}</h2>`;
-  else if (b.t === 'text')    inner = `<div class="b-text"><p>${b.c}</p></div>`;
-  else if (b.t === 'note')    inner = `<div class="callout note"><span class="ci">ℹ</span><div class="cb">${b.c}</div></div>`;
-  else if (b.t === 'tip')     inner = `<div class="callout tip"><span class="ci">✓</span><div class="cb">${b.c}</div></div>`;
-  else if (b.t === 'warning') inner = `<div class="callout warning"><span class="ci">⚠</span><div class="cb">${b.c}</div></div>`;
-  else if (b.t === 'danger')  inner = `<div class="callout danger"><span class="ci">🚫</span><div class="cb">${b.c}</div></div>`;
-  else if (b.t === 'code')    inner = `<pre class="b-code">${escHtml(b.c)}</pre>`;
-  else if (b.t === 'card')    inner = `<div class="b-card"><h4>${b.h||'Card'}</h4><p>${b.c}</p></div>`;
-
-  return `<div class="block" data-bi="${bi}">${toolbar}${inner}</div>`;
-}
-
-function attachBlockInteractivity(page) {
+function attachEditable(page) {
   if (!S.editMode) return;
-  const container = document.getElementById('blocksContainer');
-  page.blocks.forEach((b, bi) => {
-    const blockEl = container.querySelector(`[data-bi="${bi}"]`);
-    if (!blockEl) return;
-    if (b.t === 'text') {
-      const p = blockEl.querySelector('.b-text p');
-      if (p) { p.contentEditable = 'true'; p.oninput = () => { b.c = p.innerHTML; }; }
-    } else if (b.t === 'heading') {
-      const h = blockEl.querySelector('.b-heading');
-      if (h) { h.contentEditable = 'true'; h.oninput = () => { b.c = h.textContent; renderTOC(page); }; }
-    } else if (['note','tip','warning','danger'].includes(b.t)) {
-      const cb = blockEl.querySelector('.cb');
-      if (cb) { cb.contentEditable = 'true'; cb.oninput = () => { b.c = cb.innerHTML; }; }
-    } else if (b.t === 'code') {
-      const pre = blockEl.querySelector('pre');
-      if (pre) { pre.contentEditable = 'true'; pre.oninput = () => { b.c = pre.textContent; }; }
-    } else if (b.t === 'card') {
-      const h4 = blockEl.querySelector('h4'), p = blockEl.querySelector('p');
-      if (h4) { h4.contentEditable = 'true'; h4.oninput = () => { b.h = h4.textContent; }; }
-      if (p) { p.contentEditable = 'true'; p.oninput = () => { b.c = p.innerHTML; }; }
-    } else if (b.t === 'video') {
-      const cap = blockEl.querySelector('.video-caption');
-      if (cap) { cap.contentEditable = 'true'; cap.oninput = () => { b.cap = cap.textContent; }; }
-    }
+  const con = document.getElementById('blocksContainer');
+  page.blocks.forEach((b,bi)=>{
+    const el=con.querySelector(`[data-bi="${bi}"]`); if(!el) return;
+    if (b.t==='text') { const p=el.querySelector('.b-text p'); if(p){p.contentEditable='true';p.oninput=()=>b.c=p.innerHTML;} }
+    else if (b.t==='heading') { const h=el.querySelector('.b-h'); if(h){h.contentEditable='true';h.oninput=()=>{b.c=h.textContent;renderTOC(page);};} }
+    else if (['note','tip','warning','danger'].includes(b.t)) { const cb=el.querySelector('.c-body'); if(cb){cb.contentEditable='true';cb.oninput=()=>b.c=cb.innerHTML;} }
+    else if (b.t==='code') { const pre=el.querySelector('pre'); if(pre){pre.contentEditable='true';pre.oninput=()=>b.c=pre.textContent;} }
+    else if (b.t==='card') { const h4=el.querySelector('h4'),pp=el.querySelector('p'); if(h4){h4.contentEditable='true';h4.oninput=()=>b.h=h4.textContent;} if(pp){pp.contentEditable='true';pp.oninput=()=>b.c=pp.innerHTML;} }
+    else if (b.t==='video') { const vc=el.querySelector('.v-cap'); if(vc){vc.contentEditable='true';vc.oninput=()=>b.cap=vc.textContent;} }
   });
 }
 
 function renderTOC(page) {
-  const headings = page.blocks.filter(b => b.t === 'heading');
-  document.getElementById('pageTOC').innerHTML = headings.map(b =>
-    `<a class="toc-link" href="#">${b.c}</a>`
-  ).join('');
+  document.getElementById('pageTOC').innerHTML = page.blocks.filter(b=>b.t==='heading').map(b=>`<a class="toc-a" href="#">${b.c}</a>`).join('');
 }
 
 // ═══════════════════════════════════════════════════
-//  BLOCKS CRUD
+//   BLOCKS CRUD
 // ═══════════════════════════════════════════════════
-function getPageObj() {
-  const course = S.courses.find(c => c.id === S.currentCourseId);
-  if (!course || !S.currentPageKey) return null;
-  const [mi, pi] = S.currentPageKey.split('-').map(Number);
-  return course.modules[mi]?.pages[pi];
-}
-
 function addBlock(type) {
-  const page = getPageObj(); if (!page) return;
-  const b = { t: type, c: type === 'heading' ? 'New Section' : 'Enter content here...' };
-  if (type === 'card') { b.h = 'Card Title'; b.c = 'Card description.'; }
-  if (type === 'code') b.c = '# code here';
-  page.blocks.push(b);
+  const page=getPage(); if(!page) return;
+  const defs = { text:{t:'text',c:'Enter content here...'}, heading:{t:'heading',c:'New Section'}, note:{t:'note',c:'Note content...'}, tip:{t:'tip',c:'Tip content...'}, warning:{t:'warning',c:'Warning content...'}, danger:{t:'danger',c:'Danger note...'}, code:{t:'code',c:'# code here'}, card:{t:'card',h:'Card Title',c:'Card description.'} };
+  page.blocks.push(defs[type]||{t:type,c:''});
   renderPageContent();
-  showToast('Block added', 'blue');
+  showToast('Block added','cyan');
 }
 
-function deleteBlock(bi) {
-  const page = getPageObj(); if (!page) return;
-  page.blocks.splice(bi, 1);
+function deleteBlock(bi) { const p=getPage(); if(!p) return; p.blocks.splice(bi,1); renderPageContent(); }
+function moveBlock(bi,dir) { const p=getPage(); if(!p) return; const ni=bi+dir; if(ni<0||ni>=p.blocks.length) return; [p.blocks[bi],p.blocks[ni]]=[p.blocks[ni],p.blocks[bi]]; renderPageContent(); }
+
+let _vBi=null, _iBi=null;
+function commitVideo() { const url=document.getElementById('vb-url').value.trim(); const cap=document.getElementById('vb-cap').value.trim(); const pg=getPage(); if(!pg) return; if(_vBi!==null){pg.blocks[_vBi].url=url;pg.blocks[_vBi].cap=cap;}else{pg.blocks.push({t:'video',url,cap});} closeModal('addVideoModal'); renderPageContent(); showToast('Video embedded','cyan'); _vBi=null; }
+function openImgModal(bi) { _iBi=bi; openModal('addImageModal'); }
+function commitImage() { const url=document.getElementById('ib-url').value.trim(); const cap=document.getElementById('ib-cap').value.trim(); const pg=getPage(); if(!pg) return; if(_iBi!==null){pg.blocks[_iBi].url=url;pg.blocks[_iBi].cap=cap;}else{pg.blocks.push({t:'image',url,cap});} closeModal('addImageModal'); renderPageContent(); showToast('Image added','cyan'); _iBi=null; }
+function commitLink() { const url=document.getElementById('lb-url').value.trim(); const lt=document.getElementById('lb-title').value.trim(); const ld=document.getElementById('lb-desc').value.trim(); const pg=getPage(); if(!pg) return; pg.blocks.push({t:'link',url,lt,ld}); closeModal('addLinkModal'); renderPageContent(); showToast('Link added','cyan'); }
+
+function toggleStep(ck,btn) { S.completedSteps[ck]=!S.completedSteps[ck]; btn.textContent=S.completedSteps[ck]?'✓ Completed':'Mark done'; btn.className='step-done-btn '+(S.completedSteps[ck]?'s-done':'s-undone'); showToast(S.completedSteps[ck]?'Step completed! ✓':'Step marked incomplete','green'); }
+
+function toggleEdit(on) {
+  if (S.role==='student') { showToast('Students cannot edit content','amber'); return; }
+  if (S.role==='guest') { openModal('loginModal'); return; }
+  S.editMode=on;
+  document.body.classList.toggle('edit-mode',on);
   renderPageContent();
-}
-
-function moveBlock(bi, dir) {
-  const page = getPageObj(); if (!page) return;
-  const ni = bi + dir;
-  if (ni < 0 || ni >= page.blocks.length) return;
-  [page.blocks[bi], page.blocks[ni]] = [page.blocks[ni], page.blocks[bi]];
-  renderPageContent();
-}
-
-// Video
-let _videoTargetBi = null;
-function openAddVideoModal(bi) { _videoTargetBi = bi !== undefined ? bi : null; openModal('addVideoModal'); }
-function commitVideo() {
-  const url = document.getElementById('vb-url').value.trim();
-  const cap = document.getElementById('vb-cap').value.trim();
-  const page = getPageObj(); if (!page) return;
-  if (_videoTargetBi !== null) {
-    page.blocks[_videoTargetBi].url = url;
-    page.blocks[_videoTargetBi].cap = cap;
-  } else {
-    page.blocks.push({ t:'video', url, cap });
-  }
-  closeModal('addVideoModal');
-  renderPageContent();
-  showToast('Video embedded', 'blue');
-}
-
-// Image
-let _imgTargetBi = null;
-function openAddImageModal(bi) { _imgTargetBi = bi !== undefined ? bi : null; openModal('addImageModal'); }
-function commitImage() {
-  const url = document.getElementById('ib-url').value.trim();
-  const cap = document.getElementById('ib-cap').value.trim();
-  const page = getPageObj(); if (!page) return;
-  if (_imgTargetBi !== null) {
-    page.blocks[_imgTargetBi].url = url;
-    page.blocks[_imgTargetBi].cap = cap;
-  } else {
-    page.blocks.push({ t:'image', url, cap });
-  }
-  closeModal('addImageModal');
-  renderPageContent();
-  showToast('Image added', 'blue');
-}
-
-// Link
-function openAddLinkModal() { openModal('addLinkModal'); }
-function commitLink() {
-  const url = document.getElementById('lb-url').value.trim();
-  const linkTitle = document.getElementById('lb-title').value.trim();
-  const desc = document.getElementById('lb-desc').value.trim();
-  const page = getPageObj(); if (!page) return;
-  page.blocks.push({ t:'link', url, linkTitle, desc });
-  closeModal('addLinkModal');
-  renderPageContent();
-  showToast('Link added', 'blue');
-}
-
-function youtubeEmbed(url) {
-  if (!url) return '';
-  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
-  return m ? `https://www.youtube.com/embed/${m[1]}` : (url.includes('embed') ? url : '');
-}
-
-// Steps
-function toggleStep(ck, btn) {
-  S.completedSteps[ck] = !S.completedSteps[ck];
-  btn.textContent = S.completedSteps[ck] ? '✓ Done' : 'Mark done';
-  btn.className = `step-complete-btn ${S.completedSteps[ck] ? 'done' : 'undone'}`;
-  showToast(S.completedSteps[ck] ? '✓ Step completed!' : 'Step marked incomplete', 'green');
+  if (on) showToast('Edit mode enabled ✏','cyan');
 }
 
 // ═══════════════════════════════════════════════════
-//  COURSE STRUCTURE
+//   COURSE STRUCTURE
 // ═══════════════════════════════════════════════════
-function openAddPageModal(mi) {
-  S.addingToModule = mi;
-  openModal('addPageModal');
-}
+function openAddPage(mi) { S.addingToMod=mi; openModal('addPageModal'); }
 
 function addPage() {
-  const course = S.courses.find(c => c.id === S.currentCourseId);
-  if (!course) return;
-  const title = document.getElementById('ap-title').value.trim();
-  const type = document.getElementById('ap-type').value;
-  const url = document.getElementById('ap-url').value.trim();
-  const dur = document.getElementById('ap-dur').value.trim();
-  if (!title) return;
-
-  const mi = S.addingToModule || 0;
-  const defaultBlocks = type === 'lab'
-    ? [{ t:'lab-meta', duration: dur || '30 min', difficulty:'Beginner', points:50 }, { t:'heading', c:'Lab Objectives' }, { t:'text', c:'Describe your lab objectives here.' }]
-    : type === 'video'
-    ? [{ t:'heading', c:title }, { t:'video', url: url || '', cap:'Video caption' }, { t:'text', c:'Notes for this lesson.' }]
-    : [{ t:'heading', c:title }, { t:'text', c:'Start writing your documentation here.' }];
-
-  course.modules[mi].pages.push({ title, type, duration: dur, url, blocks: defaultBlocks });
+  const c=S.courses.find(x=>x.id===S.curCourseId); if(!c) return;
+  const title=document.getElementById('ap-title').value.trim();
+  const type=document.getElementById('ap-type').value;
+  const url=document.getElementById('ap-url').value.trim();
+  const dur=document.getElementById('ap-dur').value.trim();
+  if(!title) return;
+  const mi=S.addingToMod||0;
+  const defBlocks = type==='lab'
+    ?[{t:'lab-meta',duration:dur||'30 min',difficulty:'Beginner',points:50},{t:'heading',c:'Lab Objectives'},{t:'text',c:'Describe objectives here.'}]
+    :type==='video'
+    ?[{t:'heading',c:title},{t:'video',url:url||'',cap:'Video caption'},{t:'text',c:'Video notes.'}]
+    :[{t:'heading',c:title},{t:'text',c:'Start writing here.'}];
+  c.modules[mi].pages.push({title,type,dur,url,blocks:defBlocks});
   closeModal('addPageModal');
-  S.currentPageKey = `${mi}-${course.modules[mi].pages.length-1}`;
+  S.curPageKey=`${mi}-${c.modules[mi].pages.length-1}`;
   renderCourseView();
-  showToast(`"${title}" created`, 'green');
+  showToast(`"${title}" created`,'green');
 }
 
 function addModule() {
-  const course = S.courses.find(c => c.id === S.currentCourseId);
-  if (!course) return;
-  const title = document.getElementById('nm-title').value.trim();
-  if (!title) return;
-  const colors = ['#0078D4','#107C10','#8764B8','#CA5010','#038387'];
-  course.modules.push({ title, color: colors[course.modules.length % colors.length], pages: [] });
+  const c=S.courses.find(x=>x.id===S.curCourseId); if(!c) return;
+  const title=document.getElementById('nm-title').value.trim(); if(!title) return;
+  const cols=['#FF9900','#4285F4','#0078D4','#D83B01','#C8202A','#8B5CF6','#10B981'];
+  c.modules.push({title,col:cols[c.modules.length%cols.length],pages:[]});
   closeModal('addModuleModal');
   renderCourseView();
-  showToast(`Module "${title}" added`, 'green');
+  showToast(`Module "${title}" added`,'green');
 }
 
 // ═══════════════════════════════════════════════════
-//  EDIT MODE
+//   MANAGER
 // ═══════════════════════════════════════════════════
-function toggleEdit(on) {
-  if (S.role === 'student') { showToast('Students cannot edit content', 'blue'); return; }
-  S.editMode = on;
-  document.body.classList.toggle('edit-mode', on);
-  renderPageContent();
-  if (on) showToast('Edit mode enabled', 'blue');
-}
-
-// ═══════════════════════════════════════════════════
-//  ROLE
-// ═══════════════════════════════════════════════════
-function setRole(role) {
-  S.role = role;
-  const labels = { admin:'👑 Admin', instructor:'🎓 Instructor', student:'📖 Student' };
-  const rb = document.getElementById('roleDisplay');
-  rb.textContent = labels[role];
-  rb.className = `role-badge ${role}`;
-  closeModal('switchRoleModal');
-  document.getElementById('manageBtn').style.display = role === 'admin' ? '' : 'none';
-  if (role === 'student' && S.editMode) { S.editMode = false; document.body.classList.remove('edit-mode'); }
-  if (S.currentView === 'course') renderCourseView();
-  showToast(`Switched to ${role} role`, 'blue');
-}
-
-// ═══════════════════════════════════════════════════
-//  MANAGER
-// ═══════════════════════════════════════════════════
-function renderManager() {
-  renderMgrCourses();
-  renderPermTable();
-}
+function renderManager() { renderMgrCourses(); renderPermTable(); renderRequestsTable(); }
 
 function renderMgrCourses() {
-  const grid = document.getElementById('mgrCoursesGrid');
-  grid.innerHTML = S.courses.map(c => {
-    const totalPages = c.modules.reduce((s,m) => s+m.pages.length, 0);
-    return `<div class="mgr-course-card">
-      <span style="font-family:'Fira Code',monospace;font-size:12px;color:var(--azure);font-weight:600">${c.id}</span>
+  document.getElementById('mgrCoursesGrid').innerHTML = S.courses.map(c=>{
+    const p=PROVIDER[c.provider]||PROVIDER.Other;
+    const totalPgs=c.modules.reduce((s,m)=>s+m.pages.length,0);
+    return `<div class="mgr-card">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:11px;color:${p.color};font-weight:600">${c.provider} · ${c.id}</span>
       <h4>${c.name}</h4>
-      <p>${c.level} · ${c.modules.length} modules · ${totalPages} pages</p>
+      <p>${c.level} · ${c.modules.length} modules · ${totalPgs} pages</p>
       <div class="mgr-actions">
-        <button class="mgr-btn primary" onclick="openCourse('${c.id}');showView('course')">Open</button>
-        <button class="mgr-btn" onclick="deleteCourse('${c.id}')">Delete</button>
+        <button class="mc-btn primary" onclick="openCourse('${c.id}');showView('course')">Open</button>
+        <button class="mc-btn danger" onclick="if(confirm('Delete ${c.id}?')){S.courses=S.courses.filter(x=>x.id!='${c.id}');renderManager();showToast('Deleted','amber')}">Delete</button>
       </div>
     </div>`;
   }).join('');
 }
 
 function renderPermTable() {
-  const roleColors = { admin:'#C50F1F', instructor:'#CA5010', student:'#107C10' };
-  document.getElementById('permTable').innerHTML = `
-    <thead><tr>
-      <th>User</th><th>Email</th><th>Role</th><th>Courses</th><th>Actions</th>
-    </tr></thead>
-    <tbody>${S.users.map((u,i) => `<tr>
-      <td><div style="display:flex;align-items:center;gap:10px">
-        <div class="user-avatar avatar-${u.role}">${u.name.split(' ').map(n=>n[0]).join('')}</div>
-        ${u.name}
-      </div></td>
-      <td style="color:var(--muted)">${u.email}</td>
-      <td><span style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:20px;background:${roleColors[u.role]}20;color:${roleColors[u.role]}">${u.role}</span></td>
-      <td style="font-size:13px;color:var(--muted)">${u.courses.join(', ')}</td>
-      <td>
-        <select class="perm-select" onchange="changeUserRole(${i},this.value)">
-          <option ${u.role==='student'?'selected':''} value="student">Student</option>
-          <option ${u.role==='instructor'?'selected':''} value="instructor">Instructor</option>
-          <option ${u.role==='admin'?'selected':''} value="admin">Admin</option>
-        </select>
-      </td>
-    </tr>`).join('')}</tbody>`;
+  const rc={'admin':'av-a','instructor':'av-i','student':'av-s'};
+  document.getElementById('permTable').innerHTML=`<thead><tr><th>User</th><th>Email</th><th>Role</th><th>Joined</th><th>Change Role</th></tr></thead><tbody>${S.users.map((u,i)=>`<tr><td><div style="display:flex;align-items:center;gap:10px"><div class="u-av ${rc[u.role]||'av-s'}">${u.name.split(' ').map(w=>w[0]).join('').substring(0,2)}</div>${u.name}</div></td><td style="color:var(--text3)">${u.email}</td><td><span style="font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px;background:rgba(255,255,255,0.06);color:var(--text2)">${u.role}</span></td><td style="color:var(--text3);font-size:12px">${u.joined}</td><td><select class="perm-sel" onchange="S.users[${i}].role=this.value;renderPermTable();showToast('Role updated','green')"><option ${u.role==='student'?'selected':''} value="student">Student</option><option ${u.role==='instructor'?'selected':''} value="instructor">Instructor</option><option ${u.role==='admin'?'selected':''} value="admin">Admin</option></select></td></tr>`).join('')}</tbody>`;
 }
 
-function changeUserRole(idx, role) {
-  S.users[idx].role = role;
-  renderPermTable();
-  showToast(`${S.users[idx].name} is now ${role}`, 'green');
-}
-
-function addUser() {
-  const name = document.getElementById('au-name').value.trim();
-  const email = document.getElementById('au-email').value.trim();
-  const role = document.getElementById('au-role').value;
-  if (!name || !email) return;
-  S.users.push({ name, email, role, courses:[] });
-  closeModal('addUserModal');
-  renderPermTable();
-  showToast(`${name} added`, 'green');
-}
-
-function addCourse() {
-  const id = document.getElementById('nc-id').value.trim().toUpperCase();
-  const name = document.getElementById('nc-name').value.trim();
-  const desc = document.getElementById('nc-desc').value.trim();
-  const level = document.getElementById('nc-level').value;
-  const duration = document.getElementById('nc-dur').value.trim() || '0 hours';
-  if (!id || !name) return;
-  S.courses.push({ id, name, desc, level, duration, labs:0, progress:0, modules:[] });
-  closeModal('addCourseModal');
-  renderMgrCourses();
-  renderCatalog();
-  showToast(`Course ${id} created`, 'green');
-}
-
-function deleteCourse(id) {
-  if (!confirm(`Delete ${id}?`)) return;
-  S.courses = S.courses.filter(c => c.id !== id);
-  renderMgrCourses();
-  renderCatalog();
-  showToast(`Course ${id} deleted`, 'blue');
+function renderRequestsTable() {
+  const sc={'pending':'req-pending','approved':'req-approved','rejected':'req-rejected'};
+  document.getElementById('requestsTable').innerHTML=`<thead><tr><th>Name</th><th>Email</th><th>Certifications</th><th>Status</th><th>Actions</th></tr></thead><tbody>${S.instructorRequests.map((r,i)=>`<tr><td><strong>${r.name}</strong><br><span style="font-size:11.5px;color:var(--text3)">${r.linkedin}</span></td><td style="color:var(--text3)">${r.email}</td><td style="font-size:12.5px">${r.certs}</td><td><span class="req-badge ${sc[r.status]}">${r.status}</span></td><td><div style="display:flex;gap:6px">${r.status==='pending'?`<button onclick="S.instructorRequests[${i}].status='approved';renderRequestsTable();showToast('Approved! Email sent to '+S.instructorRequests[${i}].email,'green')" style="padding:4px 10px;border-radius:5px;background:rgba(16,185,129,0.1);color:var(--green);border:1px solid rgba(16,185,129,0.3);cursor:pointer;font-size:12px;font-weight:600">Approve</button><button onclick="S.instructorRequests[${i}].status='rejected';renderRequestsTable();showToast('Application rejected','amber')" style="padding:4px 10px;border-radius:5px;background:rgba(244,63,94,0.1);color:var(--rose);border:1px solid rgba(244,63,94,0.3);cursor:pointer;font-size:12px;font-weight:600">Reject</button>`:'<span style="font-size:12px;color:var(--text3)">—</span>'}</div></td></tr>`).join('')}</tbody>`;
 }
 
 function switchMgrTab(tab, btn) {
-  document.querySelectorAll('.m-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.m-tab').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  document.getElementById('mgrTabCourses').style.display = tab==='courses' ? '' : 'none';
-  document.getElementById('mgrTabUsers').style.display = tab==='users' ? '' : 'none';
-  document.getElementById('mgrTabSettings').style.display = tab==='settings' ? '' : 'none';
+  document.getElementById('mgrCourses').style.display=tab==='courses'?'':'none';
+  document.getElementById('mgrUsers').style.display=tab==='users'?'':'none';
+  document.getElementById('mgrRequests').style.display=tab==='requests'?'':'none';
+}
+
+function addCourse() {
+  const id=document.getElementById('nc-id').value.trim().toUpperCase();
+  const name=document.getElementById('nc-name').value.trim();
+  const provider=document.getElementById('nc-provider').value;
+  const level=document.getElementById('nc-level').value;
+  const desc=document.getElementById('nc-desc').value.trim();
+  const duration=document.getElementById('nc-dur').value.trim()||'0 hours';
+  if(!id||!name) return;
+  S.courses.push({id,name,provider,level,desc,duration,progress:0,modules:[]});
+  closeModal('addCourseModal');
+  renderManager();
+  renderCatalog();
+  showToast(`Course ${id} created`,'green');
+}
+
+function addUser() {
+  const name=document.getElementById('au-name').value.trim();
+  const email=document.getElementById('au-email').value.trim();
+  const role=document.getElementById('au-role').value;
+  if(!name||!email) return;
+  S.users.push({id:Date.now(),name,email,role,joined:new Date().toISOString().split('T')[0]});
+  closeModal('addUserModal');
+  renderPermTable();
+  showToast(`${name} added`,'green');
 }
 
 // ═══════════════════════════════════════════════════
-//  UTILS
+//   MODALS & UTILS
 // ═══════════════════════════════════════════════════
-function openModal(id)  { document.getElementById(id).classList.add('open'); }
+function openModal(id) { document.getElementById(id).classList.add('open'); }
 function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.modal-overlay').forEach(o => {
-  o.addEventListener('click', e => { if (e.target === o) o.classList.remove('open'); });
-});
+document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('open');}));
 
-let toastTimer;
-function showToast(msg, type='green') {
-  const t = document.getElementById('toast');
-  t.textContent = (type==='green'?'✓ ':type==='blue'?'ℹ ':'') + msg;
-  t.className = `toast ${type} show`;
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
+let _toast;
+function showToast(msg,type='cyan') {
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className=`toast ${type} show`;
+  clearTimeout(_toast); _toast=setTimeout(()=>t.classList.remove('show'),2500);
 }
 
-function escHtml(str) { return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function ytEmbed(url) { if(!url) return ''; const m=url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/); return m?`https://www.youtube.com/embed/${m[1]}`:(url.includes('embed')?url:''); }
+function esc(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
 // Init
-showView('catalog');
+updateUserUI();
+showView('home');
+document.getElementById('hStat1').textContent = S.courses.length + '+';
 </script>
 </body>
 </html>
