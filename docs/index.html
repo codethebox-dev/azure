@@ -3,928 +3,1402 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Azure Documentation — My Project v1.0.0</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:wght@400;600&display=swap" rel="stylesheet">
+<title>Azure Docs — Customizable Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --azure-blue: #0078D4;
-    --azure-dark: #003865;
-    --azure-mid: #004E8C;
-    --azure-light: #EBF3FB;
-    --azure-cyan: #00B4D8;
-    --sidebar-w: 280px;
-    --toc-w: 220px;
-    --content-max: 760px;
-    --header-h: 52px;
-    --text: #1a1a2e;
-    --muted: #5a6a7a;
-    --border: #d0dce8;
-    --code-bg: #f0f4f8;
-    --hover-bg: #e8f2fb;
-    --active-bg: #ddeefa;
-    --active-border: var(--azure-blue);
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 15px;
-    color: var(--text);
-    background: #fff;
-    line-height: 1.7;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-
-  /* ── TOP HEADER ── */
-  header {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    height: var(--header-h);
-    background: var(--azure-dark);
-    display: flex;
-    align-items: center;
-    padding: 0 20px;
-    gap: 16px;
-    z-index: 100;
-    border-bottom: 2px solid var(--azure-blue);
-  }
-
-  .header-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: 0.01em;
-  }
-
-  .azure-icon {
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
-  }
-
-  .header-divider {
-    width: 1px;
-    height: 22px;
-    background: rgba(255,255,255,0.25);
-  }
-
-  .header-project {
-    color: rgba(255,255,255,0.85);
-    font-size: 14px;
-    font-weight: 500;
-  }
-
-  .header-version {
-    margin-left: auto;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.25);
-    color: rgba(255,255,255,0.8);
-    font-size: 12px;
-    padding: 3px 10px;
-    border-radius: 3px;
-    font-family: 'IBM Plex Mono', monospace;
-  }
-
-  .header-search {
-    display: flex;
-    align-items: center;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 4px;
-    padding: 0 10px;
-    gap: 6px;
-    margin-left: 12px;
-  }
-
-  .header-search input {
-    background: none;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 13px;
-    width: 180px;
-    padding: 5px 0;
-  }
-
-  .header-search input::placeholder { color: rgba(255,255,255,0.45); }
-
-  .search-icon {
-    color: rgba(255,255,255,0.5);
-    font-size: 13px;
-  }
-
-  /* ── LAYOUT ── */
-  .layout {
-    display: flex;
-    margin-top: var(--header-h);
-    min-height: calc(100vh - var(--header-h));
-  }
-
-  /* ── LEFT SIDEBAR ── */
-  aside.sidebar {
-    width: var(--sidebar-w);
-    flex-shrink: 0;
-    background: #f7fafd;
-    border-right: 1px solid var(--border);
-    position: fixed;
-    top: var(--header-h);
-    bottom: 0;
-    left: 0;
-    overflow-y: auto;
-    padding: 20px 0;
-  }
-
-  aside.sidebar::-webkit-scrollbar { width: 4px; }
-  aside.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
-
-  .sidebar-section-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 14px 20px 6px;
-  }
-
-  .sidebar-section-label:first-child { padding-top: 4px; }
-
-  .sidebar nav a {
-    display: flex;
-    align-items: center;
-    padding: 7px 20px;
-    text-decoration: none;
-    font-size: 13.5px;
-    color: #3a4a5a;
-    border-left: 3px solid transparent;
-    transition: background 0.15s, color 0.15s;
-    gap: 8px;
-  }
-
-  .sidebar nav a:hover {
-    background: var(--hover-bg);
-    color: var(--azure-blue);
-  }
-
-  .sidebar nav a.active {
-    background: var(--active-bg);
-    color: var(--azure-blue);
-    border-left-color: var(--azure-blue);
-    font-weight: 500;
-  }
-
-  .sidebar nav a .nav-icon {
-    width: 16px;
-    height: 16px;
-    opacity: 0.6;
-    flex-shrink: 0;
-  }
-
-  .sidebar nav a.active .nav-icon { opacity: 1; }
-
-  /* Sub items */
-  .sidebar nav .sub-item {
-    padding-left: 44px;
-    font-size: 13px;
-    color: #5a6a7a;
-  }
-
-  .sidebar nav .sub-item:hover { color: var(--azure-blue); }
-  .sidebar nav .sub-item.active { color: var(--azure-blue); border-left-color: var(--azure-blue); }
-
-  /* ── MAIN CONTENT ── */
-  main {
-    margin-left: var(--sidebar-w);
-    margin-right: var(--toc-w);
-    flex: 1;
-    padding: 48px 56px;
-    max-width: calc(var(--content-max) + 112px);
-  }
-
-  /* ── RIGHT TOC ── */
-  aside.toc {
-    width: var(--toc-w);
-    flex-shrink: 0;
-    position: fixed;
-    top: var(--header-h);
-    right: 0;
-    bottom: 0;
-    overflow-y: auto;
-    padding: 28px 16px 28px 12px;
-    border-left: 1px solid var(--border);
-    background: #fff;
-  }
-
-  .toc-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 12px;
-    padding-left: 12px;
-  }
-
-  .toc nav a {
-    display: block;
-    padding: 4px 12px;
-    font-size: 12.5px;
-    color: var(--muted);
-    text-decoration: none;
-    border-left: 2px solid transparent;
-    line-height: 1.5;
-    transition: all 0.15s;
-  }
-
-  .toc nav a:hover { color: var(--azure-blue); }
-  .toc nav a.active { color: var(--azure-blue); border-left-color: var(--azure-blue); font-weight: 500; }
-
-  .toc nav a.sub { padding-left: 22px; font-size: 12px; }
-
-  /* ── BREADCRUMB ── */
-  .breadcrumb {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 12.5px;
-    color: var(--muted);
-    margin-bottom: 32px;
-  }
-
-  .breadcrumb a { color: var(--azure-blue); text-decoration: none; }
-  .breadcrumb a:hover { text-decoration: underline; }
-  .breadcrumb span { opacity: 0.5; }
-
-  /* ── TYPOGRAPHY ── */
-  .doc-title {
-    font-family: 'IBM Plex Serif', serif;
-    font-size: 32px;
-    font-weight: 600;
-    color: var(--azure-dark);
-    line-height: 1.25;
-    margin-bottom: 8px;
-    letter-spacing: -0.01em;
-  }
-
-  .doc-subtitle {
-    font-size: 16px;
-    color: var(--muted);
-    margin-bottom: 40px;
-    font-weight: 300;
-  }
-
-  .doc-content h2 {
-    font-family: 'IBM Plex Sans', sans-serif;
-    font-size: 20px;
-    font-weight: 600;
-    color: var(--azure-dark);
-    margin-top: 48px;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .doc-content h2 .anchor {
-    font-size: 14px;
-    color: var(--azure-blue);
-    opacity: 0;
-    transition: opacity 0.15s;
-    text-decoration: none;
-  }
-
-  .doc-content h2:hover .anchor { opacity: 1; }
-
-  .doc-content h3 {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text);
-    margin-top: 28px;
-    margin-bottom: 10px;
-  }
-
-  .doc-content p {
-    margin-bottom: 16px;
-    color: #2a3848;
-  }
-
-  .doc-content a { color: var(--azure-blue); text-decoration: none; }
-  .doc-content a:hover { text-decoration: underline; }
-
-  .doc-content strong { font-weight: 600; color: var(--azure-dark); }
-
-  .doc-content code {
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 12.5px;
-    background: var(--code-bg);
-    color: #0050a0;
-    padding: 2px 6px;
-    border-radius: 3px;
-    border: 1px solid #cfdce9;
-  }
-
-  .doc-content pre {
-    background: #0d1117;
-    border-radius: 6px;
-    padding: 20px 24px;
-    margin: 20px 0;
-    overflow-x: auto;
-    border-left: 3px solid var(--azure-blue);
-  }
-
-  .doc-content pre code {
-    background: none;
-    border: none;
-    color: #c9d1d9;
-    font-size: 13px;
-    padding: 0;
-  }
-
-  /* ── CALLOUT BOXES ── */
-  .callout {
-    border-radius: 6px;
-    padding: 16px 20px;
-    margin: 20px 0;
-    display: flex;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
-
-  .callout.note { background: var(--azure-light); border: 1px solid #b3d4ef; }
-  .callout.note .callout-icon { color: var(--azure-blue); }
-
-  .callout.tip { background: #edfaf3; border: 1px solid #a3d9b8; }
-  .callout.tip .callout-icon { color: #2ea86a; }
-
-  .callout.warning { background: #fff8e6; border: 1px solid #f5d87a; }
-  .callout.warning .callout-icon { color: #c9900a; }
-
-  .callout-body { font-size: 13.5px; line-height: 1.6; }
-  .callout-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
-
-  /* ── SERVICE CARDS ── */
-  .cards {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin: 28px 0;
-  }
-
-  .card {
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 20px;
-    text-decoration: none;
-    color: var(--text);
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    background: #fff;
-  }
-
-  .card:hover {
-    border-color: var(--azure-blue);
-    box-shadow: 0 0 0 3px var(--azure-light);
-    color: var(--text);
-    text-decoration: none;
-  }
-
-  .card-label {
-    font-size: 10px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--azure-blue);
-  }
-
-  .card-title {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--azure-dark);
-  }
-
-  .card-desc {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.5;
-  }
-
-  /* ── STEPS ── */
-  .steps { margin: 20px 0; }
-
-  .step {
-    display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
-  }
-
-  .step-num {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    background: var(--azure-blue);
-    color: #fff;
-    font-size: 12px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 2px;
-  }
-
-  .step-body { flex: 1; }
-  .step-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-  .step-body p { font-size: 13.5px; color: var(--muted); margin: 0; }
-
-  /* ── TABLE ── */
-  .doc-content table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 13.5px;
-    margin: 20px 0;
-  }
-
-  .doc-content th {
-    background: var(--azure-dark);
-    color: #fff;
-    padding: 10px 14px;
-    text-align: left;
-    font-weight: 500;
-    font-size: 12px;
-    letter-spacing: 0.04em;
-  }
-
-  .doc-content td {
-    padding: 9px 14px;
-    border-bottom: 1px solid var(--border);
-    vertical-align: top;
-  }
-
-  .doc-content tr:nth-child(even) td { background: #f9fbfd; }
-
-  /* ── PREV/NEXT ── */
-  .page-nav {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 56px;
-    padding-top: 24px;
-    border-top: 1px solid var(--border);
-    gap: 16px;
-  }
-
-  .page-nav a {
-    display: flex;
-    flex-direction: column;
-    text-decoration: none;
-    color: var(--text);
-    padding: 16px 20px;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    flex: 1;
-    transition: all 0.15s;
-    max-width: 48%;
-  }
-
-  .page-nav a:hover { border-color: var(--azure-blue); background: var(--azure-light); }
-
-  .page-nav .nav-dir {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 4px;
-  }
-
-  .page-nav .nav-title {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--azure-blue);
-  }
-
-  .page-nav .next { text-align: right; margin-left: auto; }
-
-  /* ── FOOTER ── */
-  .doc-footer {
-    margin-left: var(--sidebar-w);
-    margin-right: var(--toc-w);
-    padding: 16px 56px;
-    border-top: 1px solid var(--border);
-    font-size: 12px;
-    color: var(--muted);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  /* ── BADGE ── */
-  .badge {
-    display: inline-block;
-    font-family: 'IBM Plex Mono', monospace;
-    font-size: 11px;
-    padding: 2px 8px;
-    border-radius: 3px;
-    margin-left: 6px;
-    vertical-align: middle;
-  }
-
-  .badge.get { background: #dff0e8; color: #1a7a48; }
-  .badge.post { background: #fff0d9; color: #a05c00; }
-  .badge.new { background: var(--azure-light); color: var(--azure-blue); border: 1px solid #b3d4ef; }
-
-  /* Separator */
-  .sidebar-sep {
-    height: 1px;
-    background: var(--border);
-    margin: 10px 0;
-  }
-
-  /* Intro badge strip */
-  .intro-strip {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    margin-bottom: 32px;
-  }
-
-  .intro-tag {
-    font-size: 11.5px;
-    padding: 4px 10px;
-    border-radius: 20px;
-    background: var(--azure-light);
-    color: var(--azure-mid);
-    border: 1px solid #c0d8ef;
-    font-weight: 500;
-  }
+:root {
+  --azure: #0078D4;
+  --azure-dark: #004578;
+  --azure-light: #EBF3FB;
+  --azure-mid: #106EBE;
+  --beginner: #107C10;
+  --beginner-bg: #DFF6DD;
+  --beginner-border: #92C353;
+  --intermediate: #CA5010;
+  --intermediate-bg: #FFF4CE;
+  --intermediate-border: #F7A745;
+  --advanced: #8764B8;
+  --advanced-bg: #F4EFD0;
+  --advanced-border: #C5A823;
+  --sidebar-w: 270px;
+  --toc-w: 210px;
+  --header-h: 56px;
+  --text: #1a1f2e;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --bg: #f8fafc;
+  --white: #ffffff;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Sora', sans-serif;
+  font-size: 14.5px;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.75;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* ──────────── HEADER ──────────── */
+header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--header-h);
+  background: var(--azure-dark);
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 12px;
+  z-index: 200;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.logo svg { width: 30px; height: 30px; }
+
+.hd { width: 1px; height: 24px; background: rgba(255,255,255,0.2); }
+
+/* Project title — editable */
+.project-name {
+  color: rgba(255,255,255,0.9);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border-bottom: 1px dashed rgba(255,255,255,0.35);
+  padding-bottom: 1px;
+  transition: border-color 0.2s;
+}
+.project-name:hover { border-color: rgba(255,255,255,0.7); }
+
+/* Version selector */
+.version-wrap {
+  position: relative;
+  margin-left: 2px;
+}
+.version-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: rgba(255,255,255,0.9);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.version-btn:hover { background: rgba(255,255,255,0.2); }
+.version-btn svg { width: 12px; height: 12px; transition: transform 0.2s; }
+.version-btn.open svg { transform: rotate(180deg); }
+
+.version-dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  min-width: 180px;
+  display: none;
+  z-index: 300;
+  overflow: hidden;
+}
+.version-dropdown.open { display: block; }
+
+.version-dropdown .vd-header {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 14px 6px;
+}
+
+.version-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 14px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background 0.15s;
+  gap: 10px;
+}
+.version-item:hover { background: var(--azure-light); }
+.version-item.active { color: var(--azure); font-weight: 600; }
+.version-item .vi-tag {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 3px;
+  background: var(--azure-light);
+  color: var(--azure);
+  font-weight: 600;
+}
+.version-item .vi-tag.latest { background: #dcfce7; color: #15803d; }
+
+.vd-actions {
+  border-top: 1px solid var(--border);
+  padding: 8px;
+  display: flex;
+  gap: 6px;
+}
+.vd-actions button {
+  flex: 1;
+  padding: 6px 8px;
+  font-size: 12px;
+  font-family: 'Sora', sans-serif;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-add-version {
+  background: var(--azure);
+  color: #fff;
+  border: none;
+}
+.btn-add-version:hover { background: var(--azure-mid); }
+.btn-del-version {
+  background: #fff;
+  color: #dc2626;
+  border: 1px solid #fecaca;
+}
+.btn-del-version:hover { background: #fef2f2; }
+
+/* Role selector */
+.role-selector {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.role-label {
+  color: rgba(255,255,255,0.6);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.role-btn {
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1.5px solid transparent;
+  transition: all 0.2s;
+  letter-spacing: 0.02em;
+}
+.role-btn.beginner   { background: rgba(16,124,16,0.15); color: #92C353; border-color: rgba(146,195,83,0.4); }
+.role-btn.intermediate { background: rgba(202,80,16,0.15); color: #F7A745; border-color: rgba(247,167,69,0.4); }
+.role-btn.advanced   { background: rgba(135,100,184,0.15); color: #C5A823; border-color: rgba(197,168,35,0.4); }
+.role-btn.active.beginner    { background: var(--beginner); color: #fff; border-color: var(--beginner); }
+.role-btn.active.intermediate { background: var(--intermediate); color: #fff; border-color: var(--intermediate); }
+.role-btn.active.advanced    { background: var(--advanced); color: #fff; border-color: var(--advanced); }
+.role-btn.active.all { background: rgba(255,255,255,0.2); color: #fff; border-color: rgba(255,255,255,0.4); }
+.role-btn.all { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); border-color: rgba(255,255,255,0.2); }
+
+/* Edit mode toggle */
+.edit-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+  cursor: pointer;
+}
+.edit-toggle input { display: none; }
+.toggle-track {
+  width: 36px; height: 20px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+  position: relative;
+  transition: background 0.2s;
+}
+.toggle-track::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+input:checked ~ .toggle-track { background: #22c55e; }
+input:checked ~ .toggle-track::after { transform: translateX(16px); }
+.edit-label { color: rgba(255,255,255,0.75); font-size: 11.5px; font-weight: 500; }
+
+/* ──────────── LAYOUT ──────────── */
+.layout {
+  display: flex;
+  margin-top: var(--header-h);
+  min-height: calc(100vh - var(--header-h));
+}
+
+/* ──────────── SIDEBAR ──────────── */
+aside.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: var(--header-h); bottom: 0; left: 0;
+  overflow-y: auto;
+  padding: 16px 0 24px;
+  z-index: 100;
+}
+aside.sidebar::-webkit-scrollbar { width: 4px; }
+aside.sidebar::-webkit-scrollbar-thumb { background: var(--border); }
+
+.sidebar-section {
+  margin-top: 8px;
+}
+.sidebar-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  padding: 10px 18px 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.add-page-btn {
+  width: 18px; height: 18px;
+  border-radius: 3px;
+  background: var(--azure-light);
+  color: var(--azure);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s;
+  display: none; /* show in edit mode */
+}
+.add-page-btn:hover { background: #cce2f6; }
+body.edit-mode .add-page-btn { display: flex; }
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  padding: 7.5px 18px;
+  gap: 9px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  text-decoration: none;
+  color: #374151;
+  font-size: 13.5px;
+  position: relative;
+}
+.nav-item:hover { background: #f0f7ff; color: var(--azure); }
+.nav-item.active { background: #e6f2ff; color: var(--azure); border-left-color: var(--azure); font-weight: 600; }
+.nav-item svg { width: 15px; height: 15px; opacity: 0.6; flex-shrink: 0; }
+.nav-item.active svg { opacity: 1; }
+
+.nav-item .item-role-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+.dot-beginner { background: var(--beginner); }
+.dot-intermediate { background: var(--intermediate); }
+.dot-advanced { background: var(--advanced); }
+.dot-all { display: none; }
+
+.nav-item .delete-page {
+  margin-left: auto;
+  width: 18px; height: 18px;
+  border-radius: 3px;
+  background: #fee2e2;
+  color: #dc2626;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+body.edit-mode .nav-item:hover .delete-page { display: flex; }
+body.edit-mode .nav-item:hover .item-role-dot { display: none; }
+
+.sidebar-sep { height: 1px; background: var(--border); margin: 8px 0; }
+
+/* ──────────── MAIN ──────────── */
+main {
+  margin-left: var(--sidebar-w);
+  margin-right: var(--toc-w);
+  flex: 1;
+  padding: 48px 60px;
+  background: var(--white);
+  min-height: calc(100vh - var(--header-h));
+}
+
+/* ──────────── RIGHT TOC ──────────── */
+aside.toc {
+  width: var(--toc-w);
+  flex-shrink: 0;
+  position: fixed;
+  top: var(--header-h); right: 0; bottom: 0;
+  overflow-y: auto;
+  padding: 24px 14px;
+  border-left: 1px solid var(--border);
+  background: var(--bg);
+}
+.toc-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+.toc nav a {
+  display: block;
+  padding: 4px 10px;
+  font-size: 12.5px;
+  color: var(--muted);
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all 0.15s;
+  line-height: 1.5;
+}
+.toc nav a:hover { color: var(--azure); }
+.toc nav a.active { color: var(--azure); border-left-color: var(--azure); font-weight: 600; }
+
+/* ──────────── BREADCRUMB ──────────── */
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+.breadcrumb a { color: var(--azure); text-decoration: none; }
+.breadcrumb a:hover { text-decoration: underline; }
+
+/* ──────────── ROLE BANNER ──────────── */
+.role-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  margin-bottom: 28px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.role-banner.beginner    { background: var(--beginner-bg); color: var(--beginner); border: 1px solid var(--beginner-border); }
+.role-banner.intermediate { background: var(--intermediate-bg); color: var(--intermediate); border: 1px solid var(--intermediate-border); }
+.role-banner.advanced    { background: var(--advanced-bg); color: var(--advanced); border: 1px solid var(--advanced-border); }
+.role-banner.all { display: none; }
+.role-banner .rb-icon { font-size: 18px; }
+.role-banner .rb-change { margin-left: auto; font-size: 12px; cursor: pointer; text-decoration: underline; opacity: 0.7; }
+
+/* ──────────── PAGE HEADER ──────────── */
+.page-title-wrap {
+  margin-bottom: 36px;
+}
+.page-title {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--azure-dark);
+  line-height: 1.2;
+  margin-bottom: 8px;
+  letter-spacing: -0.02em;
+  outline: none;
+}
+.page-title[contenteditable="true"] {
+  border-bottom: 2px dashed var(--azure);
+  padding-bottom: 4px;
+}
+.page-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.page-role-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.badge-beginner    { background: var(--beginner-bg); color: var(--beginner); border: 1px solid var(--beginner-border); }
+.badge-intermediate { background: var(--intermediate-bg); color: var(--intermediate); border: 1px solid var(--intermediate-border); }
+.badge-advanced    { background: var(--advanced-bg); color: var(--advanced); border: 1px solid var(--advanced-border); }
+.badge-all { background: #f1f5f9; color: var(--muted); border: 1px solid var(--border); }
+
+.page-updated { font-size: 12px; color: var(--muted); }
+
+/* ──────────── ROLE PILL SELECTOR (in edit mode on content blocks) ──────────── */
+.role-select-wrap {
+  display: none;
+  gap: 4px;
+  margin-bottom: 8px;
+  align-items: center;
+}
+.role-select-wrap label { font-size: 11px; color: var(--muted); font-weight: 600; margin-right: 4px; }
+.role-pill {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  color: var(--muted);
+  background: #fff;
+  transition: all 0.15s;
+  font-family: 'Sora', sans-serif;
+}
+.role-pill.selected.beginner    { background: var(--beginner); color: #fff; border-color: var(--beginner); }
+.role-pill.selected.intermediate { background: var(--intermediate); color: #fff; border-color: var(--intermediate); }
+.role-pill.selected.advanced    { background: var(--advanced); color: #fff; border-color: var(--advanced); }
+.role-pill.selected.all { background: var(--azure); color: #fff; border-color: var(--azure); }
+
+/* ──────────── CONTENT BLOCKS ──────────── */
+.doc-content { max-width: 720px; }
+
+.content-block {
+  position: relative;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  transition: outline 0.15s;
+}
+body.edit-mode .content-block:hover { outline: 2px dashed #93c5fd; }
+body.edit-mode .content-block:hover .block-controls { display: flex; }
+body.edit-mode .content-block:hover .role-select-wrap { display: flex; }
+
+.block-controls {
+  display: none;
+  position: absolute;
+  top: -12px;
+  right: 0;
+  gap: 4px;
+  z-index: 10;
+}
+.block-ctrl-btn {
+  width: 24px; height: 24px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow);
+  transition: all 0.15s;
+  color: var(--muted);
+}
+.block-ctrl-btn:hover { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+.block-ctrl-btn.move:hover { background: var(--azure-light); color: var(--azure); border-color: #93c5fd; }
+
+/* Content block types */
+.cb-text p {
+  margin-bottom: 14px;
+  color: #2d3748;
+}
+.cb-text p[contenteditable="true"] {
+  outline: none;
+  border-bottom: 1px dashed var(--azure);
+  min-height: 24px;
+}
+
+h2.section-heading {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--azure-dark);
+  padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--border);
+  margin-top: 12px;
+  margin-bottom: 16px;
+}
+h2.section-heading[contenteditable="true"] { outline: none; border-bottom: 2px dashed var(--azure); }
+
+.callout {
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin: 8px 0;
+  display: flex;
+  gap: 12px;
+  font-size: 13.5px;
+}
+.callout.note { background: var(--azure-light); border-left: 4px solid var(--azure); }
+.callout.tip  { background: #f0fdf4; border-left: 4px solid #22c55e; }
+.callout.warn { background: #fffbeb; border-left: 4px solid #f59e0b; }
+.callout-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.callout-body[contenteditable="true"] { outline: none; }
+
+pre.code-block {
+  background: #0d1117;
+  border-radius: 8px;
+  padding: 20px 24px;
+  overflow-x: auto;
+  margin: 8px 0;
+  border-left: 3px solid var(--azure);
+}
+pre.code-block code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #c9d1d9;
+}
+pre.code-block[contenteditable="true"] { outline: 1px solid rgba(255,255,255,0.15); }
+
+.info-card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin: 8px 0;
+  background: var(--bg);
+}
+.info-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--azure-dark); }
+.info-card h4[contenteditable="true"] { outline: none; border-bottom: 1px dashed var(--azure); }
+.info-card p[contenteditable="true"] { outline: none; }
+
+/* ── Role filter: hide blocks not matching ── */
+body[data-role="beginner"]     .content-block[data-role="intermediate"],
+body[data-role="beginner"]     .content-block[data-role="advanced"],
+body[data-role="intermediate"] .content-block[data-role="advanced"],
+body[data-role="intermediate"] .content-block[data-role="beginner"],
+body[data-role="advanced"]     .content-block[data-role="beginner"],
+body[data-role="advanced"]     .content-block[data-role="intermediate"] {
+  display: none;
+}
+
+/* role indicator stripe */
+.content-block[data-role="beginner"]    { border-left: 3px solid var(--beginner); padding-left: 12px; }
+.content-block[data-role="intermediate"] { border-left: 3px solid var(--intermediate); padding-left: 12px; }
+.content-block[data-role="advanced"]    { border-left: 3px solid var(--advanced); padding-left: 12px; }
+.content-block[data-role="all"]         { border-left: 3px solid transparent; padding-left: 0; }
+
+/* ──────────── PREV / NEXT ──────────── */
+.page-nav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 56px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  gap: 16px;
+}
+.page-nav a {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: var(--text);
+  padding: 14px 18px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  flex: 1;
+  max-width: 46%;
+  transition: all 0.15s;
+  background: var(--white);
+}
+.page-nav a:hover { border-color: var(--azure); box-shadow: 0 0 0 3px var(--azure-light); }
+.page-nav .nav-dir { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 3px; }
+.page-nav .nav-title { font-size: 14px; font-weight: 600; color: var(--azure); }
+.page-nav .next { text-align: right; margin-left: auto; }
+
+/* ──────────── FOOTER ──────────── */
+.doc-footer {
+  margin-left: var(--sidebar-w);
+  margin-right: var(--toc-w);
+  padding: 14px 60px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--white);
+}
+
+/* ──────────── MODALS ──────────── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 500;
+  align-items: center;
+  justify-content: center;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  background: var(--white);
+  border-radius: 12px;
+  padding: 28px 32px;
+  min-width: 380px;
+  max-width: 520px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  animation: modalIn 0.2s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: none; } }
+
+.modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 18px; color: var(--azure-dark); }
+.modal label { font-size: 12px; font-weight: 600; color: var(--muted); display: block; margin-bottom: 5px; margin-top: 12px; text-transform: uppercase; letter-spacing: 0.06em; }
+.modal input, .modal select, .modal textarea {
+  width: 100%;
+  padding: 9px 12px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13.5px;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.modal input:focus, .modal select:focus, .modal textarea:focus { border-color: var(--azure); }
+.modal textarea { resize: vertical; min-height: 80px; }
+.modal .role-row { display: flex; gap: 8px; margin-top: 6px; }
+.modal .role-option {
+  flex: 1;
+  padding: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  text-align: center;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.modal .role-option:hover { border-color: var(--azure); }
+.modal .role-option.selected.beginner    { background: var(--beginner-bg); color: var(--beginner); border-color: var(--beginner); }
+.modal .role-option.selected.intermediate { background: var(--intermediate-bg); color: var(--intermediate); border-color: var(--intermediate); }
+.modal .role-option.selected.advanced    { background: var(--advanced-bg); color: var(--advanced); border-color: var(--advanced); }
+.modal .role-option.selected.all { background: var(--azure-light); color: var(--azure); border-color: var(--azure); }
+
+.modal-actions { display: flex; gap: 10px; margin-top: 22px; justify-content: flex-end; }
+.btn-primary {
+  background: var(--azure);
+  color: #fff;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-primary:hover { background: var(--azure-mid); }
+.btn-secondary {
+  background: #fff;
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  padding: 9px 20px;
+  border-radius: 6px;
+  font-family: 'Sora', sans-serif;
+  font-size: 13.5px;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-secondary:hover { border-color: #94a3b8; }
+
+/* ──────────── ADD BLOCK TOOLBAR ──────────── */
+.add-block-bar {
+  display: none;
+  align-items: center;
+  gap: 8px;
+  margin: 24px 0;
+  flex-wrap: wrap;
+}
+body.edit-mode .add-block-bar { display: flex; }
+.add-block-bar span { font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; }
+.add-block-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1.5px dashed var(--border);
+  background: var(--bg);
+  font-family: 'Sora', sans-serif;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.add-block-btn:hover { border-color: var(--azure); color: var(--azure); background: var(--azure-light); }
+
+/* Save indicator */
+.save-indicator {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: #22c55e;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px 18px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-md);
+  display: none;
+  z-index: 400;
+  gap: 8px;
+  align-items: center;
+}
+.save-indicator.show { display: flex; animation: fadeUp 0.3s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
-<body>
+<body data-role="all">
 
-<!-- ── HEADER ── -->
+<!-- ──────────── HEADER ──────────── -->
 <header>
-  <a href="#" class="header-logo">
-    <svg class="azure-icon" viewBox="0 0 96 96" fill="none">
-      <defs>
-        <linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" stop-color="#0078D4"/>
-          <stop offset="100%" stop-color="#00BCF2"/>
-        </linearGradient>
-      </defs>
-      <path d="M48 8L88 72H58L48 88L38 72H8L48 8Z" fill="url(#a)" opacity="0.9"/>
-      <path d="M48 8L72 72H48L48 8Z" fill="#fff" opacity="0.15"/>
+  <a href="#" class="logo">
+    <svg viewBox="0 0 96 96" fill="none">
+      <defs><linearGradient id="lg" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#41A4E8"/><stop offset="100%" stop-color="#00BCF2"/></linearGradient></defs>
+      <path d="M48 6L90 74H58L48 90L38 74H6L48 6Z" fill="url(#lg)" opacity="0.95"/>
+      <path d="M48 6L74 74H48V6Z" fill="#fff" opacity="0.18"/>
     </svg>
     Azure Docs
   </a>
-  <div class="header-divider"></div>
-  <span class="header-project">My Azure Project</span>
+  <div class="hd"></div>
+  <span class="project-name" id="projectName" title="Click to rename">My Azure Project</span>
 
-  <div class="header-search">
-    <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
-    </svg>
-    <input type="text" placeholder="Search docs...">
+  <!-- Version Selector -->
+  <div class="version-wrap">
+    <button class="version-btn" id="versionBtn">
+      <span id="versionLabel">v1.0.0</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div class="version-dropdown" id="versionDropdown">
+      <div class="vd-header">Versions</div>
+      <div id="versionList"></div>
+      <div class="vd-actions">
+        <button class="btn-add-version" onclick="openAddVersionModal()">+ Add Version</button>
+        <button class="btn-del-version" onclick="deleteCurrentVersion()">Delete</button>
+      </div>
+    </div>
   </div>
 
-  <span class="header-version">v1.0.0</span>
+  <!-- Role Selector -->
+  <div class="role-selector">
+    <span class="role-label">Skill level:</span>
+    <button class="role-btn all active" data-role="all" onclick="setRole('all')">All</button>
+    <button class="role-btn beginner" data-role="beginner" onclick="setRole('beginner')">🌱 Beginner</button>
+    <button class="role-btn intermediate" data-role="intermediate" onclick="setRole('intermediate')">⚡ Intermediate</button>
+    <button class="role-btn advanced" data-role="advanced" onclick="setRole('advanced')">🚀 Advanced</button>
+  </div>
+
+  <!-- Edit Toggle -->
+  <label class="edit-toggle" title="Toggle edit mode">
+    <input type="checkbox" id="editToggle" onchange="toggleEditMode(this.checked)">
+    <div class="toggle-track"></div>
+    <span class="edit-label">✏ Edit</span>
+  </label>
 </header>
 
 <div class="layout">
 
-<!-- ── LEFT SIDEBAR ── -->
-<aside class="sidebar">
-  <div class="sidebar-section-label">Getting Started</div>
-  <nav>
-    <a href="#" class="active">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-      Introduction
-    </a>
-    <a href="#" class="sub-item">Overview</a>
-    <a href="#" class="sub-item">Architecture</a>
-    <a href="#" class="sub-item">Key Features</a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-      Installation
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
-      Configuration
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Quickstart
-    </a>
-  </nav>
-
-  <div class="sidebar-sep"></div>
-  <div class="sidebar-section-label">Core Concepts</div>
-  <nav>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-      Services Overview
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-      Security & IAM
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
-      Data Storage
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-      Monitoring
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-      CLI Reference
-    </a>
-  </nav>
-
-  <div class="sidebar-sep"></div>
-  <div class="sidebar-section-label">API Reference</div>
-  <nav>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
-      REST API
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
-      SDK Docs
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
-      Changelog
-    </a>
-  </nav>
-
-  <div class="sidebar-sep"></div>
-  <div class="sidebar-section-label">Resources</div>
-  <nav>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      FAQ
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
-      Glossary
-    </a>
-    <a href="#">
-      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-      License
-    </a>
-  </nav>
+<!-- ──────────── SIDEBAR ──────────── -->
+<aside class="sidebar" id="sidebar">
+  <div id="sidebarContent"></div>
 </aside>
 
-<!-- ── MAIN CONTENT ── -->
+<!-- ──────────── MAIN ──────────── -->
 <main>
   <div class="breadcrumb">
     <a href="#">Docs</a>
     <span>›</span>
-    <a href="#">Getting Started</a>
+    <a href="#" id="bcSection">Getting Started</a>
     <span>›</span>
-    Introduction
+    <span id="bcPage">Introduction</span>
   </div>
 
-  <h1 class="doc-title">Introduction</h1>
-  <p class="doc-subtitle">An overview of My Azure Project — what it does, how it works, and how to get started.</p>
-
-  <div class="intro-strip">
-    <span class="intro-tag">🔵 Azure Native</span>
-    <span class="intro-tag">⚡ Serverless Ready</span>
-    <span class="intro-tag">🔒 Entra ID Integration</span>
-    <span class="intro-tag">📦 ARM Template Support</span>
+  <!-- Role Banner -->
+  <div class="role-banner all" id="roleBanner">
+    <span class="rb-icon">📘</span>
+    <span id="roleBannerText"></span>
+    <span class="rb-change" onclick="openRoleModal()">Change skill level</span>
   </div>
 
-  <div class="doc-content">
-
-    <p>
-      <strong>My Azure Project</strong> is an open-source infrastructure toolkit built for deploying
-      and managing cloud-native workloads on Microsoft Azure. It provides a consistent, repeatable
-      pattern for provisioning resources, enforcing governance policies, and automating operational
-      runbooks through Azure-native tooling.
-    </p>
-
-    <p>
-      Whether you're migrating an existing workload or building greenfield architecture, this project
-      gives you the scaffolding to ship production-ready infrastructure with confidence.
-    </p>
-
-    <div class="callout note">
-      <span class="callout-icon">ℹ</span>
-      <div class="callout-body">
-        <strong>Note</strong>
-        This documentation covers version 1.0.0. For older versions, refer to the version selector in the header above.
-      </div>
+  <!-- Page Header -->
+  <div class="page-title-wrap">
+    <h1 class="page-title" id="pageTitle">Introduction</h1>
+    <div class="page-meta">
+      <span class="page-role-badge badge-all" id="pageRoleBadge">All Levels</span>
+      <span class="page-updated" id="pageUpdated">Last updated: Feb 25, 2026</span>
     </div>
+  </div>
 
-    <h2 id="overview">Overview <a href="#overview" class="anchor">¶</a></h2>
+  <!-- Content -->
+  <div class="doc-content" id="docContent"></div>
 
-    <p>
-      At its core, My Azure Project orchestrates three layers of Azure infrastructure: networking
-      (Virtual Networks, NSGs, Private Endpoints), compute (AKS, Container Apps, Azure Functions),
-      and observability (Log Analytics, Azure Monitor, Application Insights). Each layer is
-      independently configurable through a central <code>config.yaml</code> file.
-    </p>
+  <!-- Add Block Toolbar -->
+  <div class="add-block-bar">
+    <span>Add:</span>
+    <button class="add-block-btn" onclick="addBlock('text')">📝 Text</button>
+    <button class="add-block-btn" onclick="addBlock('heading')">📌 Heading</button>
+    <button class="add-block-btn" onclick="addBlock('note')">ℹ️ Note</button>
+    <button class="add-block-btn" onclick="addBlock('tip')">✅ Tip</button>
+    <button class="add-block-btn" onclick="addBlock('warning')">⚠️ Warning</button>
+    <button class="add-block-btn" onclick="addBlock('code')">💻 Code</button>
+    <button class="add-block-btn" onclick="addBlock('card')">🃏 Card</button>
+  </div>
 
-    <div class="cards">
-      <a href="#" class="card">
-        <span class="card-label">Core Module</span>
-        <span class="card-title">Network Layer</span>
-        <span class="card-desc">VNets, subnets, NSGs, private endpoints, and DNS zones.</span>
-      </a>
-      <a href="#" class="card">
-        <span class="card-label">Core Module</span>
-        <span class="card-title">Compute Layer</span>
-        <span class="card-desc">AKS clusters, Container Apps, and Azure Functions with autoscaling.</span>
-      </a>
-      <a href="#" class="card">
-        <span class="card-label">Core Module</span>
-        <span class="card-title">Observability</span>
-        <span class="card-desc">Centralized logging, metrics, alerts, and dashboards.</span>
-      </a>
-      <a href="#" class="card">
-        <span class="card-label">Core Module</span>
-        <span class="card-title">Identity & Access</span>
-        <span class="card-desc">Managed identities, RBAC assignments, and Key Vault integration.</span>
-      </a>
-    </div>
-
-    <h2 id="how-it-works">How It Works <a href="#how-it-works" class="anchor">¶</a></h2>
-
-    <p>
-      The project uses a modular Bicep/Terraform structure. Each module is independently deployable
-      and follows the principle of least privilege by default. The deployment pipeline integrates
-      directly with GitHub Actions and Azure DevOps.
-    </p>
-
-    <div class="steps">
-      <div class="step">
-        <div class="step-num">1</div>
-        <div class="step-body">
-          <h4>Configure your environment</h4>
-          <p>Edit <code>config.yaml</code> to define your Azure subscription, resource groups, and desired modules.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">2</div>
-        <div class="step-body">
-          <h4>Authenticate with Azure</h4>
-          <p>Run <code>az login</code> and set your subscription context. Service principal auth is recommended for CI/CD.</p>
-        </div>
-      </div>
-      <div class="step">
-        <div class="step-num">3</div>
-        <div class="step-body">
-          <h4>Deploy infrastructure</h4>
-          <p>Execute the deploy script. Resources are provisioned in dependency order with full rollback support.</p>
-        </div>
-      </div>
-    </div>
-
-    <pre><code># Clone and enter the project
-git clone https://github.com/your-org/my-azure-project.git
-cd my-azure-project
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Deploy to your subscription
-python deploy.py --env production --config config.yaml</code></pre>
-
-    <h2 id="key-features">Key Features <a href="#key-features" class="anchor">¶</a></h2>
-
-    <table>
-      <tr>
-        <th>Feature</th>
-        <th>Description</th>
-        <th>Status</th>
-      </tr>
-      <tr>
-        <td>Multi-region deployment</td>
-        <td>Deploy across paired Azure regions for HA</td>
-        <td><code>stable</code></td>
-      </tr>
-      <tr>
-        <td>Policy-as-Code</td>
-        <td>Azure Policy definitions bundled per environment</td>
-        <td><code>stable</code></td>
-      </tr>
-      <tr>
-        <td>GitOps-native</td>
-        <td>Flux v2 integration for AKS workloads</td>
-        <td><code>stable</code></td>
-      </tr>
-      <tr>
-        <td>Cost estimation</td>
-        <td>Pre-deployment cost previews via Azure Pricing API</td>
-        <td><span class="badge new">preview</span></td>
-      </tr>
-      <tr>
-        <td>Drift detection</td>
-        <td>Scheduled reconciliation against desired state</td>
-        <td><span class="badge new">preview</span></td>
-      </tr>
-    </table>
-
-    <div class="callout tip">
-      <span class="callout-icon">✓</span>
-      <div class="callout-body">
-        <strong>Tip</strong>
-        Start with the <a href="#">Quickstart</a> guide to deploy a sample environment in under 10 minutes.
-      </div>
-    </div>
-
-    <h2 id="architecture">Architecture <a href="#architecture" class="anchor">¶</a></h2>
-
-    <p>
-      My Azure Project follows a hub-spoke topology by default. A central hub Virtual Network hosts
-      shared services (Azure Firewall, Bastion, DNS Private Resolver), while spoke networks are
-      provisioned per workload or team. All cross-spoke traffic is routed through the hub firewall.
-    </p>
-
-    <div class="callout warning">
-      <span class="callout-icon">⚠</span>
-      <div class="callout-body">
-        <strong>Warning</strong>
-        Deploying without a hub network is supported for development environments only. Production deployments must use hub-spoke topology to satisfy security requirements.
-      </div>
-    </div>
-
-    <h2 id="references">References <a href="#references" class="anchor">¶</a></h2>
-
-    <p>
-      The following resources informed the design of this project:
-    </p>
-
-    <p>
-      1. Microsoft Azure Landing Zone documentation — <a href="#">learn.microsoft.com/azure/landing-zones</a><br>
-      2. Azure Well-Architected Framework — <a href="#">learn.microsoft.com/azure/architecture/framework</a><br>
-      3. Cloud Adoption Framework — <a href="#">learn.microsoft.com/azure/cloud-adoption-framework</a>
-    </p>
-
-    <div class="page-nav">
-      <a href="#">
-        <span class="nav-dir">← Previous</span>
-        <span class="nav-title">Contents</span>
-      </a>
-      <a href="#" class="next">
-        <span class="nav-dir">Next →</span>
-        <span class="nav-title">Installation</span>
-      </a>
-    </div>
+  <!-- Prev / Next -->
+  <div class="page-nav">
+    <a href="#" id="prevLink">
+      <span class="nav-dir">← Previous</span>
+      <span class="nav-title" id="prevTitle">—</span>
+    </a>
+    <a href="#" class="next" id="nextLink">
+      <span class="nav-dir">Next →</span>
+      <span class="nav-title" id="nextTitle">—</span>
+    </a>
   </div>
 </main>
 
-<!-- ── RIGHT TOC ── -->
+<!-- ──────────── RIGHT TOC ──────────── -->
 <aside class="toc">
   <div class="toc-label">On this page</div>
-  <nav>
-    <a href="#overview" class="active">Overview</a>
-    <a href="#how-it-works">How It Works</a>
-    <a href="#key-features">Key Features</a>
-    <a href="#architecture">Architecture</a>
-    <a href="#references">References</a>
-  </nav>
+  <nav id="tocNav"></nav>
 </aside>
 
 </div>
 
-<!-- ── FOOTER ── -->
 <footer class="doc-footer">
-  <span>© 2024 My Azure Project. Last updated Feb 25, 2026.</span>
-  <span>Built with ❤ and hosted on GitHub Pages</span>
+  <span id="footerCopy">© 2026 My Azure Project. Hosted on GitHub Pages.</span>
+  <span id="footerVersion">v1.0.0</span>
 </footer>
 
+<!-- Save indicator -->
+<div class="save-indicator" id="saveIndicator">✓ Saved</div>
+
+<!-- ──────────── MODALS ──────────── -->
+
+<!-- Add Version Modal -->
+<div class="modal-overlay" id="addVersionModal">
+  <div class="modal">
+    <h3>Add New Version</h3>
+    <label>Version Number</label>
+    <input type="text" id="newVersionInput" placeholder="e.g. v2.0.0">
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('addVersionModal')">Cancel</button>
+      <button class="btn-primary" onclick="addVersion()">Add Version</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Page Modal -->
+<div class="modal-overlay" id="addPageModal">
+  <div class="modal">
+    <h3>New Page</h3>
+    <label>Page Title</label>
+    <input type="text" id="newPageTitle" placeholder="e.g. Deployment Guide">
+    <label>Section</label>
+    <input type="text" id="newPageSection" placeholder="e.g. Core Concepts">
+    <label>Skill Level</label>
+    <div class="role-row" id="newPageRoleRow">
+      <div class="role-option all selected" data-role="all" onclick="selectNewPageRole('all')">All</div>
+      <div class="role-option beginner" data-role="beginner" onclick="selectNewPageRole('beginner')">🌱 Beginner</div>
+      <div class="role-option intermediate" data-role="intermediate" onclick="selectNewPageRole('intermediate')">⚡ Intermediate</div>
+      <div class="role-option advanced" data-role="advanced" onclick="selectNewPageRole('advanced')">🚀 Advanced</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('addPageModal')">Cancel</button>
+      <button class="btn-primary" onclick="addPage()">Create Page</button>
+    </div>
+  </div>
+</div>
+
+<!-- Role Picker Modal -->
+<div class="modal-overlay" id="roleModal">
+  <div class="modal" style="max-width:420px">
+    <h3>Choose Your Skill Level</h3>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">Content will be filtered to match your experience with Azure.</p>
+    <div class="role-row">
+      <div class="role-option all" data-role="all" onclick="setRoleFromModal('all')">📘<br><br>All Levels</div>
+      <div class="role-option beginner" data-role="beginner" onclick="setRoleFromModal('beginner')">🌱<br><br>Beginner</div>
+      <div class="role-option intermediate" data-role="intermediate" onclick="setRoleFromModal('intermediate')">⚡<br><br>Intermediate</div>
+      <div class="role-option advanced" data-role="advanced" onclick="setRoleFromModal('advanced')">🚀<br><br>Advanced</div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('roleModal')">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rename Project Modal -->
+<div class="modal-overlay" id="renameModal">
+  <div class="modal" style="max-width:380px">
+    <h3>Rename Project</h3>
+    <label>Project Name</label>
+    <input type="text" id="renameInput" placeholder="My Azure Project">
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('renameModal')">Cancel</button>
+      <button class="btn-primary" onclick="renameProject()">Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // Highlight active TOC item on scroll
-  const sections = document.querySelectorAll('h2[id]');
-  const tocLinks = document.querySelectorAll('.toc nav a');
+// ────────────────────────────────────────────────
+// STATE
+// ────────────────────────────────────────────────
+let state = {
+  projectName: 'My Azure Project',
+  currentVersion: 'v1.0.0',
+  versions: ['v1.0.0'],
+  role: 'all',
+  editMode: false,
+  currentPageId: 'intro',
+  newPageRole: 'all',
+  pages: [
+    {
+      id: 'intro',
+      title: 'Introduction',
+      section: 'Getting Started',
+      role: 'all',
+      icon: 'home',
+      blocks: [
+        { id: 'b1', type: 'text', role: 'all', content: '<strong>My Azure Project</strong> is an open-source infrastructure toolkit for deploying cloud-native workloads on Microsoft Azure. It provides consistent, repeatable patterns for provisioning resources and automating operational runbooks.' },
+        { id: 'b2', type: 'note', role: 'all', content: 'This documentation covers <strong>v1.0.0</strong>. Switch versions using the dropdown in the header.' },
+        { id: 'b3', type: 'heading', role: 'all', content: 'What You\'ll Learn' },
+        { id: 'b4', type: 'text', role: 'beginner', content: '🌱 <strong>Beginner path:</strong> Start here if you\'re new to Azure. We\'ll walk you through core concepts, the Azure portal, and your first deployment using the GUI — no CLI required.' },
+        { id: 'b5', type: 'text', role: 'intermediate', content: '⚡ <strong>Intermediate path:</strong> This assumes you\'re comfortable with Azure fundamentals. We\'ll focus on Bicep/Terraform templates, CI/CD pipelines, and governance policies.' },
+        { id: 'b6', type: 'text', role: 'advanced', content: '🚀 <strong>Advanced path:</strong> For architects and platform engineers. We cover hub-spoke topologies, Private Endpoints, Entra ID federation, multi-region HA, and zero-trust networking.' },
+        { id: 'b7', type: 'heading', role: 'all', content: 'Quickstart' },
+        { id: 'b8', type: 'code', role: 'intermediate', content: 'git clone https://github.com/your-org/my-azure-project.git\ncd my-azure-project\npip install -r requirements.txt\npython deploy.py --env production' },
+        { id: 'b9', type: 'tip', role: 'beginner', content: '💡 New to Azure? Start by creating a <strong>free Azure account</strong> at portal.azure.com — you get $200 credit for 30 days.' },
+        { id: 'b10', type: 'card', role: 'all', cardTitle: 'Architecture Overview', content: 'The project uses a hub-spoke Virtual Network topology. A central hub hosts shared services (Firewall, Bastion, DNS), while spoke networks isolate individual workloads.' },
+      ]
+    },
+    { id: 'install', title: 'Installation', section: 'Getting Started', role: 'all', icon: 'download', blocks: [
+      { id: 'i1', type: 'heading', role: 'all', content: 'Prerequisites' },
+      { id: 'i2', type: 'text', role: 'all', content: 'Before installing, ensure you have Python 3.9+, Azure CLI 2.40+, and an active Azure subscription.' },
+      { id: 'i3', type: 'code', role: 'all', content: 'pip install azure-cli\naz login\naz account set --subscription "Your Subscription Name"' },
+      { id: 'i4', type: 'tip', role: 'beginner', content: 'You can install Azure CLI with a single command on Windows, macOS, or Linux. Check the official docs at learn.microsoft.com/cli/azure/install-azure-cli.' },
+    ]},
+    { id: 'config', title: 'Configuration', section: 'Getting Started', role: 'intermediate', icon: 'settings', blocks: [
+      { id: 'c1', type: 'heading', role: 'all', content: 'config.yaml Reference' },
+      { id: 'c2', type: 'text', role: 'all', content: 'All project settings live in <code>config.yaml</code> at the root of the repository. Edit this file to control which Azure modules are deployed.' },
+      { id: 'c3', type: 'code', role: 'all', content: 'subscription_id: "00000000-0000-0000-0000-000000000000"\nresource_group: "rg-my-project-prod"\nlocation: "eastus2"\nmodules:\n  networking: true\n  compute: true\n  observability: true' },
+    ]},
+    { id: 'security', title: 'Security & IAM', section: 'Core Concepts', role: 'all', icon: 'shield', blocks: [
+      { id: 's1', type: 'heading', role: 'all', content: 'Identity and Access Management' },
+      { id: 's2', type: 'text', role: 'beginner', content: 'Azure uses Role-Based Access Control (RBAC). Think of roles like "Owner", "Contributor", and "Reader" — you assign these to users or groups.' },
+      { id: 's3', type: 'text', role: 'advanced', content: 'Implement least-privilege using custom role definitions scoped to resource groups. Use Managed Identities for workload auth — avoid service principal secrets where possible.' },
+      { id: 's4', type: 'warning', role: 'all', content: '⚠️ Never store credentials in code or config files. Always use Azure Key Vault or environment variables injected at runtime.' },
+    ]},
+    { id: 'cli', title: 'CLI Reference', section: 'Core Concepts', role: 'intermediate', icon: 'terminal', blocks: [
+      { id: 'cl1', type: 'heading', role: 'all', content: 'Common Commands' },
+      { id: 'cl2', type: 'code', role: 'all', content: '# List all resource groups\naz group list --output table\n\n# Deploy a Bicep template\naz deployment group create \\\n  --resource-group rg-prod \\\n  --template-file main.bicep' },
+    ]},
+    { id: 'api', title: 'REST API', section: 'API Reference', role: 'advanced', icon: 'code', blocks: [
+      { id: 'a1', type: 'heading', role: 'all', content: 'Authentication' },
+      { id: 'a2', type: 'text', role: 'all', content: 'All API calls require a Bearer token from Entra ID. Obtain a token using the Azure Identity SDK or az account get-access-token.' },
+      { id: 'a3', type: 'code', role: 'all', content: 'GET https://management.azure.com/subscriptions/{subscriptionId}/resourceGroups?api-version=2021-04-01\nAuthorization: Bearer <TOKEN>' },
+    ]},
+    { id: 'glossary', title: 'Glossary', section: 'Resources', role: 'all', icon: 'book', blocks: [
+      { id: 'g1', type: 'text', role: 'all', content: '<strong>VNet</strong> — Virtual Network. The fundamental building block for private networking in Azure.<br><br><strong>NSG</strong> — Network Security Group. Filters inbound/outbound traffic at the subnet or NIC level.<br><br><strong>RBAC</strong> — Role-Based Access Control. Controls who can do what on which Azure resources.' },
+    ]},
+  ]
+};
 
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        tocLinks.forEach(l => l.classList.remove('active'));
-        const link = document.querySelector(`.toc nav a[href="#${entry.target.id}"]`);
-        if (link) link.classList.add('active');
-      }
+// ────────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────────
+function render() {
+  renderSidebar();
+  renderPage();
+  renderVersionDropdown();
+  updateHeader();
+}
+
+function updateHeader() {
+  document.getElementById('projectName').textContent = state.projectName;
+  document.getElementById('versionLabel').textContent = state.currentVersion;
+  document.getElementById('footerCopy').textContent = `© 2026 ${state.projectName}. Hosted on GitHub Pages.`;
+  document.getElementById('footerVersion').textContent = state.currentVersion;
+}
+
+function renderSidebar() {
+  const sections = [...new Set(state.pages.map(p => p.section))];
+  let html = '';
+  sections.forEach(sec => {
+    html += `<div class="sidebar-section">
+      <div class="sidebar-section-label">${sec}
+        <button class="add-page-btn" onclick="openAddPageModal('${sec}')" title="Add page">+</button>
+      </div>`;
+    state.pages.filter(p => p.section === sec).forEach(page => {
+      const active = page.id === state.currentPageId ? 'active' : '';
+      const roleClass = page.role !== 'all' ? `dot-${page.role}` : 'dot-all';
+      html += `<div class="nav-item ${active}" onclick="loadPage('${page.id}')">
+        ${svgIcon(page.icon)}
+        <span>${page.title}</span>
+        <span class="item-role-dot ${roleClass}"></span>
+        <button class="delete-page" onclick="deletePage(event,'${page.id}')" title="Delete">×</button>
+      </div>`;
     });
-  }, { rootMargin: '-20% 0px -70% 0px' });
+    html += `</div><div class="sidebar-sep"></div>`;
+  });
+  document.getElementById('sidebarContent').innerHTML = html;
+}
 
-  sections.forEach(s => observer.observe(s));
+function renderPage() {
+  const page = state.pages.find(p => p.id === state.currentPageId);
+  if (!page) return;
+
+  document.getElementById('pageTitle').textContent = page.title;
+  document.getElementById('bcSection').textContent = page.section;
+  document.getElementById('bcPage').textContent = page.title;
+
+  const roleLabels = { all: 'All Levels', beginner: '🌱 Beginner', intermediate: '⚡ Intermediate', advanced: '🚀 Advanced' };
+  const roleBadgeClass = { all: 'badge-all', beginner: 'badge-beginner', intermediate: 'badge-intermediate', advanced: 'badge-advanced' };
+  document.getElementById('pageRoleBadge').textContent = roleLabels[page.role];
+  document.getElementById('pageRoleBadge').className = `page-role-badge ${roleBadgeClass[page.role]}`;
+  document.getElementById('pageUpdated').textContent = `Last updated: ${new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'})}`;
+
+  // Role banner
+  const roleBanner = document.getElementById('roleBanner');
+  const currentRole = state.role;
+  roleBanner.className = `role-banner ${currentRole}`;
+  const bannerMessages = {
+    beginner: 'Viewing content for <strong>Beginners</strong> — step-by-step guidance, no prior Azure experience needed.',
+    intermediate: 'Viewing content for <strong>Intermediate</strong> users — assumes Azure fundamentals knowledge.',
+    advanced: 'Viewing content for <strong>Advanced</strong> engineers — deep dives into architecture and automation.',
+    all: ''
+  };
+  document.getElementById('roleBannerText').innerHTML = bannerMessages[currentRole] || '';
+
+  // Page title editable
+  const titleEl = document.getElementById('pageTitle');
+  titleEl.contentEditable = state.editMode ? 'true' : 'false';
+  titleEl.oninput = () => { page.title = titleEl.textContent; saveState(); renderSidebar(); };
+
+  // Blocks
+  const container = document.getElementById('docContent');
+  container.innerHTML = page.blocks.map(b => renderBlock(b)).join('');
+
+  // Attach block interactivity
+  page.blocks.forEach(b => {
+    const el = document.getElementById(`block-${b.id}`);
+    if (!el) return;
+    if (state.editMode) makeBlockEditable(el, b, page);
+  });
+
+  // TOC
+  renderTOC(page);
+
+  // Prev / Next
+  const idx = state.pages.indexOf(page);
+  const prev = state.pages[idx - 1];
+  const next = state.pages[idx + 1];
+  document.getElementById('prevTitle').textContent = prev ? prev.title : '—';
+  document.getElementById('nextTitle').textContent = next ? next.title : '—';
+  document.getElementById('prevLink').onclick = prev ? () => loadPage(prev.id) : null;
+  document.getElementById('nextLink').onclick = next ? () => loadPage(next.id) : null;
+}
+
+function renderBlock(b) {
+  const roleDot = b.role !== 'all' ? `<span class="role-select-wrap" id="rs-${b.id}"></span>` : `<span class="role-select-wrap" id="rs-${b.id}"></span>`;
+  const ctrl = `<div class="block-controls"><button class="block-ctrl-btn move" title="Move up" onclick="moveBlock('${b.id}',-1)">↑</button><button class="block-ctrl-btn move" title="Move down" onclick="moveBlock('${b.id}',1)">↓</button><button class="block-ctrl-btn" title="Delete block" onclick="deleteBlock('${b.id}')">✕</button></div>`;
+
+  let inner = '';
+  if (b.type === 'text')    inner = `<p>${b.content}</p>`;
+  else if (b.type === 'heading') inner = `<h2 class="section-heading">${b.content}</h2>`;
+  else if (b.type === 'note')  inner = `<div class="callout note"><span class="callout-icon">ℹ</span><div class="callout-body">${b.content}</div></div>`;
+  else if (b.type === 'tip')   inner = `<div class="callout tip"><span class="callout-icon">✓</span><div class="callout-body">${b.content}</div></div>`;
+  else if (b.type === 'warning') inner = `<div class="callout warn"><span class="callout-icon">⚠</span><div class="callout-body">${b.content}</div></div>`;
+  else if (b.type === 'code')  inner = `<pre class="code-block"><code>${escapeHtml(b.content)}</code></pre>`;
+  else if (b.type === 'card')  inner = `<div class="info-card"><h4>${b.cardTitle || 'Card'}</h4><p>${b.content}</p></div>`;
+
+  return `<div class="content-block" id="block-${b.id}" data-role="${b.role}">
+    ${roleDot}${ctrl}${inner}
+  </div>`;
+}
+
+function makeBlockEditable(el, b, page) {
+  // Role selector
+  const rsEl = el.querySelector(`#rs-${b.id}`);
+  if (rsEl) {
+    rsEl.innerHTML = `<label>Role:</label>
+      ${['all','beginner','intermediate','advanced'].map(r =>
+        `<span class="role-pill ${r} ${b.role === r ? 'selected' : ''}" onclick="setBlockRole('${b.id}','${r}')">${r}</span>`
+      ).join('')}`;
+  }
+
+  // Editable content
+  if (b.type === 'text') {
+    const p = el.querySelector('p');
+    if (p) { p.contentEditable = 'true'; p.oninput = () => { b.content = p.innerHTML; saveState(); }; }
+  } else if (b.type === 'heading') {
+    const h = el.querySelector('h2');
+    if (h) { h.contentEditable = 'true'; h.oninput = () => { b.content = h.textContent; saveState(); renderTOC(page); }; }
+  } else if (['note','tip','warning'].includes(b.type)) {
+    const cb = el.querySelector('.callout-body');
+    if (cb) { cb.contentEditable = 'true'; cb.oninput = () => { b.content = cb.innerHTML; saveState(); }; }
+  } else if (b.type === 'code') {
+    const pre = el.querySelector('pre');
+    if (pre) { pre.contentEditable = 'true'; pre.oninput = () => { b.content = pre.textContent; saveState(); }; }
+  } else if (b.type === 'card') {
+    const h4 = el.querySelector('h4'), p = el.querySelector('p');
+    if (h4) { h4.contentEditable = 'true'; h4.oninput = () => { b.cardTitle = h4.textContent; saveState(); }; }
+    if (p)  { p.contentEditable = 'true';  p.oninput = () => { b.content = p.innerHTML; saveState(); }; }
+  }
+}
+
+function renderTOC(page) {
+  const headings = page.blocks.filter(b => b.type === 'heading');
+  document.getElementById('tocNav').innerHTML = headings.map(b =>
+    `<a href="#">${b.content}</a>`
+  ).join('');
+}
+
+function renderVersionDropdown() {
+  const list = document.getElementById('versionList');
+  list.innerHTML = state.versions.map((v, i) =>
+    `<div class="version-item ${v === state.currentVersion ? 'active' : ''}" onclick="switchVersion('${v}')">
+      ${v}
+      ${i === state.versions.length - 1 ? '<span class="vi-tag latest">latest</span>' : '<span class="vi-tag">stable</span>'}
+    </div>`
+  ).join('');
+}
+
+// ────────────────────────────────────────────────
+// ACTIONS
+// ────────────────────────────────────────────────
+function loadPage(id) {
+  state.currentPageId = id;
+  render();
+}
+
+function setRole(role) {
+  state.role = role;
+  document.body.dataset.role = role;
+  document.querySelectorAll('.role-btn').forEach(b => {
+    b.classList.toggle('active', b.dataset.role === role);
+  });
+  renderPage();
+}
+
+function toggleEditMode(on) {
+  state.editMode = on;
+  document.body.classList.toggle('edit-mode', on);
+  renderPage();
+  renderSidebar();
+}
+
+function addBlock(type) {
+  const page = state.pages.find(p => p.id === state.currentPageId);
+  const id = 'b' + Date.now();
+  const block = { id, type, role: 'all' };
+  if (type === 'text') block.content = 'New paragraph. Click to edit.';
+  else if (type === 'heading') block.content = 'New Section';
+  else if (type === 'note') block.content = 'Add your note here.';
+  else if (type === 'tip') block.content = 'Add your tip here.';
+  else if (type === 'warning') block.content = 'Add your warning here.';
+  else if (type === 'code') block.content = '# Your code here\necho "Hello Azure"';
+  else if (type === 'card') { block.cardTitle = 'Card Title'; block.content = 'Card description.'; }
+  page.blocks.push(block);
+  render();
+  showSave();
+}
+
+function deleteBlock(blockId) {
+  const page = state.pages.find(p => p.id === state.currentPageId);
+  page.blocks = page.blocks.filter(b => b.id !== blockId);
+  render();
+  showSave();
+}
+
+function moveBlock(blockId, dir) {
+  const page = state.pages.find(p => p.id === state.currentPageId);
+  const idx = page.blocks.findIndex(b => b.id === blockId);
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= page.blocks.length) return;
+  [page.blocks[idx], page.blocks[newIdx]] = [page.blocks[newIdx], page.blocks[idx]];
+  render();
+}
+
+function setBlockRole(blockId, role) {
+  const page = state.pages.find(p => p.id === state.currentPageId);
+  const block = page.blocks.find(b => b.id === blockId);
+  if (block) { block.role = role; render(); showSave(); }
+}
+
+function deletePage(evt, pageId) {
+  evt.stopPropagation();
+  if (state.pages.length <= 1) return alert('Cannot delete the last page.');
+  state.pages = state.pages.filter(p => p.id !== pageId);
+  if (state.currentPageId === pageId) state.currentPageId = state.pages[0].id;
+  render();
+  showSave();
+}
+
+function addPage() {
+  const title = document.getElementById('newPageTitle').value.trim();
+  const section = document.getElementById('newPageSection').value.trim() || 'General';
+  if (!title) return;
+  const id = 'page_' + Date.now();
+  state.pages.push({
+    id, title, section, role: state.newPageRole,
+    icon: 'doc',
+    blocks: [
+      { id: 'nb1', type: 'heading', role: 'all', content: title },
+      { id: 'nb2', type: 'text', role: 'all', content: 'Start writing your content here.' }
+    ]
+  });
+  closeModal('addPageModal');
+  loadPage(id);
+  showSave();
+}
+
+function openAddPageModal(section) {
+  document.getElementById('newPageSection').value = section || '';
+  document.getElementById('newPageTitle').value = '';
+  selectNewPageRole('all');
+  openModal('addPageModal');
+}
+
+function selectNewPageRole(role) {
+  state.newPageRole = role;
+  document.querySelectorAll('#newPageRoleRow .role-option').forEach(el => {
+    el.className = `role-option ${el.dataset.role} ${el.dataset.role === role ? 'selected' : ''}`;
+  });
+}
+
+function openAddVersionModal() {
+  document.getElementById('newVersionInput').value = '';
+  closeAllDropdowns();
+  openModal('addVersionModal');
+}
+
+function addVersion() {
+  const v = document.getElementById('newVersionInput').value.trim();
+  if (!v) return;
+  if (!state.versions.includes(v)) state.versions.push(v);
+  state.currentVersion = v;
+  closeModal('addVersionModal');
+  render();
+  showSave();
+}
+
+function switchVersion(v) {
+  state.currentVersion = v;
+  closeAllDropdowns();
+  updateHeader();
+  renderVersionDropdown();
+}
+
+function deleteCurrentVersion() {
+  if (state.versions.length <= 1) return alert('Cannot delete the only version.');
+  state.versions = state.versions.filter(v => v !== state.currentVersion);
+  state.currentVersion = state.versions[state.versions.length - 1];
+  closeAllDropdowns();
+  render();
+  showSave();
+}
+
+function openRoleModal() {
+  openModal('roleModal');
+  document.querySelectorAll('#roleModal .role-option').forEach(el => {
+    el.className = `role-option ${el.dataset.role} ${el.dataset.role === state.role ? 'selected' : ''}`;
+  });
+}
+
+function setRoleFromModal(role) {
+  closeModal('roleModal');
+  setRole(role);
+}
+
+// Project rename
+document.getElementById('projectName').addEventListener('click', () => {
+  document.getElementById('renameInput').value = state.projectName;
+  openModal('renameModal');
+});
+
+function renameProject() {
+  const val = document.getElementById('renameInput').value.trim();
+  if (val) { state.projectName = val; updateHeader(); showSave(); }
+  closeModal('renameModal');
+}
+
+// Version dropdown toggle
+document.getElementById('versionBtn').addEventListener('click', (e) => {
+  e.stopPropagation();
+  const btn = document.getElementById('versionBtn');
+  const dd = document.getElementById('versionDropdown');
+  btn.classList.toggle('open');
+  dd.classList.toggle('open');
+});
+
+document.addEventListener('click', closeAllDropdowns);
+function closeAllDropdowns() {
+  document.getElementById('versionBtn').classList.remove('open');
+  document.getElementById('versionDropdown').classList.remove('open');
+}
+
+// Modal helpers
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => { if (e.target === overlay) overlay.classList.remove('open'); });
+});
+
+// Save indicator
+let saveTimeout;
+function showSave() {
+  const el = document.getElementById('saveIndicator');
+  el.classList.add('show');
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(() => el.classList.remove('show'), 2000);
+}
+
+function saveState() { showSave(); }
+
+// Utilities
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function svgIcon(type) {
+  const icons = {
+    home: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>',
+    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>',
+    shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>',
+    terminal: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>',
+    code: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>',
+    book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
+  };
+  return icons[type] || icons.doc;
+}
+
+// Init
+render();
 </script>
-
 </body>
 </html>
