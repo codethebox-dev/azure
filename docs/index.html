@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azure Documentation — My Project v1.0.0</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Serif:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --azure-blue: #0078D4;
+    --azure-dark: #003865;
+    --azure-mid: #004E8C;
+    --azure-light: #EBF3FB;
+    --azure-cyan: #00B4D8;
+    --sidebar-w: 280px;
+    --toc-w: 220px;
+    --content-max: 760px;
+    --header-h: 52px;
+    --text: #1a1a2e;
+    --muted: #5a6a7a;
+    --border: #d0dce8;
+    --code-bg: #f0f4f8;
+    --hover-bg: #e8f2fb;
+    --active-bg: #ddeefa;
+    --active-border: var(--azure-blue);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: #fff;
+    line-height: 1.7;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* ── TOP HEADER ── */
+  header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--header-h);
+    background: var(--azure-dark);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 16px;
+    z-index: 100;
+    border-bottom: 2px solid var(--azure-blue);
+  }
+
+  .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+  }
+
+  .azure-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .header-divider {
+    width: 1px;
+    height: 22px;
+    background: rgba(255,255,255,0.25);
+  }
+
+  .header-project {
+    color: rgba(255,255,255,0.85);
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .header-version {
+    margin-left: auto;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: rgba(255,255,255,0.8);
+    font-size: 12px;
+    padding: 3px 10px;
+    border-radius: 3px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  .header-search {
+    display: flex;
+    align-items: center;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    padding: 0 10px;
+    gap: 6px;
+    margin-left: 12px;
+  }
+
+  .header-search input {
+    background: none;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px;
+    width: 180px;
+    padding: 5px 0;
+  }
+
+  .header-search input::placeholder { color: rgba(255,255,255,0.45); }
+
+  .search-icon {
+    color: rgba(255,255,255,0.5);
+    font-size: 13px;
+  }
+
+  /* ── LAYOUT ── */
+  .layout {
+    display: flex;
+    margin-top: var(--header-h);
+    min-height: calc(100vh - var(--header-h));
+  }
+
+  /* ── LEFT SIDEBAR ── */
+  aside.sidebar {
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    background: #f7fafd;
+    border-right: 1px solid var(--border);
+    position: fixed;
+    top: var(--header-h);
+    bottom: 0;
+    left: 0;
+    overflow-y: auto;
+    padding: 20px 0;
+  }
+
+  aside.sidebar::-webkit-scrollbar { width: 4px; }
+  aside.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+  .sidebar-section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 14px 20px 6px;
+  }
+
+  .sidebar-section-label:first-child { padding-top: 4px; }
+
+  .sidebar nav a {
+    display: flex;
+    align-items: center;
+    padding: 7px 20px;
+    text-decoration: none;
+    font-size: 13.5px;
+    color: #3a4a5a;
+    border-left: 3px solid transparent;
+    transition: background 0.15s, color 0.15s;
+    gap: 8px;
+  }
+
+  .sidebar nav a:hover {
+    background: var(--hover-bg);
+    color: var(--azure-blue);
+  }
+
+  .sidebar nav a.active {
+    background: var(--active-bg);
+    color: var(--azure-blue);
+    border-left-color: var(--azure-blue);
+    font-weight: 500;
+  }
+
+  .sidebar nav a .nav-icon {
+    width: 16px;
+    height: 16px;
+    opacity: 0.6;
+    flex-shrink: 0;
+  }
+
+  .sidebar nav a.active .nav-icon { opacity: 1; }
+
+  /* Sub items */
+  .sidebar nav .sub-item {
+    padding-left: 44px;
+    font-size: 13px;
+    color: #5a6a7a;
+  }
+
+  .sidebar nav .sub-item:hover { color: var(--azure-blue); }
+  .sidebar nav .sub-item.active { color: var(--azure-blue); border-left-color: var(--azure-blue); }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    margin-left: var(--sidebar-w);
+    margin-right: var(--toc-w);
+    flex: 1;
+    padding: 48px 56px;
+    max-width: calc(var(--content-max) + 112px);
+  }
+
+  /* ── RIGHT TOC ── */
+  aside.toc {
+    width: var(--toc-w);
+    flex-shrink: 0;
+    position: fixed;
+    top: var(--header-h);
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+    padding: 28px 16px 28px 12px;
+    border-left: 1px solid var(--border);
+    background: #fff;
+  }
+
+  .toc-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    padding-left: 12px;
+  }
+
+  .toc nav a {
+    display: block;
+    padding: 4px 12px;
+    font-size: 12.5px;
+    color: var(--muted);
+    text-decoration: none;
+    border-left: 2px solid transparent;
+    line-height: 1.5;
+    transition: all 0.15s;
+  }
+
+  .toc nav a:hover { color: var(--azure-blue); }
+  .toc nav a.active { color: var(--azure-blue); border-left-color: var(--azure-blue); font-weight: 500; }
+
+  .toc nav a.sub { padding-left: 22px; font-size: 12px; }
+
+  /* ── BREADCRUMB ── */
+  .breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .breadcrumb a { color: var(--azure-blue); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .breadcrumb span { opacity: 0.5; }
+
+  /* ── TYPOGRAPHY ── */
+  .doc-title {
+    font-family: 'IBM Plex Serif', serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--azure-dark);
+    line-height: 1.25;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+
+  .doc-subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .doc-content h2 {
+    font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--azure-dark);
+    margin-top: 48px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .doc-content h2 .anchor {
+    font-size: 14px;
+    color: var(--azure-blue);
+    opacity: 0;
+    transition: opacity 0.15s;
+    text-decoration: none;
+  }
+
+  .doc-content h2:hover .anchor { opacity: 1; }
+
+  .doc-content h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text);
+    margin-top: 28px;
+    margin-bottom: 10px;
+  }
+
+  .doc-content p {
+    margin-bottom: 16px;
+    color: #2a3848;
+  }
+
+  .doc-content a { color: var(--azure-blue); text-decoration: none; }
+  .doc-content a:hover { text-decoration: underline; }
+
+  .doc-content strong { font-weight: 600; color: var(--azure-dark); }
+
+  .doc-content code {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    background: var(--code-bg);
+    color: #0050a0;
+    padding: 2px 6px;
+    border-radius: 3px;
+    border: 1px solid #cfdce9;
+  }
+
+  .doc-content pre {
+    background: #0d1117;
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin: 20px 0;
+    overflow-x: auto;
+    border-left: 3px solid var(--azure-blue);
+  }
+
+  .doc-content pre code {
+    background: none;
+    border: none;
+    color: #c9d1d9;
+    font-size: 13px;
+    padding: 0;
+  }
+
+  /* ── CALLOUT BOXES ── */
+  .callout {
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin: 20px 0;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .callout-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+
+  .callout.note { background: var(--azure-light); border: 1px solid #b3d4ef; }
+  .callout.note .callout-icon { color: var(--azure-blue); }
+
+  .callout.tip { background: #edfaf3; border: 1px solid #a3d9b8; }
+  .callout.tip .callout-icon { color: #2ea86a; }
+
+  .callout.warning { background: #fff8e6; border: 1px solid #f5d87a; }
+  .callout.warning .callout-icon { color: #c9900a; }
+
+  .callout-body { font-size: 13.5px; line-height: 1.6; }
+  .callout-body strong { display: block; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* ── SERVICE CARDS ── */
+  .cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .card {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: #fff;
+  }
+
+  .card:hover {
+    border-color: var(--azure-blue);
+    box-shadow: 0 0 0 3px var(--azure-light);
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--azure-blue);
+  }
+
+  .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--azure-dark);
+  }
+
+  .card-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── STEPS ── */
+  .steps { margin: 20px 0; }
+
+  .step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .step-num {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--azure-blue);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .step-body { flex: 1; }
+  .step-body h4 { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .step-body p { font-size: 13.5px; color: var(--muted); margin: 0; }
+
+  /* ── TABLE ── */
+  .doc-content table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+    margin: 20px 0;
+  }
+
+  .doc-content th {
+    background: var(--azure-dark);
+    color: #fff;
+    padding: 10px 14px;
+    text-align: left;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.04em;
+  }
+
+  .doc-content td {
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+
+  .doc-content tr:nth-child(even) td { background: #f9fbfd; }
+
+  /* ── PREV/NEXT ── */
+  .page-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    gap: 16px;
+  }
+
+  .page-nav a {
+    display: flex;
+    flex-direction: column;
+    text-decoration: none;
+    color: var(--text);
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    flex: 1;
+    transition: all 0.15s;
+    max-width: 48%;
+  }
+
+  .page-nav a:hover { border-color: var(--azure-blue); background: var(--azure-light); }
+
+  .page-nav .nav-dir {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  .page-nav .nav-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--azure-blue);
+  }
+
+  .page-nav .next { text-align: right; margin-left: auto; }
+
+  /* ── FOOTER ── */
+  .doc-footer {
+    margin-left: var(--sidebar-w);
+    margin-right: var(--toc-w);
+    padding: 16px 56px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 3px;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+  .badge.get { background: #dff0e8; color: #1a7a48; }
+  .badge.post { background: #fff0d9; color: #a05c00; }
+  .badge.new { background: var(--azure-light); color: var(--azure-blue); border: 1px solid #b3d4ef; }
+
+  /* Separator */
+  .sidebar-sep {
+    height: 1px;
+    background: var(--border);
+    margin: 10px 0;
+  }
+
+  /* Intro badge strip */
+  .intro-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+  }
+
+  .intro-tag {
+    font-size: 11.5px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--azure-light);
+    color: var(--azure-mid);
+    border: 1px solid #c0d8ef;
+    font-weight: 500;
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <a href="#" class="header-logo">
+    <svg class="azure-icon" viewBox="0 0 96 96" fill="none">
+      <defs>
+        <linearGradient id="a" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#0078D4"/>
+          <stop offset="100%" stop-color="#00BCF2"/>
+        </linearGradient>
+      </defs>
+      <path d="M48 8L88 72H58L48 88L38 72H8L48 8Z" fill="url(#a)" opacity="0.9"/>
+      <path d="M48 8L72 72H48L48 8Z" fill="#fff" opacity="0.15"/>
+    </svg>
+    Azure Docs
+  </a>
+  <div class="header-divider"></div>
+  <span class="header-project">My Azure Project</span>
+
+  <div class="header-search">
+    <svg class="search-icon" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" placeholder="Search docs...">
+  </div>
+
+  <span class="header-version">v1.0.0</span>
+</header>
+
+<div class="layout">
+
+<!-- ── LEFT SIDEBAR ── -->
+<aside class="sidebar">
+  <div class="sidebar-section-label">Getting Started</div>
+  <nav>
+    <a href="#" class="active">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Introduction
+    </a>
+    <a href="#" class="sub-item">Overview</a>
+    <a href="#" class="sub-item">Architecture</a>
+    <a href="#" class="sub-item">Key Features</a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+      Installation
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+      Configuration
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      Quickstart
+    </a>
+  </nav>
+
+  <div class="sidebar-sep"></div>
+  <div class="sidebar-section-label">Core Concepts</div>
+  <nav>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Services Overview
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+      Security & IAM
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"/></svg>
+      Data Storage
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Monitoring
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+      CLI Reference
+    </a>
+  </nav>
+
+  <div class="sidebar-sep"></div>
+  <div class="sidebar-section-label">API Reference</div>
+  <nav>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+      REST API
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+      SDK Docs
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+      Changelog
+    </a>
+  </nav>
+
+  <div class="sidebar-sep"></div>
+  <div class="sidebar-section-label">Resources</div>
+  <nav>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      FAQ
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Glossary
+    </a>
+    <a href="#">
+      <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      License
+    </a>
+  </nav>
+</aside>
+
+<!-- ── MAIN CONTENT ── -->
+<main>
+  <div class="breadcrumb">
+    <a href="#">Docs</a>
+    <span>›</span>
+    <a href="#">Getting Started</a>
+    <span>›</span>
+    Introduction
+  </div>
+
+  <h1 class="doc-title">Introduction</h1>
+  <p class="doc-subtitle">An overview of My Azure Project — what it does, how it works, and how to get started.</p>
+
+  <div class="intro-strip">
+    <span class="intro-tag">🔵 Azure Native</span>
+    <span class="intro-tag">⚡ Serverless Ready</span>
+    <span class="intro-tag">🔒 Entra ID Integration</span>
+    <span class="intro-tag">📦 ARM Template Support</span>
+  </div>
+
+  <div class="doc-content">
+
+    <p>
+      <strong>My Azure Project</strong> is an open-source infrastructure toolkit built for deploying
+      and managing cloud-native workloads on Microsoft Azure. It provides a consistent, repeatable
+      pattern for provisioning resources, enforcing governance policies, and automating operational
+      runbooks through Azure-native tooling.
+    </p>
+
+    <p>
+      Whether you're migrating an existing workload or building greenfield architecture, this project
+      gives you the scaffolding to ship production-ready infrastructure with confidence.
+    </p>
+
+    <div class="callout note">
+      <span class="callout-icon">ℹ</span>
+      <div class="callout-body">
+        <strong>Note</strong>
+        This documentation covers version 1.0.0. For older versions, refer to the version selector in the header above.
+      </div>
+    </div>
+
+    <h2 id="overview">Overview <a href="#overview" class="anchor">¶</a></h2>
+
+    <p>
+      At its core, My Azure Project orchestrates three layers of Azure infrastructure: networking
+      (Virtual Networks, NSGs, Private Endpoints), compute (AKS, Container Apps, Azure Functions),
+      and observability (Log Analytics, Azure Monitor, Application Insights). Each layer is
+      independently configurable through a central <code>config.yaml</code> file.
+    </p>
+
+    <div class="cards">
+      <a href="#" class="card">
+        <span class="card-label">Core Module</span>
+        <span class="card-title">Network Layer</span>
+        <span class="card-desc">VNets, subnets, NSGs, private endpoints, and DNS zones.</span>
+      </a>
+      <a href="#" class="card">
+        <span class="card-label">Core Module</span>
+        <span class="card-title">Compute Layer</span>
+        <span class="card-desc">AKS clusters, Container Apps, and Azure Functions with autoscaling.</span>
+      </a>
+      <a href="#" class="card">
+        <span class="card-label">Core Module</span>
+        <span class="card-title">Observability</span>
+        <span class="card-desc">Centralized logging, metrics, alerts, and dashboards.</span>
+      </a>
+      <a href="#" class="card">
+        <span class="card-label">Core Module</span>
+        <span class="card-title">Identity & Access</span>
+        <span class="card-desc">Managed identities, RBAC assignments, and Key Vault integration.</span>
+      </a>
+    </div>
+
+    <h2 id="how-it-works">How It Works <a href="#how-it-works" class="anchor">¶</a></h2>
+
+    <p>
+      The project uses a modular Bicep/Terraform structure. Each module is independently deployable
+      and follows the principle of least privilege by default. The deployment pipeline integrates
+      directly with GitHub Actions and Azure DevOps.
+    </p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <h4>Configure your environment</h4>
+          <p>Edit <code>config.yaml</code> to define your Azure subscription, resource groups, and desired modules.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <h4>Authenticate with Azure</h4>
+          <p>Run <code>az login</code> and set your subscription context. Service principal auth is recommended for CI/CD.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <h4>Deploy infrastructure</h4>
+          <p>Execute the deploy script. Resources are provisioned in dependency order with full rollback support.</p>
+        </div>
+      </div>
+    </div>
+
+    <pre><code># Clone and enter the project
+git clone https://github.com/your-org/my-azure-project.git
+cd my-azure-project
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Deploy to your subscription
+python deploy.py --env production --config config.yaml</code></pre>
+
+    <h2 id="key-features">Key Features <a href="#key-features" class="anchor">¶</a></h2>
+
+    <table>
+      <tr>
+        <th>Feature</th>
+        <th>Description</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>Multi-region deployment</td>
+        <td>Deploy across paired Azure regions for HA</td>
+        <td><code>stable</code></td>
+      </tr>
+      <tr>
+        <td>Policy-as-Code</td>
+        <td>Azure Policy definitions bundled per environment</td>
+        <td><code>stable</code></td>
+      </tr>
+      <tr>
+        <td>GitOps-native</td>
+        <td>Flux v2 integration for AKS workloads</td>
+        <td><code>stable</code></td>
+      </tr>
+      <tr>
+        <td>Cost estimation</td>
+        <td>Pre-deployment cost previews via Azure Pricing API</td>
+        <td><span class="badge new">preview</span></td>
+      </tr>
+      <tr>
+        <td>Drift detection</td>
+        <td>Scheduled reconciliation against desired state</td>
+        <td><span class="badge new">preview</span></td>
+      </tr>
+    </table>
+
+    <div class="callout tip">
+      <span class="callout-icon">✓</span>
+      <div class="callout-body">
+        <strong>Tip</strong>
+        Start with the <a href="#">Quickstart</a> guide to deploy a sample environment in under 10 minutes.
+      </div>
+    </div>
+
+    <h2 id="architecture">Architecture <a href="#architecture" class="anchor">¶</a></h2>
+
+    <p>
+      My Azure Project follows a hub-spoke topology by default. A central hub Virtual Network hosts
+      shared services (Azure Firewall, Bastion, DNS Private Resolver), while spoke networks are
+      provisioned per workload or team. All cross-spoke traffic is routed through the hub firewall.
+    </p>
+
+    <div class="callout warning">
+      <span class="callout-icon">⚠</span>
+      <div class="callout-body">
+        <strong>Warning</strong>
+        Deploying without a hub network is supported for development environments only. Production deployments must use hub-spoke topology to satisfy security requirements.
+      </div>
+    </div>
+
+    <h2 id="references">References <a href="#references" class="anchor">¶</a></h2>
+
+    <p>
+      The following resources informed the design of this project:
+    </p>
+
+    <p>
+      1. Microsoft Azure Landing Zone documentation — <a href="#">learn.microsoft.com/azure/landing-zones</a><br>
+      2. Azure Well-Architected Framework — <a href="#">learn.microsoft.com/azure/architecture/framework</a><br>
+      3. Cloud Adoption Framework — <a href="#">learn.microsoft.com/azure/cloud-adoption-framework</a>
+    </p>
+
+    <div class="page-nav">
+      <a href="#">
+        <span class="nav-dir">← Previous</span>
+        <span class="nav-title">Contents</span>
+      </a>
+      <a href="#" class="next">
+        <span class="nav-dir">Next →</span>
+        <span class="nav-title">Installation</span>
+      </a>
+    </div>
+  </div>
+</main>
+
+<!-- ── RIGHT TOC ── -->
+<aside class="toc">
+  <div class="toc-label">On this page</div>
+  <nav>
+    <a href="#overview" class="active">Overview</a>
+    <a href="#how-it-works">How It Works</a>
+    <a href="#key-features">Key Features</a>
+    <a href="#architecture">Architecture</a>
+    <a href="#references">References</a>
+  </nav>
+</aside>
+
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="doc-footer">
+  <span>© 2024 My Azure Project. Last updated Feb 25, 2026.</span>
+  <span>Built with ❤ and hosted on GitHub Pages</span>
+</footer>
+
+<script>
+  // Highlight active TOC item on scroll
+  const sections = document.querySelectorAll('h2[id]');
+  const tocLinks = document.querySelectorAll('.toc nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        tocLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`.toc nav a[href="#${entry.target.id}"]`);
+        if (link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</body>
+</html>
